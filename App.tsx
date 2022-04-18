@@ -1,6 +1,10 @@
+//Modules
 import React, {useState,useEffect,createContext} from 'react'
 import { StyleSheet, View ,Dimensions,Text} from 'react-native'
+import { NativeRouter, Route, Link, Routes } from "react-router-native";
+//Components
 import MapViews from "./component/mapViews/MapViews"
+import Home from "./component/home/Home"
 
 interface user{
   img:string
@@ -27,10 +31,19 @@ const [ info, setInfo] = useState<user[]>([])
   return (
     <View style={styles.container}>
       <userInfo.Provider value={{info,setInfo}}>
-      <MapViews/>
+        <NativeRouter>
+          <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/map" element={<MapViews/>}/>
+
+
+          </Routes>
+
+        </NativeRouter>
+      {/* <MapViews/> */}
      
       </userInfo.Provider>
-     
+      
     </View>
   )
 }
