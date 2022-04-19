@@ -1,11 +1,15 @@
+//Modules
 import React, {useState,useEffect,useContext} from 'react'
-import { StyleSheet, Text, View ,Dimensions,Image, Button} from 'react-native'
+import { StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator} from 'react-native'
 import MapView, { Marker,Callout} from "react-native-maps";
 import * as Location from 'expo-location';
+
+import axios from 'axios';
+//Imports
+import Api from "../../component/api/Api.json"
+import {userInfo} from "../../App"
 import Markers from "../marker/Marker"
 
-import {userInfo} from "../../App"
-import axios from 'axios';
 const MapViews = () =>{
   interface InterFaceInfos{
     age:number,
@@ -25,33 +29,63 @@ const MapViews = () =>{
     const [ infos, setInfos] = useState<boolean>(true)
     const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
     const {info,setInfo} = useContext(userInfo)
+    const [ loading, setLoading] = useState<boolean>(true)
     
    
+async function test (){
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== 'granted') {
+    setErrorMsg('Permission to access location was denied');
+    return;
+  }
+
+  let location = await Location.getCurrentPositionAsync({});
+  setLocation(location.coords);
+  console.log(location);
+  
+
+}
+
+
+
 
       useEffect(() => {
         
         (async () => {
-    const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
-    const fetchInfos = await axios.get(URL)
-    const setInfosUsers = await setUserInfos(fetchInfos.data)
-    console.log("Semir",userInfos);
+          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+          const fetchInfos = await axios.get(URL)
+          const setInfosUsers = await setUserInfos(fetchInfos.data)
 
-        let { status } = await Location.requestForegroundPermissionsAsync();
+
+          let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
             setErrorMsg('Permission to access location was denied');
             return;
           }
     
           let location = await Location.getCurrentPositionAsync({});
-          setLocation(location.coords);
+          const setLoc = await setLocation(location.coords);
+
+
+    
+    
+
+        
+          
+          setLoading(false)
+          
           
           
         })();
       }, []);
 
 
+
     return(
         <View style={styles.container}>
+          {loading&&(
+            <ActivityIndicator size="large" color="#00ff00" />
+          )}
      {location   &&(
        <View>
          
@@ -63,9 +97,12 @@ const MapViews = () =>{
 					latitudeDelta: 0.0922,
 					longitudeDelta: 0.0421,
 				}}
+        showsCompass={true}
+        showsUserLocation={true}
+        
+        // onUserLocationChange={()=>console.log({ coordinate: Location })}
 				provider='google'>
-				
-        {/* <MarkerFetch/> */}
+			
 
         
         {userInfos.map(e => 
@@ -83,23 +120,24 @@ const MapViews = () =>{
     </MapView>
 
     {/* INFO VIEW*/}
-    {infos &&(
+    
     <View style={styles.infos}>
       <View style={styles.infosText}> 
             <Text>Name: {info.name}</Text>
             <Text>Alter: {info.age}</Text>
-            <Text>32 Jahre</Text>
+            <Text>{location.latitude}</Text>
+            <Text>{location.latitude}</Text>
             </View>
         <View style={styles.button}>
             <Button 
       
-            onPress={() => alert("Tesxt")}
+            onPress={test}
             title="Nachricht senden"
             />
         </View>
 
     </View>
-    )}
+    
       </View>
      )}
      

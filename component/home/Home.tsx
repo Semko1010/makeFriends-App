@@ -1,12 +1,15 @@
 import { NativeRouter, Route, Link, Routes } from "react-router-native";
-import { StyleSheet, View ,Dimensions,Text} from 'react-native'
+import { StyleSheet, View ,Dimensions,Text,ActivityIndicator} from 'react-native'
+
+
 const Home = () =>{
     return(
         <View>
-<Link to="/map">
+        <Link to="/map">
         <Text>Map</Text>
 
 </Link>
+
         </View>
     )
 }
