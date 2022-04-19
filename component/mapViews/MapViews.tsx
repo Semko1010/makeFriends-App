@@ -9,7 +9,7 @@ import axios from 'axios';
 import Api from "../../component/api/Api.json"
 import {userInfo} from "../../App"
 import Markers from "../marker/Marker"
-
+import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 const MapViews = () =>{
   interface InterFaceInfos{
     age:number,
@@ -21,8 +21,13 @@ const MapViews = () =>{
     }
 
     type coordinates ={
-        longitude: number;
-        latitude: number
+        longitude: number,
+        latitude: number,
+        // accuracy: number,
+        // altitude: number
+        // altitudeAccuracy: number
+        // heading: number
+        // speed: number
 } 
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -41,7 +46,7 @@ async function test (){
 
   let location = await Location.getCurrentPositionAsync({});
   setLocation(location.coords);
-  console.log(location);
+  console.log("semko",location);
   
 
 }
@@ -135,7 +140,9 @@ async function test (){
             title="Nachricht senden"
             />
         </View>
-
+    <SetCoordsButton
+    location={{location,userInfos}}
+    />
     </View>
     
       </View>

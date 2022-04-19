@@ -27,7 +27,7 @@
       "package": "com.friend.com",
       "config":{
         "googleMaps":{
-          "apiKey": "AIzaSyAzuRUGI4Dh3rfuhFLuOcTvGsknDgFjqXI"
+          "apiKey": "process.env.GOOGLE_API_KEY"
         }
       }
     },
