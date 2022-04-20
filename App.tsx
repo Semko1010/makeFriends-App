@@ -8,17 +8,34 @@ import Home from "./component/home/Home"
 import RegisterA from "./component/register/RegisterA"
 import RegisterB from "./component/register/RegisterB"
 import Login from "./component/login/Login"
+
 interface user{
-  img:string
-  latitude:number,
-  longitude:number,
-  name:string
-  age:number
+ 
+    img:string
+    latitude:number,
+    longitude:number,
+    name:string
+    age:number
+  
+  
 }
 
 type settName = {
   info: user[],
   setInfo:React.Dispatch<React.SetStateAction<user[]>>
+}
+interface tokenInfos{
+ age:number,
+ hobby:string,
+ img:string,
+ token:string,
+ userName:string,
+ userObjId:string,
+ verifyUser:boolean
+}
+type setToken={
+  token:tokenInfos[]
+  setToken:React.Dispatch<React.SetStateAction<tokenInfos[]>>
 }
 
 type userImg={
@@ -28,11 +45,12 @@ type userImg={
 
 
 const userInfo = createContext<settName>({} as settName)
+const Token = createContext<setToken>({} as setToken)
 const userImage = createContext<userImg>({} as userImg)
 
 export default function App() {
 const [ info, setInfo] = useState<user[]>([])
-
+const [ token, setToken] = useState<tokenInfos[]>([])
 const [ img, setImg] = useState("")
 
  
@@ -41,6 +59,7 @@ const [ img, setImg] = useState("")
 
   return (
     <View style={styles.container}>
+      <Token.Provider value={{token,setToken}}>
       <userInfo.Provider value={{info,setInfo}}>
         <userImage.Provider value={{img,setImg}}>
         <NativeRouter>
@@ -58,7 +77,7 @@ const [ img, setImg] = useState("")
       {/* <MapViews/> */}
       </userImage.Provider>
       </userInfo.Provider>
-      
+      </Token.Provider>
     </View>
   )
 }
@@ -91,4 +110,4 @@ const styles = StyleSheet.create({
   button:{width: 150, height: 50}
 });
 
-export {userInfo,userImage}
+export {userInfo,userImage,Token}

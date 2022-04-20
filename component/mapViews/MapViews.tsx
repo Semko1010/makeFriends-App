@@ -10,13 +10,16 @@ import Api from "../../component/api/Api.json"
 import {userInfo} from "../../App"
 import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
+import { Link } from 'react-router-native';
 const MapViews = () =>{
   interface InterFaceInfos{
     age:number,
     img:string,
     latitude: number,
     longitude: number,
-    name:string
+    userName:string
+    hobby:string,
+    verifyUser:boolean,
     
     }
 
@@ -60,6 +63,7 @@ async function test (){
           const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
           const fetchInfos = await axios.get(URL)
           const setInfosUsers = await setUserInfos(fetchInfos.data)
+        console.log(fetchInfos.data);
 
 
           let { status } = await Location.requestForegroundPermissionsAsync();
@@ -86,6 +90,8 @@ async function test (){
 
 
 
+
+
     return(
         <View style={styles.container}>
           {loading&&(
@@ -96,11 +102,10 @@ async function test (){
          <View style={styles.menu}>
       
         <View style={styles.button}>
-            <Button 
-      
-            onPress={test}
-            title="Back"
-            />
+          <Link to="/">
+            <Text>Back</Text>
+          </Link>
+            
         </View>
         <View style={styles.button}>
             <Button 
@@ -134,7 +139,7 @@ async function test (){
     <Markers
     latitude={e.latitude}
     longitude={e.longitude}
-    name={e.name}
+    userName={e.userName}
     img={e.img}
     age={e.age}
     />

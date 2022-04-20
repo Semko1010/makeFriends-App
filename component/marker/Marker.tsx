@@ -8,8 +8,9 @@ interface Props {
   img:string
   latitude:number,
   longitude:number,
-  name:string
+  userName:string
   age:number
+  hobby ?:string
 }
 const Markers = (props:Props) => {
 
@@ -33,13 +34,13 @@ const Markers = (props:Props) => {
 	      latitude: props.latitude,
 		    longitude: props.longitude,
         }}
-        title={props.name}
+        title={props.userName}
         description="Semko">
         <View >
                <Image
 							style={styles.userImg}
 							source={{
-								uri: props.img,
+								uri: `data:image/png;base64,${props.img}`,
 							}}
 					    />
            </View>

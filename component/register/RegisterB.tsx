@@ -19,7 +19,7 @@ const RegisterB = () =>{
     async function register() {
 		console.log(user);
         
-		const URL = "http://10.0.2.2:2020/api/friend/users/register";
+		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
 		
 		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
 			try {
@@ -47,8 +47,8 @@ const RegisterB = () =>{
 					onChangeText={e => setUsername(e)}
 					placeholder='Username'
 					placeholderTextColor='black'
-					className='inputUsername'
-					color='black'
+					
+					
 				/>
 
 				<TextInput
@@ -56,8 +56,8 @@ const RegisterB = () =>{
 					style={styles.linkView}
 					placeholder='Email'
 					placeholderTextColor='black'
-					color='black'
-					className='inputUsername'
+					
+					
 				/>
 
 				<TextInput
@@ -65,8 +65,9 @@ const RegisterB = () =>{
 					style={styles.linkView}
 					placeholder='Passwort'
 					placeholderTextColor='black'
-					color='black'
-					className='inputUsername'
+					
+			
+					
 				/>
                 <Button onPress={register} title="Registrieren"></Button>
 			</View>

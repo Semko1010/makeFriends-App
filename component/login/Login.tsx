@@ -1,13 +1,15 @@
 //modules
-import React, { useState } from "react"
+import React, { useState ,useContext} from "react"
 import { View ,TextInput,StyleSheet, Button } from "react-native"
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-native";
-
+//imports
+import {Token} from "../../App"
 const Login = () =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const { token, setToken} = useContext(Token)
     const user = { email, password };
 
     async function login() {
@@ -15,19 +17,26 @@ const Login = () =>{
         
 		const URL = "http://10.0.2.2:2020/api/friend/users/login";
 		
-		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
+		
 			try {
 				const fetch = await Axios.post(URL, user);
+				console.log("WSdad",fetch.data);
+				
 				if(fetch.data.token){
-                navigate("/map")
+					if(fetch.data.verifyUser){
+						setToken(fetch.data);
+						navigate("/map")
+					}else{
+						console.log("Pleaser Verify Account");
+						
+					}
+                
                 }
 				
 			} catch (err) {
 				console.log(err);
 			}
-		// } else {
-			
-		// }
+		
 	}
 
     return(
