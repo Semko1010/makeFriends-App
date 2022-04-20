@@ -5,10 +5,12 @@ import { StyleSheet, View ,Dimensions,Text,ActivityIndicator} from 'react-native
 const Home = () =>{
     return(
         <View>
-        <Link to="/map">
-        <Text>Map</Text>
-
-</Link>
+        <Link to="/registerA">
+            <Text>Register</Text>
+        </Link>
+        <Link to="/login">
+            <Text>Login</Text>
+        </Link>
 
         </View>
     )

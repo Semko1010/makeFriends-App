@@ -1,0 +1,92 @@
+//Modules
+import React, { useContext, useState } from "react";
+import { View,TextInput,Text,StyleSheet, Button } from "react-native";
+import Axios from "axios";
+//Imports
+
+import {userImage} from "../../App"
+const RegisterB = () =>{
+    const { img,setImg } = useContext(userImage);
+    const [userName, setUsername] = useState<string | undefined>("")
+    const [email, setEmail] = useState<string | undefined>("")
+    const [password, setPassword] = useState<string | undefined>("")
+    const [verify, setVerify] = useState<boolean>(false);
+    const user = { userName, email, password, img ,verify};
+    console.log(userName);
+    console.log(email);
+    console.log(password);
+    
+    async function register() {
+		console.log(user);
+        
+		const URL = "http://10.0.2.2:2020/api/friend/users/register";
+		
+		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
+			try {
+				const fetch = await Axios.post(URL, user);
+				console.log(fetch);
+				
+			} catch (err) {
+				console.log(err);
+			}
+		// } else {
+			
+		// }
+	}
+
+
+
+
+
+    return(
+        <View>
+
+<View style={styles.linkContainer}>
+				<TextInput
+					style={styles.linkView}
+					onChangeText={e => setUsername(e)}
+					placeholder='Username'
+					placeholderTextColor='black'
+					className='inputUsername'
+					color='black'
+				/>
+
+				<TextInput
+					onChangeText={e => setEmail(e)}
+					style={styles.linkView}
+					placeholder='Email'
+					placeholderTextColor='black'
+					color='black'
+					className='inputUsername'
+				/>
+
+				<TextInput
+					onChangeText={e => setPassword(e)}
+					style={styles.linkView}
+					placeholder='Passwort'
+					placeholderTextColor='black'
+					color='black'
+					className='inputUsername'
+				/>
+                <Button onPress={register} title="Registrieren"></Button>
+			</View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+	
+	linkView: {
+		margin: 10,
+		alignItems: "center",
+		textAlign: "center",
+		width: 300,
+		height: 40,
+		backgroundColor: "#fffaf0",
+	},
+	linkContainer: {
+		alignItems: "center",
+		marginBottom: 50,
+	},
+});
+export default RegisterB

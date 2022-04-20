@@ -93,7 +93,25 @@ async function test (){
           )}
      {location   &&(
        <View>
-         
+         <View style={styles.menu}>
+      
+        <View style={styles.button}>
+            <Button 
+      
+            onPress={test}
+            title="Back"
+            />
+        </View>
+        <View style={styles.button}>
+            <Button 
+      
+            onPress={test}
+            title="Menü"
+            />
+        </View>
+    
+    </View>
+
      <MapView
 				style={styles.map}
 				initialRegion={{
@@ -159,9 +177,15 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    menu:{
+      marginTop:100,
+      flexDirection:"row",
+      justifyContent: 'center',
+      
+    },
     map: {
       width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height,
+      height: "70%",
     },
     infos:{
       width: "100%",
