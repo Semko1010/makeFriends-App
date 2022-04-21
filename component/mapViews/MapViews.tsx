@@ -39,6 +39,7 @@ const MapViews = () =>{
     const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
     const {info,setInfo} = useContext(userInfo)
     const [ loading, setLoading] = useState<boolean>(true)
+    const [ calling, setCalling] = useState<boolean>(true)
     
     const { token, setToken} = useContext(Token)
 async function test (){
@@ -63,7 +64,7 @@ async function test (){
         (async () => {
 
           // const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
-          const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
+          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
           const fetchInfos = await axios.get(URL)
           const setInfosUsers = await setUserInfos(fetchInfos.data)
          
@@ -77,12 +78,6 @@ async function test (){
           let location = await Location.getCurrentPositionAsync({});
           const setLoc = await setLocation(location.coords);
 
-
-    
-    
-
-        
-          
           setLoading(false)
           
           
@@ -91,7 +86,11 @@ async function test (){
       }, []);
 
 
-
+const call = () =>{
+  setCalling(!calling)
+  console.log(calling);
+  
+}
 
 
 
@@ -159,17 +158,18 @@ async function test (){
             <Text>Name: {info.userName}</Text>
             <Text>Alter: {info.age}</Text>
             <Text>Hobbys: {info.hobby}</Text>
-            <Text>{location.latitude}</Text>
+            <Text>da{calling}</Text>
             </View>
         <View style={styles.button}>
             <Button 
       
-            onPress={test}
+            onPress={call}
             title="Nachricht senden"
             />
         </View>
     <SetCoordsButton
     location={{location,userInfos}}
+    call={call}
     />
     </View>
     

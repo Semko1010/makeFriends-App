@@ -1,6 +1,6 @@
 //modules
 import React, { useState ,useContext} from "react"
-import { View ,TextInput,StyleSheet, Button } from "react-native"
+import { View ,TextInput,StyleSheet, Button,ActivityIndicator } from "react-native"
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-native";
 //imports
@@ -9,15 +9,16 @@ const Login = () =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [ loading, setLoading] = useState<boolean>(false)
 	const { token, setToken} = useContext(Token)
     const user = { email, password };
 
     async function login() {
 		
         
-		const URL = "http://10.0.2.2:2020/api/friend/users/login";
+		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
 		
-		
+		setLoading(true)
 			try {
 				const fetch = await Axios.post(URL, user);
 				console.log("WSdad",fetch.data);
@@ -25,7 +26,9 @@ const Login = () =>{
 				if(fetch.data.token){
 					if(fetch.data.verifyUser){
 						setToken(fetch.data);
+						setLoading(false)
 						navigate("/map")
+						
 					}else{
 						console.log("Pleaser Verify Account");
 						
@@ -42,7 +45,9 @@ const Login = () =>{
     return(
         <View>
         <View style={styles.linkView}>
-
+		{loading&&(
+            <ActivityIndicator size="large" color="#00ff00" />
+          )}
 					<TextInput
 						onChangeText={e => setEmail(e)}
 						style={styles.textInput}
