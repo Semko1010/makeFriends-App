@@ -14,9 +14,9 @@ interface user{
     img:string
     latitude:number,
     longitude:number,
-    name:string
+    userName:string
     age:number
-  
+    hobby:string
   
 }
 
@@ -43,10 +43,14 @@ type userImg={
   setImg:React.Dispatch<React.SetStateAction<string>>
 }
 
-
+type gpsbtn={
+  gpsButton:boolean;
+  setGpsButton:React.Dispatch<React.SetStateAction<boolean>>
+}
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
 const userImage = createContext<userImg>({} as userImg)
+
 
 export default function App() {
 const [ info, setInfo] = useState<user[]>([])
@@ -62,6 +66,7 @@ const [ img, setImg] = useState("")
       <Token.Provider value={{token,setToken}}>
       <userInfo.Provider value={{info,setInfo}}>
         <userImage.Provider value={{img,setImg}}>
+          
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
@@ -74,7 +79,7 @@ const [ img, setImg] = useState("")
           </Routes>
 
         </NativeRouter>
-      {/* <MapViews/> */}
+        
       </userImage.Provider>
       </userInfo.Provider>
       </Token.Provider>

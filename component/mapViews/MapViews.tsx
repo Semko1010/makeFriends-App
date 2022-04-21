@@ -7,9 +7,10 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 //Imports
 import Api from "../../component/api/Api.json"
-import {userInfo} from "../../App"
+import {userInfo,Token} from "../../App"
 import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
+
 import { Link } from 'react-router-native';
 const MapViews = () =>{
   interface InterFaceInfos{
@@ -20,7 +21,7 @@ const MapViews = () =>{
     userName:string
     hobby:string,
     verifyUser:boolean,
-    
+
     }
 
     type coordinates ={
@@ -39,7 +40,7 @@ const MapViews = () =>{
     const {info,setInfo} = useContext(userInfo)
     const [ loading, setLoading] = useState<boolean>(true)
     
-   
+    const { token, setToken} = useContext(Token)
 async function test (){
   let { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
@@ -60,11 +61,12 @@ async function test (){
       useEffect(() => {
         
         (async () => {
-          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+
+          // const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+          const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
           const fetchInfos = await axios.get(URL)
           const setInfosUsers = await setUserInfos(fetchInfos.data)
-        console.log(fetchInfos.data);
-
+         
 
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
@@ -87,6 +89,7 @@ async function test (){
           
         })();
       }, []);
+
 
 
 
@@ -142,6 +145,8 @@ async function test (){
     userName={e.userName}
     img={e.img}
     age={e.age}
+    hobby={e.hobby}
+
     />
     
   )}
@@ -151,9 +156,9 @@ async function test (){
     
     <View style={styles.infos}>
       <View style={styles.infosText}> 
-            <Text>Name: {info.name}</Text>
+            <Text>Name: {info.userName}</Text>
             <Text>Alter: {info.age}</Text>
-            <Text>{location.latitude}</Text>
+            <Text>Hobbys: {info.hobby}</Text>
             <Text>{location.latitude}</Text>
             </View>
         <View style={styles.button}>

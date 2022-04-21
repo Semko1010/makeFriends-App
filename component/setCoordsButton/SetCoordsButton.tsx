@@ -4,6 +4,7 @@ import Axios from "axios"
 //Imports
 import {Token} from "../../App"
 import axios from "axios"
+
 type coordinates ={
     location:{
         location:{
@@ -55,6 +56,7 @@ const userLocationinfos={
 }
 
 useEffect(() => {
+        console.log("dsad");
         
     (async () => {
         const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
@@ -65,39 +67,21 @@ useEffect(() => {
     })();
   }, []);
 
-async function setLocation() {
-		
-    // const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
-    const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
-    const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
-    const URLRemove = "http://10.0.2.2:2020/api/friend/users/deleteLocation";
-    const fetchInfos = await axios.get(URL)
-    const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
-    
-    
-    
-    const map = await gpsLocationInfos.map(e =>{
-        
-        if(e.userObjId==token.userObjId){
-         axios.post(URLRemove,e )  
-        console.log("fdsad");
-         
-        }
-        else{
-            axios.post(URLPost, userLocationinfos)   
-            .then(response=>{
-                console.log(response);
-                
-            })
-            console.log("asfs");
+  useEffect(() => {
+      console.log("ded");
+      
+    gpsLocationInfos.find(item =>{
+        if(item.userObjId==token.userObjId){
+            setGpsButton(false)
+
+        }else{
+            setGpsButton(true)
             
         }
         
-        
-        
     })
-       
-}
+  },[gpsLocationInfos])
+
 async function setLocationUser () {
     const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
     const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
@@ -116,8 +100,10 @@ async function deleteLocationUser () {
     const fetchInfos = await axios.get(URL)
     const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
     const setPosition = await axios.post(URLRemove,token)
+    if(setPosition.data.locationRemoved){
+        setGpsButton(true)
+    }
     
-    console.log(token.userObjId);
     
 
 }
