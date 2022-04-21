@@ -38,8 +38,10 @@ interface tokenInfos{
 
 const SetCoordsButton = (props:coordinates) =>{
     const { token, setToken} = useContext(Token)
-    const [gpsLocationInfos,setGpsLocationInfos] = useState<tokenInfos[] | undefined>()
-    console.log("dsad",props.location.userInfos);
+    const [gpsLocationInfos,setGpsLocationInfos] = useState<tokenInfos[] | undefined>([])
+    const [gpsButton, setGpsButton] = useState<boolean>(true)
+
+  
 const userLocationinfos={
     latitude:props.location.location.latitude,
     longitude:props.location.location.longitude,
@@ -55,59 +57,81 @@ const userLocationinfos={
 useEffect(() => {
         
     (async () => {
-      const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
-      const fetchInfos = await axios.get(URL)
-      const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
-    
+        const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
+        const fetchInfos = await axios.get(URL)
+        const setinfo = await setGpsLocationInfos(fetchInfos.data)
+        
 
     })();
   }, []);
 
 async function setLocation() {
 		
-        
-    const URL = "http://10.0.2.2:2020/api/friend/users/userLocation";
+    // const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
+    const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
+    const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
     const URLRemove = "http://10.0.2.2:2020/api/friend/users/deleteLocation";
+    const fetchInfos = await axios.get(URL)
+    const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
     
-    gpsLocationInfos.map(e =>{
+    
+    
+    const map = await gpsLocationInfos.map(e =>{
+        
         if(e.userObjId==token.userObjId){
-         axios.post(URLRemove,e )   
-            
+         axios.post(URLRemove,e )  
+        console.log("fdsad");
+         
         }
         else{
-            axios.post(URL, userLocationinfos)   
+            axios.post(URLPost, userLocationinfos)   
             .then(response=>{
                 console.log(response);
                 
             })
+            console.log("asfs");
+            
         }
         
         
         
     })
-        // try {
-        //     const fetch = await Axios.post(URL, userLocationinfos);
-        //     console.log(fetch);
-            
-            
-           
-            
-        // } catch (err) {
-        //     console.log(err);
-        // }
+       
+}
+async function setLocationUser () {
+    const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
+    const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
+    const fetchInfos = await axios.get(URL)
+    const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
+    const setPosition = await axios.post(URLPost, userLocationinfos)
+    if(setPosition.data.locationSet){
+        setGpsButton(false)
+    }
     
+
+}
+async function deleteLocationUser () {
+    const URLRemove = "http://10.0.2.2:2020/api/friend/users/deleteLocation";
+    const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
+    const fetchInfos = await axios.get(URL)
+    const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
+    const setPosition = await axios.post(URLRemove,token)
+    
+    console.log(token.userObjId);
+    
+
 }
 
-    const test = () => {
-        console.log("test",userLocationinfos);
-        
-        
-    }
+   
 
 
     return(
         <View>
-            <Button onPress={setLocation}title="Button"></Button>
+            {gpsButton ?(
+            <Button onPress={setLocationUser}title="setGps"></Button>
+            ):(
+            <Button onPress={deleteLocationUser}title="DeleteGps"></Button>
+            )}
         </View>
     )
 }
