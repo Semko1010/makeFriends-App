@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 //Imports
 import Api from "../../component/api/Api.json"
-import {userInfo,Token} from "../../App"
+import {userInfo,Token,allInfosUser} from "../../App"
 import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 
@@ -27,6 +27,7 @@ const MapViews = () =>{
     type coordinates ={
         longitude: number,
         latitude: number,
+        
         // accuracy: number,
         // altitude: number
         // altitudeAccuracy: number
@@ -36,12 +37,15 @@ const MapViews = () =>{
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
     const [ infos, setInfos] = useState<boolean>(true)
-    const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
+    const {userInfos, setUserInfos} = useContext(allInfosUser)
+  
     const {info,setInfo} = useContext(userInfo)
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
     
     const { token, setToken} = useContext(Token)
+
+
 async function test (){
   let { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
@@ -51,7 +55,8 @@ async function test (){
 
   let location = await Location.getCurrentPositionAsync({});
   setLocation(location.coords);
-  console.log("semko",location);
+  
+  
   
 
 }
@@ -60,6 +65,7 @@ async function test (){
 
 
       useEffect(() => {
+        
         
         (async () => {
 
@@ -77,7 +83,8 @@ async function test (){
     
           let location = await Location.getCurrentPositionAsync({});
           const setLoc = await setLocation(location.coords);
-
+          console.log("Semiraga", location);
+          
           setLoading(false)
           
           
@@ -86,9 +93,12 @@ async function test (){
       }, []);
 
 
-const call = () =>{
-  setCalling(!calling)
-  console.log(calling);
+async function call  () {
+  
+  
+  const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+ const fetchInfos = await axios.get(URL)
+  const setInfosUsers = await setUserInfos(fetchInfos.data)
   
 }
 

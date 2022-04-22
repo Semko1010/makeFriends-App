@@ -43,27 +43,44 @@ type userImg={
   setImg:React.Dispatch<React.SetStateAction<string>>
 }
 
-type gpsbtn={
-  gpsButton:boolean;
-  setGpsButton:React.Dispatch<React.SetStateAction<boolean>>
-}
+
+
+interface InterFaceInfos{
+  age:number,
+  img:string,
+  latitude: number,
+  longitude: number,
+  userName:string
+  hobby:string,
+  verifyUser:boolean,
+  userObjId:string
+  }
+
+  type setAllUserinfo={
+    userInfos:InterFaceInfos[]
+    setUserInfos:React.Dispatch<React.SetStateAction<InterFaceInfos[]>>
+  }
+
+
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
 const userImage = createContext<userImg>({} as userImg)
-
+const allInfosUser = createContext({} as setAllUserinfo)
 
 export default function App() {
 const [ info, setInfo] = useState<user[]>([])
 const [ token, setToken] = useState<tokenInfos[]>([])
 const [ img, setImg] = useState("")
-
+const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
  
+console.log(token.img);
 
 
 
   return (
     <View style={styles.container}>
       <Token.Provider value={{token,setToken}}>
+        <allInfosUser.Provider value={{userInfos,setUserInfos}}>
       <userInfo.Provider value={{info,setInfo}}>
         <userImage.Provider value={{img,setImg}}>
           
@@ -82,6 +99,7 @@ const [ img, setImg] = useState("")
         
       </userImage.Provider>
       </userInfo.Provider>
+      </allInfosUser.Provider>
       </Token.Provider>
     </View>
   )
@@ -115,4 +133,4 @@ const styles = StyleSheet.create({
   button:{width: 150, height: 50}
 });
 
-export {userInfo,userImage,Token}
+export {userInfo,userImage,Token,allInfosUser}

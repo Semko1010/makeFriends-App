@@ -29,7 +29,8 @@
         "googleMaps":{
           "apiKey": "process.env.GOOGLE_API_KEY"
         }
-      }
+      },
+      "permissions": ["READ_PHONE_STATE"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

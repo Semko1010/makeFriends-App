@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react"
 import { Button, View } from "react-native"
 import Axios from "axios"
 //Imports
-import {Token} from "../../App"
+import {Token,allInfosUser} from "../../App"
 import axios from "axios"
 
 type coordinates ={
@@ -41,7 +41,7 @@ const SetCoordsButton = (props:coordinates) =>{
     const { token, setToken} = useContext(Token)
     const [gpsLocationInfos,setGpsLocationInfos] = useState<tokenInfos[] | undefined>([])
     const [gpsButton, setGpsButton] = useState<boolean>(true)
-
+    const {userInfos, setUserInfos} = useContext(allInfosUser)
   
 const userLocationinfos={
     latitude:props.location.location.latitude,
@@ -55,22 +55,22 @@ const userLocationinfos={
     
 }
 
-useEffect(() => {
-        console.log("dsad");
+// useEffect(() => {
+//         console.log("dsad");
         
-    (async () => {
-        const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
-        const fetchInfos = await axios.get(URL)
-        const setinfo = await setGpsLocationInfos(fetchInfos.data)
+//     (async () => {
+//         const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
+//         const fetchInfos = await axios.get(URL)
+//         const setinfo = await setGpsLocationInfos(fetchInfos.data)
         
 
-    })();
-  }, []);
+//     })();
+//   }, []);
 
   useEffect(() => {
-      console.log("ded");
       
-    gpsLocationInfos.find(item =>{
+      
+      userInfos.find(item =>{
         if(item.userObjId==token.userObjId){
             setGpsButton(false)
 
@@ -80,31 +80,34 @@ useEffect(() => {
         }
         
     })
-  },[gpsLocationInfos])
+  },[userInfos])
 
 async function setLocationUser () {
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
-    // const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
-    // const fetchInfos = await axios.get(URL)
-    // const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
+    const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
     const setPosition = await axios.post(URLPost, userLocationinfos)
     if(setPosition.data.locationSet){
         setGpsButton(false)
+        // props.call()
     }
+    const fetchInfos = await axios.get(URL)
+    const setInfosUsers = await setUserInfos(fetchInfos.data)
     
-
 }
 async function deleteLocationUser () {
     const URLRemove = "https://makefriendsapp.herokuapp.com/api/friend/users/deleteLocation";
-    // const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"  
-    // const fetchInfos = await axios.get(URL)
-    // const setInfosUsers = await setGpsLocationInfos(fetchInfos.data)
+    const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
+    
     const setPosition = await axios.post(URLRemove,token)
     if(setPosition.data.locationRemoved){
         setGpsButton(true)
+        // props.call()
     }
     
-    props.call()
+    
+    const fetchInfos = await axios.get(URL)
+     const setInfosUsers = await setUserInfos(fetchInfos.data)
+    
 
 }
 
