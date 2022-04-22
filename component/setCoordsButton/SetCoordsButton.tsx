@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react"
-import { Button, View } from "react-native"
+import { Button, View ,Image,TouchableOpacity,StyleSheet,Text} from "react-native"
 import Axios from "axios"
 //Imports
 import {Token,allInfosUser} from "../../App"
@@ -100,13 +100,63 @@ useEffect(() => {
     return(
         <View>
             {gpsButton ?(
-            <Button onPress={setLocationUser}title="setGps"></Button>
+
+
+
+
+
+                <TouchableOpacity
+               
+                onPress={setLocationUser}
+                >
+                    
+                <Image
+                
+                style={{width:50, height:50}}
+                source={require("../../assets/img/gps.png")}
+            />
+             </TouchableOpacity>
+            // <View style={styles.setLocationButton}>
+            // <Button onPress={setLocationUser}title="setGps"></Button>
+            // </View>
             ):(
-            <Button onPress={deleteLocationUser}title="DeleteGps"></Button>
+            // <Button onPress={deleteLocationUser}title="DeleteGps"></Button>
+            <TouchableOpacity
+              
+                onPress={deleteLocationUser}
+                >
+                   
+                <Image
+                
+                style={{width:50, height:50}}
+                source={require("../../assets/img/location.png")}
+            />
+             </TouchableOpacity>
             )}
         </View>
     )
 }
 
+const styles = StyleSheet.create({
+    setLocationButton:{
+        width:50,
+        height:50, 
+        backgroundColor:"green",
+        borderRadius:50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        color:"white"
+    },
+    RemoveLocationButton:{
+        width:50,
+        height:50, 
+        backgroundColor:"red",
+        borderRadius:50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        color:"white"
+    }
 
+})
 export default  SetCoordsButton
+

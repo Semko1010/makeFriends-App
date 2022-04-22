@@ -10,7 +10,7 @@ interface Props {
   longitude:number,
   userName:string
   age:number
-  hobby ?:string
+  hobby :string
 }
 const Markers = (props:Props) => {
 
@@ -27,7 +27,8 @@ const Markers = (props:Props) => {
    
     return(
        
-           
+        <>
+        {/* @ts-ignore  */}
         <Marker
         onPress={eachInfoOfUser}
         coordinate={{
@@ -45,7 +46,7 @@ const Markers = (props:Props) => {
 					    />
            </View>
         </Marker>
-       
+       </>
        
     )
 }

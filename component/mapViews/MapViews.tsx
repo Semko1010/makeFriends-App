@@ -110,7 +110,7 @@ async function call  () {
             <ActivityIndicator size="large" color="#00ff00" />
           )}
      {location   &&(
-       <View>
+       <View style={styles.container}>
          <View style={styles.menu}>
       
         <View style={styles.button}>
@@ -128,7 +128,7 @@ async function call  () {
         </View>
     
     </View>
-
+     {/* @ts-ignore  */}
      <MapView
 				style={styles.map}
 				initialRegion={{
@@ -137,10 +137,10 @@ async function call  () {
 					latitudeDelta: 0.0922,
 					longitudeDelta: 0.0421,
 				}}
-        showsCompass={true}
+       
         showsUserLocation={true}
         
-        // onUserLocationChange={()=>console.log({ coordinate: Location })}
+        
 				provider='google'>
 			
 
@@ -159,6 +159,7 @@ async function call  () {
     />
     
   )}
+ 
     </MapView>
 
     {/* INFO VIEW*/}
@@ -183,7 +184,7 @@ async function call  () {
     />
     </View>
     
-      </View>
+  </View>
      )}
      
     </View>
@@ -192,27 +193,27 @@ async function call  () {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
       backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
     },
     menu:{
-      marginTop:100,
+      
+      
       flexDirection:"row",
       justifyContent: 'center',
       
     },
     map: {
       width: Dimensions.get('window').width,
-      height: "70%",
+      height: "75%",
     },
     infos:{
       width: "100%",
-      height: 150,
+      
       backgroundColor: 'white',
       textAlign: 'center',
-      flexDirection:"row"
+      flexDirection:"row",
+      justifyContent: 'space-evenly',
     },
     infosText:{
       flexDirection:"column"
