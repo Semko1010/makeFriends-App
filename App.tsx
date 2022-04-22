@@ -21,8 +21,8 @@ interface user{
 }
 
 type settName = {
-  info: user[],
-  setInfo:React.Dispatch<React.SetStateAction<user[]>>
+  info: user,
+  setInfo:React.Dispatch<React.SetStateAction<user>>
 }
 interface tokenInfos{
  age:number,
@@ -34,8 +34,8 @@ interface tokenInfos{
  verifyUser:boolean
 }
 type setToken={
-  token:tokenInfos[]
-  setToken:React.Dispatch<React.SetStateAction<tokenInfos[]>>
+  token:tokenInfos
+  setToken:React.Dispatch<React.SetStateAction<tokenInfos>>
 }
 
 type userImg={
@@ -68,12 +68,13 @@ const userImage = createContext<userImg>({} as userImg)
 const allInfosUser = createContext({} as setAllUserinfo)
 
 export default function App() {
-const [ info, setInfo] = useState<user[]>([])
-const [ token, setToken] = useState<tokenInfos[]>([])
+const [ info, setInfo] = useState<user>({} as user)
+const [ token, setToken] = useState<tokenInfos>({} as tokenInfos)
 const [ img, setImg] = useState("")
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
  
-console.log(token.img);
+console.log();
+
 
 
 

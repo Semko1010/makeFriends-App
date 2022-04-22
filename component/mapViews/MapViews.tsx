@@ -178,7 +178,7 @@ async function call  () {
             />
         </View>
     <SetCoordsButton
-    location={{location,userInfos}}
+    location={location}
     call={call}
     />
     </View>
