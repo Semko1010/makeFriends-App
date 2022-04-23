@@ -73,6 +73,9 @@ const userLocationinfos={
   },[userInfos])
 
 async function setLocationUser () {
+
+
+    
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
     const setPosition = await axios.post(URLPost, userLocationinfos)
     if(setPosition.data.locationSet){
@@ -100,36 +103,21 @@ useEffect(() => {
     return(
         <View>
             {gpsButton ?(
-
-
-
-
-
                 <TouchableOpacity
-               
-                onPress={setLocationUser}
-                >
-                    
+                onPress={setLocationUser}>
                 <Image
-                
                 style={{width:50, height:50}}
                 source={require("../../assets/img/gps.png")}
             />
              </TouchableOpacity>
-            // <View style={styles.setLocationButton}>
-            // <Button onPress={setLocationUser}title="setGps"></Button>
-            // </View>
-            ):(
-            // <Button onPress={deleteLocationUser}title="DeleteGps"></Button>
+           ):(
+           
             <TouchableOpacity
-              
-                onPress={deleteLocationUser}
+            onPress={deleteLocationUser}
                 >
-                   
-                <Image
-                
-                style={{width:50, height:50}}
-                source={require("../../assets/img/location.png")}
+            <Image
+            style={{width:50, height:50}}
+            source={require("../../assets/img/location.png")}
             />
              </TouchableOpacity>
             )}

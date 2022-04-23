@@ -1,6 +1,6 @@
 //Modules
 import React, {useState,useEffect,useContext} from 'react'
-import { StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator} from 'react-native'
+import { StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator,Pressable,Modal,Alert, TouchableOpacity} from 'react-native'
 import MapView, { Marker,Callout} from "react-native-maps";
 import * as Location from 'expo-location';
 
@@ -38,7 +38,7 @@ const MapViews = () =>{
     const [errorMsg, setErrorMsg] = useState<string>("");
     const [ infos, setInfos] = useState<boolean>(true)
     const {userInfos, setUserInfos} = useContext(allInfosUser)
-  
+    const [modalVisible, setModalVisible] = useState(false);
     const {info,setInfo} = useContext(userInfo)
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
@@ -56,9 +56,6 @@ async function test (){
   let location = await Location.getCurrentPositionAsync({});
   setLocation(location.coords);
   
-  
-  
-
 }
 
 
@@ -69,7 +66,7 @@ async function test (){
         
         (async () => {
 
-          // const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+        
           const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
           const fetchInfos = await axios.get(URL)
           const setInfosUsers = await setUserInfos(fetchInfos.data)
@@ -83,7 +80,7 @@ async function test (){
     
           let location = await Location.getCurrentPositionAsync({});
           const setLoc = await setLocation(location.coords);
-          console.log("Semiraga", location);
+          
           
           setLoading(false)
           
@@ -91,6 +88,7 @@ async function test (){
           
         })();
       }, []);
+
 
 
 async function call  () {
@@ -113,18 +111,17 @@ async function call  () {
        <View style={styles.container}>
          <View style={styles.menu}>
       
-        <View style={styles.button}>
-          <Link to="/">
-            <Text>Back</Text>
-          </Link>
-            
-        </View>
-        <View style={styles.button}>
-            <Button 
+        
+        <View style={styles.menuButton}>
       
-            onPress={test}
-            title="Menü"
+        <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+                >
+            <Image
+            style={{width:35, height:35,marginLeft:15}}
+            source={require("../../assets/img/menu.png")}
             />
+        </TouchableOpacity>
         </View>
     
     </View>
@@ -171,12 +168,15 @@ async function call  () {
             <Text>Hobbys: {info.hobby}</Text>
             <Text>da{calling}</Text>
             </View>
-        <View style={styles.button}>
-            <Button 
-      
+        <View style={styles.buttons}>
+        <TouchableOpacity
             onPress={call}
-            title="Nachricht senden"
+                >
+            <Image
+            style={{width:50, height:50}}
+            source={require("../../assets/img/refresh.png")}
             />
+        </TouchableOpacity>
         </View>
     <SetCoordsButton
     location={location}
@@ -185,8 +185,64 @@ async function call  () {
     </View>
     
   </View>
+
+  
      )}
+
+     {/* Menü */}
+     <>
+     <Modal
      
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={{fontSize:20,borderBottomWidth:1,width:"100%"}}>Menü</Text>
+            <Text style={styles.modalText}>{token.userName}</Text>
+            <View>
+            <Image
+							style={styles.userImg}
+							source={{
+								uri: `data:image/png;base64,${token.img}`,
+							}}
+					    />
+              </View>
+            <View style={styles.buttons}>
+                <Link to="/">
+                  <Text>Profil</Text>
+                </Link>
+            </View>
+            <View style={styles.buttons}>
+                <Link to="/">
+                  <Text>Konto</Text>
+                </Link>
+            </View>
+            <View style={styles.buttons}>
+                <Link to="/">
+                  <Text>Daten</Text>
+                </Link>
+            </View>
+            <View style={styles.buttons}>
+                <Link to="/">
+                  <Text>Logout</Text>
+                </Link>
+            </View>
+
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      
+     </>
     </View>
     )
 }
@@ -196,13 +252,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       justifyContent: 'space-evenly',
     },
-    menu:{
-      
-      
-      flexDirection:"row",
-      justifyContent: 'center',
-      
-    },
+   
     map: {
       width: Dimensions.get('window').width,
       height: "75%",
@@ -223,7 +273,64 @@ const styles = StyleSheet.create({
       height: 80,
       borderRadius:80
     },
-    button:{width: 150, height: 50}
+    buttons:{
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 150, 
+      height: 50},
+      modalView: {
+      height:Dimensions.get('window').height,
+      width:"100%",
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+    },
+    menuButton:{
+      
+    },
+    menu:{
+      height:50,
+      width:"100%",
+      borderBottomWidth:1,
+      borderBottomColor:"gray"
+    },
+    buttonOpen: {
+      backgroundColor: '#F194Fa',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+    centeredView: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 22,
+          
+        },
   });
   
 
