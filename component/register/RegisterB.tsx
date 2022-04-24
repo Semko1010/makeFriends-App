@@ -2,29 +2,38 @@
 import React, { useContext, useState } from "react";
 import { View,TextInput,Text,StyleSheet, Button } from "react-native";
 import Axios from "axios";
+import { useNavigate } from "react-router";
 //Imports
 
-import {userImage} from "../../App"
-const RegisterB = () =>{
-    const { img,setImg } = useContext(userImage);
+// import {userImage} from "../../App"
+type userImage={
+    Image:{
+        img:string,
+        setImg: React.Dispatch<React.SetStateAction<string>>
+    }
+}
+const RegisterB = (props:userImage) =>{
+    // const { img,setImg } = useContext(userImage);
     const [userName, setUsername] = useState<string | undefined>("")
     const [email, setEmail] = useState<string | undefined>("")
     const [password, setPassword] = useState<string | undefined>("")
     const [verify, setVerify] = useState<boolean>(false);
-    const user = { userName, email, password, img ,verify};
-    console.log(userName);
-    console.log(email);
-    console.log(password);
+    const user = { userName, email, password ,verify, props};
+	const navigate = useNavigate();
     
     async function register() {
-		console.log(user);
+		
         
-		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
+		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
+		const URL = "http://10.0.2.2:2020/api/friend/users/register";
 		
 		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
 			try {
 				const fetch = await Axios.post(URL, user);
-				console.log(fetch);
+				
+				if(fetch.data.userCreated){
+					navigate("/login");
+				}
 				
 			} catch (err) {
 				console.log(err);

@@ -1,15 +1,21 @@
 import React, {useState,useContext}from "react"
 import { View ,Button,Text} from "react-native"
-import {userImage} from "../../App"
+// import {userImage} from "../../App"
 import * as ImagePicker from "expo-image-picker";
 import { Link } from "react-router-native";
 
 
+type userImage={
+    Image:{
+        img:string,
+        setImg: React.Dispatch<React.SetStateAction<string>>
+    }
+}
 
-
-const RegisterA = ()=>{
-    const { img,setImg } = useContext(userImage);
-    console.log(img);
+const RegisterA = (props:userImage)=>{
+    // const { img,setImg } = useContext(userImage);
+  
+  
     
 
     const pickImage = async () => {
@@ -22,7 +28,7 @@ const RegisterA = ()=>{
             base64: true,
         });
         {/* @ts-ignore  */}
-        setImg(result.base64);
+        props.Image.setImg(result.base64);
     };
     
     const pickCamera = async () => {
@@ -35,7 +41,7 @@ const RegisterA = ()=>{
             base64: true,
         });
         {/* @ts-ignore  */}
-        setImg(result.base64);
+        props.Image.setImg(result.base64);
     };
 
     return(

@@ -3,7 +3,7 @@ import DatePicker from 'react-native-datepicker'
 import React, { useState } from 'react'
 import {TextInput, View, StyleSheet, Text, Button} from 'react-native'
 import { Link } from 'react-router-native'
-
+import RegisterB from "./RegisterB"
 const RegisterInfos = () =>{
 const [age,  setAge] =   useState<string>()
 const [hoby, setHoby] = useState<string>()

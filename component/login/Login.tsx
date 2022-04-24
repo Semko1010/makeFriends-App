@@ -5,6 +5,14 @@ import Axios from "axios";
 import { Link, useNavigate } from "react-router-native";
 //imports
 import {Token} from "../../App"
+
+type semir={
+	value:{
+		img:string
+		setImg:React.Dispatch<React.SetStateAction<string>>
+	}
+}
+
 const Login = () =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -12,10 +20,13 @@ const Login = () =>{
 	const [ loading, setLoading] = useState<boolean>(false)
 	const { token, setToken} = useContext(Token)
     const user = { email, password };
+	
+	
 
     async function login() {
 		
-        
+       
+		
 		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
 		
 		setLoading(true)

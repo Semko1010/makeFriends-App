@@ -65,16 +65,16 @@ interface InterFaceInfos{
 
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
-const userImage = createContext<userImg>({} as userImg)
+// const userImage = createContext<userImg>({} as userImg)
 const allInfosUser = createContext({} as setAllUserinfo)
 
 export default function App() {
 const [ info, setInfo] = useState<user>({} as user)
 const [ token, setToken] = useState<tokenInfos>({} as tokenInfos)
-const [ img, setImg] = useState("")
+const [ img, setImg] = useState<string>("")
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
  
-console.log();
+
 
 
 
@@ -84,15 +84,15 @@ console.log();
       <Token.Provider value={{token,setToken}}>
         <allInfosUser.Provider value={{userInfos,setUserInfos}}>
       <userInfo.Provider value={{info,setInfo}}>
-        <userImage.Provider value={{img,setImg}}>
+        {/* <userImage.Provider value={{img,setImg}}> */}
           
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/map" element={<MapViews/>}/>
-            <Route path="/registerA" element={<RegisterA/>}/>
+            <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos/>}/>
-            <Route path="/registerB" element={<RegisterB/>}/>
+            <Route path="/registerB" element={<RegisterB Image={{img,setImg}}/>}/>
             <Route path="/login" element={<Login/>}/>
 
 
@@ -100,7 +100,7 @@ console.log();
 
         </NativeRouter>
         
-      </userImage.Provider>
+      {/* </userImage.Provider> */}
       </userInfo.Provider>
       </allInfosUser.Provider>
       </Token.Provider>
@@ -136,87 +136,5 @@ const styles = StyleSheet.create({
   button:{width: 150, height: 50}
 });
 
-export {userInfo,userImage,Token,allInfosUser}
+export {userInfo,Token,allInfosUser}
 
-// import React, { useState } from 'react';
-// import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
-
-// const App = () => {
-//   const [modalVisible, setModalVisible] = useState(false);
-//   return (
-//     <View style={styles.centeredView}>
-//       <Modal
-     
-//         animationType="slide"
-//         transparent={true}
-//         visible={modalVisible}
-//         onRequestClose={() => {
-//           Alert.alert('Modal has been closed.');
-//           setModalVisible(!modalVisible);
-//         }}>
-//         <View style={styles.centeredView}>
-//           <View style={styles.modalView}>
-//             <Text style={styles.modalText}>Hello World!</Text>
-//             <Pressable
-//               style={[styles.button, styles.buttonClose]}
-//               onPress={() => setModalVisible(!modalVisible)}>
-//               <Text style={styles.textStyle}>Hide Modal</Text>
-//             </Pressable>
-//           </View>
-//         </View>
-//       </Modal>
-//       <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
-//         <Text style={styles.textStyle}>Show Modal</Text>
-//       </Pressable>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   centeredView: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: 22,
-    
-//   },
-//   modalView: {
-//     height:"100%",
-//     width:"100%",
-//     margin: 20,
-//     backgroundColor: 'white',
-//     borderRadius: 20,
-//     padding: 35,
-//     alignItems: 'center',
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 4,
-//     elevation: 5,
-//   },
-//   button: {
-//     borderRadius: 20,
-//     padding: 10,
-//     elevation: 2,
-//   },
-//   buttonOpen: {
-//     backgroundColor: '#F194FF',
-//   },
-//   buttonClose: {
-//     backgroundColor: '#2196F3',
-//   },
-//   textStyle: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-//   modalText: {
-//     marginBottom: 15,
-//     textAlign: 'center',
-//   },
-// });
-
-// export default App;

@@ -38,12 +38,12 @@ const MapViews = () =>{
     const [errorMsg, setErrorMsg] = useState<string>("");
     const [ infos, setInfos] = useState<boolean>(true)
     const {userInfos, setUserInfos} = useContext(allInfosUser)
-    const [modalVisible, setModalVisible] = useState(false);
     const {info,setInfo} = useContext(userInfo)
+    const { token, setToken} = useContext(Token)
+    const [modalVisible, setModalVisible] = useState(false);
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
     
-    const { token, setToken} = useContext(Token)
 
 
 async function test (){
@@ -202,7 +202,7 @@ async function call  () {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            
+
             {/* @ts-ignore  */}
               <ImageBackground source={require("../../assets/img/bck.jpg")} resizeMode="cover" style={styles.userImgView}>
                 <Image
