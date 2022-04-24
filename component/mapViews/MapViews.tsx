@@ -203,6 +203,7 @@ async function call  () {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             
+            {/* @ts-ignore  */}
               <ImageBackground source={require("../../assets/img/bck.jpg")} resizeMode="cover" style={styles.userImgView}>
                 <Image
 							  style={styles.userImg}

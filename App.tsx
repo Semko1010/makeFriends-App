@@ -6,6 +6,7 @@ import { NativeRouter, Route, Link, Routes } from "react-router-native";
 import MapViews from "./component/mapViews/MapViews"
 import Home from "./component/home/Home"
 import RegisterA from "./component/register/RegisterA"
+import RegisterInfos from "./component/register/RegisterInfos"
 import RegisterB from "./component/register/RegisterB"
 import Login from "./component/login/Login"
 
@@ -90,6 +91,7 @@ console.log();
             <Route path="/" element={<Home/>}/>
             <Route path="/map" element={<MapViews/>}/>
             <Route path="/registerA" element={<RegisterA/>}/>
+            <Route path="/registerInfos" element={<RegisterInfos/>}/>
             <Route path="/registerB" element={<RegisterB/>}/>
             <Route path="/login" element={<Login/>}/>
 

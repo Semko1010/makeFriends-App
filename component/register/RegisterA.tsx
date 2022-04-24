@@ -21,7 +21,7 @@ const RegisterA = ()=>{
             quality: 1,
             base64: true,
         });
-    
+        {/* @ts-ignore  */}
         setImg(result.base64);
     };
     
@@ -34,7 +34,7 @@ const RegisterA = ()=>{
             quality: 1,
             base64: true,
         });
-    
+        {/* @ts-ignore  */}
         setImg(result.base64);
     };
 
@@ -44,7 +44,7 @@ const RegisterA = ()=>{
 
 <Button onPress={pickCamera} title="pickCamera"></Button>
 
-<Link underlayColor={"transparent"} to='/registerB'>
+<Link underlayColor={"transparent"} to='/registerInfos'>
 					<Text>Weiter</Text>
 </Link>
         </View>
