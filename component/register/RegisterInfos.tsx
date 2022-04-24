@@ -1,5 +1,5 @@
 
-
+import DatePicker from 'react-native-datepicker'
 import React, { useState } from 'react'
 import {TextInput, View, StyleSheet, Text, Button} from 'react-native'
 import { Link } from 'react-router-native'
@@ -8,10 +8,44 @@ const RegisterInfos = () =>{
 const [age,  setAge] =   useState<string>()
 const [hoby, setHoby] = useState<string>()
 const [desc, setDesc] = useState<string>()
+console.log(age);
 
     return(
-        <View style={styles.linkContainer}>	
-        
+        <View style={styles.linkContainer}>
+            
+        {/* @ts-ignore  */}    
+        <DatePicker
+					date={age}
+					mode='date'
+					placeholder='Datum'
+					format='DD.MM.YYYY'
+					minDate='01-01-1900'
+					maxDate='01-01-2100'
+					confirmBtnText='Bestätigen'
+					cancelBtnText='Abbrechen'
+					customStyles={{
+						dateIcon: {},
+						dateInput: {
+							borderColor: "gray",
+							alignItems: "center",
+							borderWidth: 0,
+							borderBottomWidth: 1,
+						},
+						placeholderText: {
+							fontSize: 17,
+							color: "gray",
+						},
+						dateText: {
+							fontSize: 17,
+							color: "black",
+							textAlign: "center",
+						},
+					}}
+                    
+					onDateChange={(date: React.SetStateAction<string | undefined>) => {
+						setAge(date);
+					}}
+				/>
       
 
         <TextInput

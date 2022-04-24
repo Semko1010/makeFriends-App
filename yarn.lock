@@ -1458,23 +1458,23 @@
   "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   "version" "15.7.5"
 
-"@types/react-native@~0.64.12":
+"@types/react-native-datepicker@^1.7.1":
+  "integrity" "sha512-VIqwhUTC0ij+d0TPJKEati89jOhk+Z714sBtFFb0AR9VZwPMmcGEtjoxKpQ7mYnD6MudnbU/6ssg34Rqj13aZw=="
+  "resolved" "https://registry.npmjs.org/@types/react-native-datepicker/-/react-native-datepicker-1.7.1.tgz"
+  "version" "1.7.1"
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+    "moment" ">=2.14.0"
+
+"@types/react-native@*", "@types/react-native@~0.64.12":
   "integrity" "sha512-qgqOJub7BYsAkcg3VSL3w63cgJdLoMmAX6TSTAPL53heCzUkIdtpWqjyNRH0n7jPjxPGG1Qmsv6GSUh7IfyqRg=="
   "resolved" "https://registry.npmjs.org/@types/react-native/-/react-native-0.64.24.tgz"
   "version" "0.64.24"
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  "integrity" "sha512-UPxNGInDCIKlfqBrm8LDXYWNfLHwIdisWcsH5GpMyGjhEDLFgTtlRBaoWuCua9HcyuE0rMkmAeZ3FXV1pYLIYQ=="
-  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.5.tgz"
-  "version" "18.0.5"
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    "csstype" "^3.0.2"
-
-"@types/react@~17.0.21":
+"@types/react@*", "@types/react@~17.0.21":
   "integrity" "sha512-Ye0nlw09GeMp2Suh8qoOv0odfgCoowfM/9MG6WeRD60Gq9wS90bdkdRtYbRkNhXOpG4H+YXGvj4wOWhAC0LJ1g=="
   "resolved" "https://registry.npmjs.org/@types/react/-/react-17.0.44.tgz"
   "version" "17.0.44"
@@ -4134,6 +4134,11 @@
   dependencies:
     "minimist" "^1.2.6"
 
+"moment@^2.22.0", "moment@>=2.14.0":
+  "integrity" "sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.3.tgz"
+  "version" "2.29.3"
+
 "ms@2.0.0":
   "integrity" "sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g="
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
@@ -4615,6 +4620,13 @@
     "flow-parser" "^0.121.0"
     "jscodeshift" "^0.11.0"
     "nullthrows" "^1.1.1"
+
+"react-native-datepicker@^1.7.2":
+  "integrity" "sha1-WNCCJZGgrJsyq6CCZQIioO4pZp0="
+  "resolved" "https://registry.npmjs.org/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz"
+  "version" "1.7.2"
+  dependencies:
+    "moment" "^2.22.0"
 
 "react-native-maps@0.29.4":
   "integrity" "sha512-Td2KE8+KODcHOxfB1GBNnzFo4/89rlLiC7yTvqQZh0tGVrEzIcgSleUZRrjtq/WvSWSR4rql4AS+0VsBgDkYrw=="
