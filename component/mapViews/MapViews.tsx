@@ -1,6 +1,6 @@
 //Modules
 import React, {useState,useEffect,useContext} from 'react'
-import { StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator,Pressable,Modal,Alert, TouchableOpacity} from 'react-native'
+import {ImageBackground, StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator,Pressable,Modal,Alert, TouchableOpacity} from 'react-native'
 import MapView, { Marker,Callout} from "react-native-maps";
 import * as Location from 'expo-location';
 
@@ -202,42 +202,54 @@ async function call  () {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={{fontSize:20,borderBottomWidth:1,width:"100%"}}>Menü</Text>
-            <Text style={styles.modalText}>{token.userName}</Text>
-            <View>
-            <Image
-							style={styles.userImg}
-							source={{
+            
+              <ImageBackground source={require("../../assets/img/bck.jpg")} resizeMode="cover" style={styles.userImgView}>
+                <Image
+							  style={styles.userImg}
+							  source={{
 								uri: `data:image/png;base64,${token.img}`,
-							}}
-					    />
+							  }}
+					      />
+                <Text style={styles.modalText}>{token.userName}</Text>
+              </ImageBackground>
+            
+           <View style={styles.date}>
+            <Text style={{fontSize:20,borderBottomWidth:1,width:"100%"}}>Menü</Text>
+            
+            <View>
+            
               </View>
             <View style={styles.buttons}>
                 <Link to="/">
-                  <Text>Profil</Text>
+                  <Text style={{fontSize:20}}>Profil</Text>
                 </Link>
             </View>
             <View style={styles.buttons}>
                 <Link to="/">
-                  <Text>Konto</Text>
+                  <Text style={{fontSize:20}}>Konto</Text>
                 </Link>
             </View>
             <View style={styles.buttons}>
                 <Link to="/">
-                  <Text>Daten</Text>
+                  <Text style={{fontSize:20}}>Daten</Text>
                 </Link>
             </View>
-            <View style={styles.buttons}>
-                <Link to="/">
-                  <Text>Logout</Text>
-                </Link>
             </View>
 
+            <View style={styles.footerView}>
+            <View style={styles.buttons}>
+                <Link to="/">
+                  <Text style={{fontSize:20}}>Logout</Text>
+                </Link>
+            </View>
+            
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.textStyle}>Zurück</Text>
             </Pressable>
+            </View>
+            
           </View>
         </View>
       </Modal>
@@ -269,16 +281,36 @@ const styles = StyleSheet.create({
       flexDirection:"column"
     },
     userImg:{
-      width: 80,
-      height: 80,
+      width: 110,
+      height: 100,
       borderRadius:80
+    },
+    userImgView:{
+      width:Dimensions.get('window').width,
+      height: 150,
+      justifyContent: "center",
+      alignItems: "center",
+      
+    },
+    footerView:{
+      borderTopWidth:1,
+      width:Dimensions.get('window').width,
+      justifyContent:"center",
+      alignItems: "center",
+    },
+    date:{
+      alignItems:"center",
+      justifyContent:"center",
+      
     },
     buttons:{
       justifyContent: 'center',
       alignItems: 'center',
       width: 150, 
       height: 50},
-      modalView: {
+
+    modalView: {
+      justifyContent:"space-between",
       height:Dimensions.get('window').height,
       width:"100%",
       margin: 20,
@@ -301,11 +333,11 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     menuButton:{
-      
+      height:50,
+      width:50,
     },
     menu:{
-      height:50,
-      width:"100%",
+     
       borderBottomWidth:1,
       borderBottomColor:"gray"
     },
