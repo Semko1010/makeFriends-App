@@ -4,18 +4,33 @@ import React, { useState } from 'react'
 import {TextInput, View, StyleSheet, Text, Button} from 'react-native'
 import { Link } from 'react-router-native'
 import RegisterB from "./RegisterB"
-const RegisterInfos = () =>{
-const [age,  setAge] =   useState<string>()
-const [hoby, setHoby] = useState<string>()
-const [desc, setDesc] = useState<string>()
-console.log(age);
+type infosUser={
+	infos:{
+		age:string | undefined,
+		setAge:React.Dispatch<React.SetStateAction<string | undefined>>,
+		hobby:string | undefined,
+		setHobby:React.Dispatch<React.SetStateAction<string | undefined>>,
+		desc:string | undefined,
+		setDesc:React.Dispatch<React.SetStateAction<string | undefined>>
+		
+	}
+	
+}
+
+
+const RegisterInfos = (props:infosUser) =>{
+
+console.log(props.infos.age);
+console.log(props.infos.hobby);
+console.log(props.infos.desc);
+
 
     return(
         <View style={styles.linkContainer}>
             
         {/* @ts-ignore  */}    
         <DatePicker
-					date={age}
+					date={props.infos.age}
 					mode='date'
 					placeholder='Datum'
 					format='DD.MM.YYYY'
@@ -43,13 +58,13 @@ console.log(age);
 					}}
                     
 					onDateChange={(date: React.SetStateAction<string | undefined>) => {
-						setAge(date);
+						props.infos.setAge(date);
 					}}
 				/>
       
 
         <TextInput
-            onChangeText={e => setHoby(e)}
+            onChangeText={e => props.infos.setHobby(e)}
             style={styles.linkView}
             placeholder='Hobbys'
             placeholderTextColor='black'
@@ -58,7 +73,7 @@ console.log(age);
         />
 
         <TextInput
-            onChangeText={e => setDesc(e)}
+            onChangeText={e => props.infos.setDesc(e)}
             style={styles.linkView}
             placeholder='Beschreibung'
             placeholderTextColor='black'

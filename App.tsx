@@ -62,6 +62,18 @@ interface InterFaceInfos{
     setUserInfos:React.Dispatch<React.SetStateAction<InterFaceInfos[]>>
   }
 
+  type infosUser={
+    infos:{
+      age:string,
+      setAge:React.Dispatch<React.SetStateAction<string>>,
+      hobby:string,
+      setHobby:React.Dispatch<React.SetStateAction<string>>,
+      desc:string,
+      setDesc:React.Dispatch<React.SetStateAction<string>>
+    }
+    
+  }
+
 
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
@@ -71,7 +83,10 @@ const allInfosUser = createContext({} as setAllUserinfo)
 export default function App() {
 const [ info, setInfo] = useState<user>({} as user)
 const [ token, setToken] = useState<tokenInfos>({} as tokenInfos)
-const [ img, setImg] = useState<string>("")
+const [ img, setImg] = useState<string | undefined>("")
+const [age,  setAge] =   useState<string>()
+const [hobby, setHobby] = useState<string>()
+const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
  
 
@@ -91,8 +106,8 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
             <Route path="/" element={<Home/>}/>
             <Route path="/map" element={<MapViews/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
-            <Route path="/registerInfos" element={<RegisterInfos/>}/>
-            <Route path="/registerB" element={<RegisterB Image={{img,setImg}}/>}/>
+            <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
+            <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
             <Route path="/login" element={<Login/>}/>
 
 

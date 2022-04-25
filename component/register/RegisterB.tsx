@@ -6,13 +6,26 @@ import { useNavigate } from "react-router";
 //Imports
 
 // import {userImage} from "../../App"
-type userImage={
-    Image:{
-        img:string,
-        setImg: React.Dispatch<React.SetStateAction<string>>
-    }
+// type userImage={
+//     Image:{
+//         img:string,
+//         setImg: React.Dispatch<React.SetStateAction<string>>
+//     }
+// }
+type infosUser={
+	infos:{
+		age:string | undefined,
+		setAge:React.Dispatch<React.SetStateAction<string | undefined>>,
+		hobby:string | undefined,
+		setHobby:React.Dispatch<React.SetStateAction<string | undefined>>,
+		desc:string | undefined,
+		setDesc:React.Dispatch<React.SetStateAction<string | undefined>>
+		img:string | undefined,
+		setImg:React.Dispatch<React.SetStateAction<string | undefined>>
+	}
+	
 }
-const RegisterB = (props:userImage) =>{
+const RegisterB = (props:infosUser) =>{
     // const { img,setImg } = useContext(userImage);
     const [userName, setUsername] = useState<string | undefined>("")
     const [email, setEmail] = useState<string | undefined>("")

@@ -7,8 +7,8 @@ import { Link } from "react-router-native";
 
 type userImage={
     Image:{
-        img:string,
-        setImg: React.Dispatch<React.SetStateAction<string>>
+        img:string | undefined,
+        setImg: React.Dispatch<React.SetStateAction<string | undefined>>
     }
 }
 
