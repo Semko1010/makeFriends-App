@@ -18,6 +18,7 @@ interface user{
     userName:string
     age:number
     hobby:string
+    description:string
   
 }
 
@@ -77,7 +78,6 @@ interface InterFaceInfos{
 
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
-// const userImage = createContext<userImg>({} as userImg)
 const allInfosUser = createContext({} as setAllUserinfo)
 
 export default function App() {
@@ -99,7 +99,7 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
       <Token.Provider value={{token,setToken}}>
         <allInfosUser.Provider value={{userInfos,setUserInfos}}>
       <userInfo.Provider value={{info,setInfo}}>
-        {/* <userImage.Provider value={{img,setImg}}> */}
+       
           
         <NativeRouter>
           <Routes>
@@ -115,7 +115,7 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 
         </NativeRouter>
         
-      {/* </userImage.Provider> */}
+     
       </userInfo.Provider>
       </allInfosUser.Provider>
       </Token.Provider>

@@ -27,7 +27,8 @@ const Login = () =>{
 		
        
 		
-		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
+		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
+		const URL = "http://10.0.2.2:2020/api/friend/users/login";
 		
 		setLoading(true)
 			try {

@@ -43,7 +43,7 @@ const MapViews = () =>{
     const [modalVisible, setModalVisible] = useState(false);
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
-    
+    const userToken = token.token
 
 
 async function test (){
@@ -63,12 +63,14 @@ async function test (){
 
       useEffect(() => {
         
+        console.log(token.token);
+        
         
         (async () => {
 
         
-          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
-          const fetchInfos = await axios.get(URL)
+          const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
+          const fetchInfos = await axios.get(URL,{headers:{userToken}})
           const setInfosUsers = await setUserInfos(fetchInfos.data)
          
 
@@ -94,9 +96,9 @@ async function test (){
 async function call  () {
   
   
-  const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
- const fetchInfos = await axios.get(URL)
-  const setInfosUsers = await setUserInfos(fetchInfos.data)
+const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
+const fetchInfos = await axios.get(URL,{headers:{userToken}})
+const setInfosUsers = await setUserInfos(fetchInfos.data)
   
 }
 
@@ -166,7 +168,7 @@ async function call  () {
             <Text>Name: {info.userName}</Text>
             <Text>Alter: {info.age}</Text>
             <Text>Hobbys: {info.hobby}</Text>
-            <Text>da{calling}</Text>
+            <Text>da{info.description}</Text>
             </View>
         <View style={styles.buttons}>
         <TouchableOpacity
