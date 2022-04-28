@@ -69,7 +69,7 @@ async function test (){
         (async () => {
 
         
-          const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
+          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
           const fetchInfos = await axios.get(URL,{headers:{userToken}})
           const setInfosUsers = await setUserInfos(fetchInfos.data)
          
@@ -96,7 +96,7 @@ async function test (){
 async function call  () {
   
   
-const URL = "http://10.0.2.2:2020/api/friend/users/userInfo"
+const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
 const fetchInfos = await axios.get(URL,{headers:{userToken}})
 const setInfosUsers = await setUserInfos(fetchInfos.data)
   

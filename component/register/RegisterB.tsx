@@ -38,7 +38,7 @@ const RegisterB = (props:infosUser) =>{
 		
         
 		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
-		const URL = "http://10.0.2.2:2020/api/friend/users/register";
+		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
 		
 		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
 			try {

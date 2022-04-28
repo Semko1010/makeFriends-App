@@ -27,10 +27,10 @@
       "package": "com.friend.com",
       "config":{
         "googleMaps":{
-          "apiKey": "process.env.GOOGLE_API_KEY"
+          "apiKey": "AIzaSyAzuRUGI4Dh3rfuhFLuOcTvGsknDgFjqXI"
         }
       },
-      "permissions": ["READ_PHONE_STATE"]
+      "permissions": ["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","CAMERA", "WRITE_EXTERNAL_STORAGE", "CAMERA_ROLL"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
