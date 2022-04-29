@@ -10,7 +10,7 @@ import Api from "../../component/api/Api.json"
 import {userInfo,Token,allInfosUser} from "../../App"
 import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
-
+import ModalMenu from "../modalMenu/ModalMenu"
 import { Link } from 'react-router-native';
 const MapViews = () =>{
   interface InterFaceInfos{
@@ -27,12 +27,7 @@ const MapViews = () =>{
     type coordinates ={
         longitude: number,
         latitude: number,
-        
-        // accuracy: number,
-        // altitude: number
-        // altitudeAccuracy: number
-        // heading: number
-        // speed: number
+       
 } 
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -46,7 +41,10 @@ const MapViews = () =>{
     const userToken = token.token
 
 
-async function test (){
+async function currentGps (){
+  
+  
+  
   let { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
     setErrorMsg('Permission to access location was denied');
@@ -55,6 +53,7 @@ async function test (){
 
   let location = await Location.getCurrentPositionAsync({});
   setLocation(location.coords);
+ 
   
 }
 
@@ -62,9 +61,6 @@ async function test (){
 
 
       useEffect(() => {
-        
-        console.log(token.token);
-        
         
         (async () => {
 
@@ -93,9 +89,9 @@ async function test (){
 
 
 
-async function call  () {
+async function mapRefresh  () {
   
-  
+console.log("semir",location);
 const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
 const fetchInfos = await axios.get(URL,{headers:{userToken}})
 const setInfosUsers = await setUserInfos(fetchInfos.data)
@@ -136,7 +132,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 					latitudeDelta: 0.0922,
 					longitudeDelta: 0.0421,
 				}}
-       
+        
         showsUserLocation={true}
         
         
@@ -172,7 +168,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             </View>
         <View style={styles.buttons}>
         <TouchableOpacity
-            onPress={call}
+            onPress={mapRefresh}
                 >
             <Image
             style={{width:50, height:50}}
@@ -182,7 +178,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
         </View>
     <SetCoordsButton
     location={location}
-    call={call}
+    call={{mapRefresh,currentGps}}
     />
     </View>
     
@@ -193,69 +189,9 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 
      {/* Menü */}
      <>
-     <Modal
-     
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-
-            {/* @ts-ignore  */}
-              <ImageBackground source={require("../../assets/img/bck.jpg")} resizeMode="cover" style={styles.userImgView}>
-                <Image
-							  style={styles.userImg}
-							  source={{
-								uri: `data:image/png;base64,${token.img}`,
-							  }}
-					      />
-                <Text style={styles.modalText}>{token.userName}</Text>
-              </ImageBackground>
-            
-           <View style={styles.date}>
-            <Text style={{fontSize:20,borderBottomWidth:1,width:"100%"}}>Menü</Text>
-            
-            <View>
-            
-              </View>
-            <View style={styles.buttons}>
-                <Link to="/">
-                  <Text style={{fontSize:20}}>Profil</Text>
-                </Link>
-            </View>
-            <View style={styles.buttons}>
-                <Link to="/">
-                  <Text style={{fontSize:20}}>Konto</Text>
-                </Link>
-            </View>
-            <View style={styles.buttons}>
-                <Link to="/">
-                  <Text style={{fontSize:20}}>Daten</Text>
-                </Link>
-            </View>
-            </View>
-
-            <View style={styles.footerView}>
-            <View style={styles.buttons}>
-                <Link to="/">
-                  <Text style={{fontSize:20}}>Logout</Text>
-                </Link>
-            </View>
-            
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Zurück</Text>
-            </Pressable>
-            </View>
-            
-          </View>
-        </View>
-      </Modal>
+     <ModalMenu 
+     modalValue={{modalVisible,setModalVisible}}
+     />
       
      </>
     </View>

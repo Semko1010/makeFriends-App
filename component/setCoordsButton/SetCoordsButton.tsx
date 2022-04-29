@@ -9,15 +9,14 @@ type coordinates ={
     location:{
         longitude: number,
         latitude: number,
-            // accuracy: number,
-            // altitude: number
-            // altitudeAccuracy: number
-            // heading: number
-            // speed: number
+            
        
     }
-    call:() =>{}
-    
+    call:{
+        mapRefresh:() =>{}
+        currentGps:() =>{}
+    }
+   
 } 
 
 
@@ -31,7 +30,9 @@ const SetCoordsButton = (props:coordinates) =>{
     const { token, setToken} = useContext(Token)
     const [gpsButton, setGpsButton] = useState<boolean>(true)
     const {userInfos, setUserInfos} = useContext(allInfosUser)
-    
+    const [location, setLocation] = useState<coordinates | undefined>();
+    const [errorMsg, setErrorMsg] = useState<string>("");
+    const userToken = token.token
 
 const userLocationinfos={
     latitude:props.location.latitude,
@@ -45,17 +46,7 @@ const userLocationinfos={
     
 }
 
-// useEffect(() => {
-//         console.log("dsad");
-        
-//     (async () => {
-//         const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"  
-//         const fetchInfos = await axios.get(URL)
-//         const setinfo = await setGpsLocationInfos(fetchInfos.data)
-        
 
-//     })();
-//   }, []);
 
   useEffect(() => {
       
@@ -75,13 +66,14 @@ const userLocationinfos={
 async function setLocationUser () {
 
 
-    
+    const wa = await props.call.currentGps()
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
     const setPosition = await axios.post(URLPost, userLocationinfos)
     if(setPosition.data.locationSet){
         setGpsButton(false)
   
     }
+    
     
     
 }
@@ -96,7 +88,16 @@ async function deleteLocationUser () {
 }
 
 useEffect(() => {
-    props.call()
+   
+   
+    (async () => {
+
+        const refreshMap = await props.call.mapRefresh()        
+        const refreshMapa = await props.call.mapRefresh()        
+        
+        
+      })();
+    
 },[gpsButton])
 
 
