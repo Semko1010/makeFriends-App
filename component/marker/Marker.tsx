@@ -11,6 +11,7 @@ interface Props {
   userName:string
   age:number
   hobby :string
+  desc:string
 }
 const Markers = (props:Props) => {
 
@@ -30,6 +31,7 @@ const Markers = (props:Props) => {
         <>
         {/* @ts-ignore  */}
         <Marker
+        tracksViewChanges={false}
         onPress={eachInfoOfUser}
         coordinate={{
 	      latitude: props.latitude,

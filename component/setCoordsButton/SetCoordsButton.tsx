@@ -42,22 +42,32 @@ const userLocationinfos={
     hobby:token.hobby,
     img:token.img,
     token:token.token,
-    userObjId:token.userObjId
-    
+    userObjId:token.userObjId,
+    desc:token.desc
 }
 
 
 
   useEffect(() => {
       
+      console.log(userInfos);
+    //   if(userInfos.includes(token.userObjId)){
+    //     console.log("True");
+
+    //   }else{
+    //       console.log("False");
+          
+    //   }
       
       userInfos.find(item =>{
-        if(item.userObjId==token.userObjId){
+          
+          
+        if(item.userObjId == token.userObjId){
             setGpsButton(false)
-
-        }else{
-            setGpsButton(true)
+            console.log("Set");
             
+            
+
         }
         
     })
@@ -67,13 +77,16 @@ async function setLocationUser () {
 
 
     const wa = await props.call.currentGps()
+    // const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
     const setPosition = await axios.post(URLPost, userLocationinfos)
+    
+    
     if(setPosition.data.locationSet){
         setGpsButton(false)
   
     }
-    
+ 
     
     
 }
@@ -93,7 +106,7 @@ useEffect(() => {
     (async () => {
 
         const refreshMap = await props.call.mapRefresh()        
-        const refreshMapa = await props.call.mapRefresh()        
+         const refreshMapa = await props.call.mapRefresh()        
         
         
       })();

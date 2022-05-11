@@ -21,7 +21,7 @@ const MapViews = () =>{
     userName:string
     hobby:string,
     verifyUser:boolean,
-
+    desc:string
     }
 
     type coordinates ={
@@ -65,7 +65,7 @@ async function currentGps (){
         (async () => {
 
         
-          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+          const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
           const fetchInfos = await axios.get(URL,{headers:{userToken}})
           const setInfosUsers = await setUserInfos(fetchInfos.data)
          
@@ -91,12 +91,14 @@ async function currentGps (){
 
 async function mapRefresh  () {
   
-console.log("semir",location);
-const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/userInfo"
+
+const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
 const fetchInfos = await axios.get(URL,{headers:{userToken}})
 const setInfosUsers = await setUserInfos(fetchInfos.data)
   
 }
+
+
 
 
 
@@ -139,18 +141,20 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 				provider='google'>
 			
 
+       
         
-        {userInfos.map(e => 
+        {userInfos.map((e,index) => 
         
         
     <Markers
+    key={index}
     latitude={e.latitude}
     longitude={e.longitude}
     userName={e.userName}
     img={e.img}
     age={e.age}
     hobby={e.hobby}
-
+    desc={e.desc}
     />
     
   )}
@@ -164,7 +168,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             <Text>Name: {info.userName}</Text>
             <Text>Alter: {info.age}</Text>
             <Text>Hobbys: {info.hobby}</Text>
-            <Text>da{info.description}</Text>
+            <Text>Über mich: {info.desc}</Text>
             </View>
         <View style={styles.buttons}>
         <TouchableOpacity
@@ -200,7 +204,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 
 const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#fff',
+      
       justifyContent: 'space-evenly',
     },
    

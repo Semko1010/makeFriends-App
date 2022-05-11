@@ -47,13 +47,13 @@ const ModalMenu = (props:ModalFC) =>{
          
            </View>
          <View style={styles.buttons}>
-             <Link to="/">
+             <Link to="/userSettings">
                <Text style={{fontSize:20}}>Profil</Text>
              </Link>
          </View>
          <View style={styles.buttons}>
-             <Link to="/">
-               <Text style={{fontSize:20}}>Konto</Text>
+             <Link to="/map">
+               <Text style={{fontSize:20}}>Map</Text>
              </Link>
          </View>
          <View style={styles.buttons}>

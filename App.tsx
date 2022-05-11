@@ -9,7 +9,8 @@ import RegisterA from "./component/register/RegisterA"
 import RegisterInfos from "./component/register/RegisterInfos"
 import RegisterB from "./component/register/RegisterB"
 import Login from "./component/login/Login"
-
+import UsersSettings from "./component/userSettings/UserSettings"
+import ChangeInfos from './component/userSettings/ChangeInfos';
 interface user{
  
     img:string
@@ -18,7 +19,7 @@ interface user{
     userName:string
     age:number
     hobby:string
-    description:string
+    desc:string
   
 }
 
@@ -34,6 +35,7 @@ interface tokenInfos{
  userName:string,
  userObjId:string,
  verifyUser:boolean
+ desc:string
 }
 type setToken={
   token:tokenInfos
@@ -56,6 +58,7 @@ interface InterFaceInfos{
   hobby:string,
   verifyUser:boolean,
   userObjId:string
+  desc:string
   }
 
   type setAllUserinfo={
@@ -97,7 +100,7 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
   return (
     <View style={styles.container}>
       <Token.Provider value={{token,setToken}}>
-        <allInfosUser.Provider value={{userInfos,setUserInfos}}>
+      <allInfosUser.Provider value={{userInfos,setUserInfos}}>
       <userInfo.Provider value={{info,setInfo}}>
        
           
@@ -105,10 +108,12 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
           <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/map" element={<MapViews/>}/>
+            <Route path="/userSettings" element={<UsersSettings/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
             <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
             <Route path="/login" element={<Login/>}/>
+            <Route path="/changeInfos" element={<ChangeInfos/>}/>
 
 
           </Routes>
