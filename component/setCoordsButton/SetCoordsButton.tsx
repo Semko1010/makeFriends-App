@@ -19,65 +19,75 @@ type coordinates ={
    
 } 
 
-
-
-
-
-
-
+interface user{
+ 
+    img:string
+    latitude:number,
+    longitude:number,
+    userName:string
+    age:number
+    hobby:string
+    desc:string
+  
+}
 
 const SetCoordsButton = (props:coordinates) =>{
     const { token, setToken} = useContext(Token)
     const [gpsButton, setGpsButton] = useState<boolean>(true)
     const {userInfos, setUserInfos} = useContext(allInfosUser)
-    const [location, setLocation] = useState<coordinates | undefined>();
-    const [errorMsg, setErrorMsg] = useState<string>("");
+    const [userData,setUserData] = useState<user | undefined>()
     const userToken = token.token
+    const userObjId = token.userObjId
 
-const userLocationinfos={
-    latitude:props.location.latitude,
-    longitude:props.location.longitude,
-    userName:token.userName,
-    age:token.age,
-    hobby:token.hobby,
-    img:token.img,
-    token:token.token,
-    userObjId:token.userObjId,
-    desc:token.desc
-}
+    const userLocationinfos={
+        latitude:props.location.latitude,
+        longitude:props.location.longitude,
+        userName:userData?.userName,
+        age:userData?.age,
+        hobby:userData?.hobby,
+        img:userData?.img,
+        desc:userData?.desc,
+        token:token.token,
+        userObjId:token.userObjId,
+        
+    }
 
 
 
-  useEffect(() => {
-      
-      console.log(userInfos);
-    //   if(userInfos.includes(token.userObjId)){
-    //     console.log("True");
+    useEffect(() => {
+        console.log(userInfos);
+        
+        (async () => {
 
-    //   }else{
-    //       console.log("False");
-          
-    //   }
-      
-      userInfos.find(item =>{
-          
-          
+        const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo"
+        const fetchLoggedUser = await Axios.get(URL,{headers:{userToken,userObjId}})  
+        const setUsr = await setUserData(fetchLoggedUser.data)  
+        })();
+    },[])
+
+    useEffect(() => {
+        (async () => {
+    
+        const refreshMap = await props.call.mapRefresh()        
+            
+        })();
+        
+    },[gpsButton])
+
+    useEffect(() => {
+        userInfos.find(item =>{
         if(item.userObjId == token.userObjId){
-            setGpsButton(false)
-            console.log("Set");
-            
-            
-
+        setGpsButton(false)
+        
         }
         
+        
     })
-  },[userInfos])
+    },[userInfos])
+    
 
 async function setLocationUser () {
-
-
-    const wa = await props.call.currentGps()
-    // const URLPost = "http://10.0.2.2:2020/api/friend/users/userLocation";
+    
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
     const setPosition = await axios.post(URLPost, userLocationinfos)
     
@@ -100,18 +110,6 @@ async function deleteLocationUser () {
     
 }
 
-useEffect(() => {
-   
-   
-    (async () => {
-
-        const refreshMap = await props.call.mapRefresh()        
-         const refreshMapa = await props.call.mapRefresh()        
-        
-        
-      })();
-    
-},[gpsButton])
 
 
     return(

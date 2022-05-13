@@ -41,7 +41,7 @@ const Login = () =>{
 					if(fetch.data.verifyUser){
 						setToken(fetch.data);
 						setLoading(false)
-						navigate("/map")
+						navigate("/userSettings")
 						
 					}else{
 						console.log("Pleaser Verify Account");

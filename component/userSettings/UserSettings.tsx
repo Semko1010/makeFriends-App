@@ -6,7 +6,7 @@ import Axios from "axios"
 
 //imports
 
-import {Token} from "../../App"
+import {Token,allInfosUser} from "../../App"
 import ModalMenu from "../modalMenu/ModalMenu"
 import ButtonChangeInfos from "./ChangeInfos"
 interface user{
@@ -22,6 +22,7 @@ interface user{
 }
 
 const UserSettings = ()  =>{
+   
     const { token, setToken} = useContext(Token)
     const [userData,setUserData] = useState<user | undefined>()
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -31,6 +32,8 @@ const UserSettings = ()  =>{
     
     useEffect(() => {
         (async () => {
+
+        
         // const URL = "http://10.0.2.2:2020/api/friend/users/loggedUserInfo"
         const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo"
         const fetchLoggedUser = await Axios.get(URL,{headers:{userToken,userObjId}})  
