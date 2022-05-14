@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient"
 import React, { useContext } from "react"
 import { Dimensions, Modal, View, StyleSheet, Image, Text, ImageBackground, Pressable} from "react-native"
 import { Link } from "react-router-native"
@@ -26,7 +27,11 @@ const ModalMenu = (props:ModalFC) =>{
        
        props.modalValue.setModalVisible(!props.modalValue.modalVisible);
      }}>
+       
      <View style={styles.centeredView}>
+     <LinearGradient
+       colors={['#2980B9', '#6DD5FA', '#FFFFFF']}
+       >
        <View style={styles.modalView}>
 
          {/* @ts-ignore  */}
@@ -56,7 +61,7 @@ const ModalMenu = (props:ModalFC) =>{
                <Text style={{fontSize:20}}>Map</Text>
              </Link>
          </View>
-         <View style={styles.buttons}>
+          <View style={styles.buttons}>
              <Link to="/">
                <Text style={{fontSize:20}}>Daten</Text>
              </Link>
@@ -78,7 +83,9 @@ const ModalMenu = (props:ModalFC) =>{
          </View>
          
        </View>
+       </LinearGradient>
      </View>
+    
    </Modal>
         
     )
@@ -91,21 +98,9 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
     },
    
-    map: {
-      width: Dimensions.get('window').width,
-      height: "75%",
-    },
-    infos:{
-      width: "100%",
-      
-      backgroundColor: 'white',
-      textAlign: 'center',
-      flexDirection:"row",
-      justifyContent: 'space-evenly',
-    },
-    infosText:{
-      flexDirection:"column"
-    },
+   
+ 
+   
     userImg:{
       width: 110,
       height: 100,
@@ -130,6 +125,9 @@ const styles = StyleSheet.create({
       
     },
     buttons:{
+      marginTop:5,
+      borderRadius:10,
+      borderWidth:1,
       justifyContent: 'center',
       alignItems: 'center',
       width: 150, 
@@ -139,8 +137,8 @@ const styles = StyleSheet.create({
       justifyContent:"space-between",
       height:Dimensions.get('window').height,
       width:"100%",
-      margin: 20,
-      backgroundColor: 'white',
+      
+      
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',

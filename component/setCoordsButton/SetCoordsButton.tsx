@@ -66,6 +66,8 @@ const SetCoordsButton = (props:coordinates) =>{
     },[])
 
     useEffect(() => {
+        console.log("dasd");
+        
         (async () => {
     
         const refreshMap = await props.call.mapRefresh()        
@@ -87,23 +89,30 @@ const SetCoordsButton = (props:coordinates) =>{
     
 
 async function setLocationUser () {
-    
+    const wa = await props.call.currentGps()
     const URLPost = "https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
     const setPosition = await axios.post(URLPost, userLocationinfos)
-    
-    
+    const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
+    const fetchInfos = await axios.get(URL,{headers:{userToken}})
+    const setInfosUsers = await setUserInfos(fetchInfos.data)
+
     if(setPosition.data.locationSet){
+        
         setGpsButton(false)
-  
+        
     }
- 
+    
     
     
 }
 async function deleteLocationUser () {
     const URLRemove = "https://makefriendsapp.herokuapp.com/api/friend/users/deleteLocation";
     const setPosition = await axios.post(URLRemove,token)
+    const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
+const fetchInfos = await axios.get(URL,{headers:{userToken}})
+const setInfosUsers = await setUserInfos(fetchInfos.data)
     if(setPosition.data.locationRemoved){
+        
         setGpsButton(true)
         
     }
@@ -118,7 +127,7 @@ async function deleteLocationUser () {
                 <TouchableOpacity
                 onPress={setLocationUser}>
                 <Image
-                style={{width:50, height:50}}
+                style={{width:60, height:60,marginRight:10}}
                 source={require("../../assets/img/gps.png")}
             />
              </TouchableOpacity>
@@ -128,7 +137,7 @@ async function deleteLocationUser () {
             onPress={deleteLocationUser}
                 >
             <Image
-            style={{width:50, height:50}}
+            style={{width:60, height:60}}
             source={require("../../assets/img/location.png")}
             />
              </TouchableOpacity>

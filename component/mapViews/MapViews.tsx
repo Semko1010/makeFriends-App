@@ -112,7 +112,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
          <View style={styles.menu}>
       
         
-        <View style={styles.menuButton}>
+       
       
         <TouchableOpacity
             onPress={() => setModalVisible(true)}
@@ -122,7 +122,21 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             source={require("../../assets/img/menu.png")}
             />
         </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity
+            onPress={mapRefresh}
+                >
+            <Image
+            style={{width:50, height:50}}
+            source={require("../../assets/img/refresh.png")}
+            />
+        </TouchableOpacity>
+        <SetCoordsButton
+        location={location}
+        call={{mapRefresh,currentGps}}
+        />
+       
+        
     
     </View>
      {/* @ts-ignore  */}
@@ -134,18 +148,10 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 					latitudeDelta: 0.0922,
 					longitudeDelta: 0.0421,
 				}}
-        
         showsUserLocation={true}
-        
-        
-				provider='google'>
-			
+        provider='google'>
 
-       
-        
-        {userInfos.map((e,index) => 
-        
-        
+		{userInfos.map((e,index) => 
     <Markers
     key={index}
     latitude={e.latitude}
@@ -170,20 +176,8 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             <Text>Hobbys: {info.hobby}</Text>
             <Text>Über mich: {info.desc}</Text>
             </View>
-        <View style={styles.buttons}>
-        <TouchableOpacity
-            onPress={mapRefresh}
-                >
-            <Image
-            style={{width:50, height:50}}
-            source={require("../../assets/img/refresh.png")}
-            />
-        </TouchableOpacity>
-        </View>
-    <SetCoordsButton
-    location={location}
-    call={{mapRefresh,currentGps}}
-    />
+
+            <Button title="Nachricht senden"></Button>
     </View>
     
   </View>
@@ -204,7 +198,6 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 
 const styles = StyleSheet.create({
     container: {
-      
       justifyContent: 'space-evenly',
     },
    
@@ -275,12 +268,13 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       padding: 10,
     },
-    menuButton:{
-      height:50,
-      width:50,
-    },
+    
     menu:{
-     
+      width: Dimensions.get('window').width,
+      height: 100,
+      flexDirection:"row",
+      justifyContent:"space-between",
+      alignItems: "center",
       borderBottomWidth:1,
       borderBottomColor:"gray"
     },

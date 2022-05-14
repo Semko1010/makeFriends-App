@@ -1,6 +1,6 @@
 //Modules
 import React, { useContext, useEffect, useState } from "react"
-import { View, Text ,StyleSheet,Image, TouchableOpacity, Dimensions, Button} from "react-native"
+import { View, Text ,StyleSheet,Image, TouchableOpacity, Dimensions, Button, ActivityIndicator} from "react-native"
 import { Link } from "react-router-native"
 import Axios from "axios" 
 
@@ -22,7 +22,7 @@ interface user{
 }
 
 const UserSettings = ()  =>{
-   
+    const [ loading, setLoading] = useState<boolean>(true)
     const { token, setToken} = useContext(Token)
     const [userData,setUserData] = useState<user | undefined>()
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const UserSettings = ()  =>{
         const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo"
         const fetchLoggedUser = await Axios.get(URL,{headers:{userToken,userObjId}})  
         const setUsr = await setUserData(fetchLoggedUser.data)  
-        
+        setLoading(false)
            
             
             
@@ -52,6 +52,7 @@ const UserSettings = ()  =>{
         <View style={styles.menuButton}>
       
       <TouchableOpacity
+      
           onPress={() => setModalVisible(true)}
               >
           <Image
@@ -68,21 +69,38 @@ const UserSettings = ()  =>{
         source={{uri: `data:image/png;base64,${userData?.img}`,
         }}
         />
+         {loading&&(
+            <ActivityIndicator size="large" color="#00ff00" />
+          )}
         <View style={styles.infoView}>
         <View>
-        <Text>Email:{userData?.userName}</Text>
+        <Text>Email:{userData?.userName}{loading&&(
+            <ActivityIndicator size="small" color="#00ff00" />
+          )}</Text>
         
         </View>
         <View>
-        <Text>Alter: {userData?.age}</Text>
+        <Text>Alter: {userData?.age}{loading&&(
+            <ActivityIndicator size="small" color="#00ff00" />
+          )}</Text>
         
         </View>
         <View>
-        <Text>Username: {userData?.userName}</Text>
+        <Text>Username: {userData?.userName}{loading&&(
+            <ActivityIndicator size="small" color="#00ff00" />
+          )}</Text>
         
         </View>
         <View>
-        <Text>Hobbys: {userData?.hobby}</Text>
+        <Text>Hobbys: {userData?.hobby}{loading&&(
+            <ActivityIndicator size="small" color="#00ff00" />
+          )}</Text>
+        
+        </View>
+        <View>
+        <Text>Beschreibung: {userData?.desc}{loading&&(
+            <ActivityIndicator size="small" color="#00ff00" />
+          )}</Text>
         
         </View>
         </View>
@@ -106,8 +124,9 @@ const styles = StyleSheet.create({
       borderRadius:80
     },
     container:{
-        
-        justifyContent: 'space-between',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        justifyContent: 'space-around',
         alignItems: 'center'
     },
     infoView:{
@@ -116,8 +135,10 @@ const styles = StyleSheet.create({
         height: "50%"
     },
     menuButton:{
+        borderBottomWidth:1,
+        borderBottomColor:"gray",
         height:50,
-        width:50,
+        width:"100%",
       },
   });
   

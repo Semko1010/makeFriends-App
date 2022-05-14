@@ -28,10 +28,10 @@ const ChangeInfos = () =>{
 
 
     async function changeUserInfos(){
-    const URL = "http://10.0.2.2:2020/api/friend/users/changeUserInfos"   
+    const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/changeUserInfos"   
     const postInfos = await Axios.post(URL,user,{headers:{userToken,userObjId}})
     if(postInfos.data.infosUpdate){
-        navigate("/map")
+        navigate("/userSettings")
     }
     
 
