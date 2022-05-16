@@ -11,6 +11,7 @@ import RegisterB from "./component/register/RegisterB"
 import Login from "./component/login/Login"
 import UsersSettings from "./component/userSettings/UserSettings"
 import ChangeInfos from './component/userSettings/ChangeInfos';
+import Chat from "./component/chat/Chat"
 interface user{
  
     img:string
@@ -42,13 +43,6 @@ type setToken={
   setToken:React.Dispatch<React.SetStateAction<tokenInfos>>
 }
 
-type userImg={
-  img:string;
-  setImg:React.Dispatch<React.SetStateAction<string>>
-}
-
-
-
 interface InterFaceInfos{
   age:number,
   img:string,
@@ -66,18 +60,19 @@ interface InterFaceInfos{
     setUserInfos:React.Dispatch<React.SetStateAction<InterFaceInfos[]>>
   }
 
-  type infosUser={
-    infos:{
-      age:string,
-      setAge:React.Dispatch<React.SetStateAction<string>>,
-      hobby:string,
-      setHobby:React.Dispatch<React.SetStateAction<string>>,
-      desc:string,
-      setDesc:React.Dispatch<React.SetStateAction<string>>
-    }
+
+
+  type chattMsg={
+  
+      message:string
+   
     
   }
-
+type chatMessage={
+  
+  allChat:chattMsg[]
+  setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
+}
 
 const userInfo = createContext<settName>({} as settName)
 const Token = createContext<setToken>({} as setToken)
@@ -91,7 +86,7 @@ const [age,  setAge] =   useState<string>()
 const [hobby, setHobby] = useState<string>()
 const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
- 
+const [allChat,setAllChat] = useState<chattMsg[]>([])
 
 
 
@@ -114,6 +109,7 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
             <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/changeInfos" element={<ChangeInfos/>}/>
+            <Route path="/Chat" element={<Chat chatMsgState={{allChat,setAllChat}}/>}/>
 
 
           </Routes>

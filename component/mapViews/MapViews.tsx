@@ -3,8 +3,9 @@ import React, {useState,useEffect,useContext} from 'react'
 import {ImageBackground, StyleSheet, Text, View ,Dimensions,Image, Button,ActivityIndicator,Pressable,Modal,Alert, TouchableOpacity} from 'react-native'
 import MapView, { Marker,Callout} from "react-native-maps";
 import * as Location from 'expo-location';
-
+import {io} from "socket.io-client"
 import axios from 'axios';
+
 //Imports
 import Api from "../../component/api/Api.json"
 import {userInfo,Token,allInfosUser} from "../../App"
@@ -12,8 +13,8 @@ import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 import ModalMenu from "../modalMenu/ModalMenu"
 import { Link } from 'react-router-native';
-const MapViews = () =>{
-  interface InterFaceInfos{
+
+ interface InterFaceInfos{
     age:number,
     img:string,
     latitude: number,
@@ -29,6 +30,12 @@ const MapViews = () =>{
         latitude: number,
        
 } 
+
+const MapViews = () =>{
+
+
+  const socket =io("http://10.0.2.2:2020/")
+    // const socket =io("https://makefriendsapp.herokuapp.com/")
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
     const [ infos, setInfos] = useState<boolean>(true)
@@ -39,7 +46,8 @@ const MapViews = () =>{
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
     const userToken = token.token
-
+    
+   
 
 async function currentGps (){
   
@@ -60,8 +68,8 @@ async function currentGps (){
 
 
 
-      useEffect(() => {
-        
+useEffect(() => {
+
         (async () => {
 
         
@@ -87,16 +95,31 @@ async function currentGps (){
         })();
       }, []);
 
+      useEffect(() => {
+        socket.on("chat",(data)=>{
+          
+          alert("NEw")
+          
+          socket.close()
+        })
+        
+      },[])
+
+
+
 
 
 async function mapRefresh  () {
+
   
 
+  
 const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
 const fetchInfos = await axios.get(URL,{headers:{userToken}})
 const setInfosUsers = await setUserInfos(fetchInfos.data)
   
 }
+
 
 
 
@@ -177,7 +200,9 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             <Text>Über mich: {info.desc}</Text>
             </View>
 
-            <Button title="Nachricht senden"></Button>
+            <Link to='/chat'>
+            <Text>Chaten</Text>
+            </Link>
     </View>
     
   </View>
