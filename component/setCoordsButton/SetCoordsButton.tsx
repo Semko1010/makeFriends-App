@@ -55,7 +55,7 @@ const SetCoordsButton = (props:coordinates) =>{
 
 
     useEffect(() => {
-        console.log(userInfos);
+        
         
         (async () => {
 
@@ -66,7 +66,7 @@ const SetCoordsButton = (props:coordinates) =>{
     },[])
 
     useEffect(() => {
-        console.log("dasd");
+        
         
         (async () => {
     

@@ -13,6 +13,7 @@ import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 import ModalMenu from "../modalMenu/ModalMenu"
 import { Link } from 'react-router-native';
+import { userImage } from '../context/Context';
 
  interface InterFaceInfos{
     age:number,
@@ -31,10 +32,20 @@ import { Link } from 'react-router-native';
        
 } 
 
-const MapViews = () =>{
+type chattMsg={
+    
+  message:string
+}
+type chatMessage={
+  chatMsgState:{
+      allChat: chattMsg[],
+      setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
+  }
+}
+const MapViews = (props:chatMessage) =>{
 
 
-  const socket =io("http://10.0.2.2:2020/")
+    const socket =io("http://192.168.178.33:2020/")
     // const socket =io("https://makefriendsapp.herokuapp.com/")
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -96,14 +107,54 @@ useEffect(() => {
       }, []);
 
       useEffect(() => {
-        socket.on("chat",(data)=>{
+
+        socket.onAny((event, ...args) => {
+          console.log(event, args[0].userObjId);
+        if(token.userObjId == args[0].userObjId){
+        alert("Nachricht")
+        socket.close()
+}
+           //   if(token.userObjId == data.userObjId){
+        //     props.chatMsgState.setAllChat((list) =>[...list,data])
+        //     alert("Neue Nachricht")
+            
+        //   }
+        //   else{
+        //       console.log("nichts");
+              
+            
+        //   }
+         
+         
+       
           
-          alert("NEw")
           
-          socket.close()
-        })
+        // })
+        });
         
-      },[])
+       
+        
+        
+        // socket.on("recived_message",(data)=>{
+        //   if(token.userObjId == data.userObjId){
+        //     props.chatMsgState.setAllChat((list) =>[...list,data])
+        //     alert("Neue Nachricht")
+            
+        //   }
+        //   else{
+        //       console.log("nichts");
+              
+            
+        //   }
+         
+         
+       
+          
+          
+        // })
+        
+      },[socket])
+
 
 
 

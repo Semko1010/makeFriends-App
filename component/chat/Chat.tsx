@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { View , Text, Button, TextInput,StyleSheet,Dimensions,ScrollView} from "react-native"
+import { View , Text, Button, TextInput,StyleSheet,Dimensions,ScrollView, Image} from "react-native"
 import { Link } from "react-router-native"
 import {io} from "socket.io-client"
 
@@ -26,16 +26,25 @@ const Chat = (props:chatMessage) =>{
     const socket =io("http://192.168.178.33:2020/")
     // const socket =io("https://makefriendsapp.herokuapp.com/")
     
+    
     useEffect(() => {
+        
+       
         socket.on("chat",(data)=>{
+      
         
-        props.chatMsgState.setAllChat([...props.chatMsgState.allChat,data])
-        console.log(data);
         
-        socket.close()
+        props.chatMsgState.setAllChat((list) =>[...list,data])
+        
+        
+       
         
         })
       },[socket])
+        
+
+
+console.log(props.chatMsgState.allChat);
 
 
 
@@ -47,13 +56,22 @@ const joinRoom = () => {
     
 }
 
-const sendMesage = () =>{
+const sendMesage = async() =>{
+    const userInfosMessage={
+        userName:token.userName ,
+        img:token.img,
+        userObjId:"626c485c9eb1548fef1972c5" ,
+        message:msg,
+        room:room
+    }
     
-    
-    socket.emit("chat",{message:msg,room:room})
-    
-    
+   
+    socket.emit("chat",userInfosMessage)
+   setMsg("")
+   
 }
+
+
 
 
 
@@ -66,17 +84,36 @@ const sendMesage = () =>{
 
         </View>
         <TextInput style={styles.textInput} onChangeText={e => setRoom(e)} placeholder="Room"/>
-        <Button title="Join Room" onPress={joinRoom}></Button>
+
+        <Button title="Raum beitreten" onPress={joinRoom}></Button>
         <ScrollView style={styles.scroll}>
-       {props.chatMsgState.allChat.map(chat => 
-       <Text style={styles.chatMsg}>{chat.message}</Text>
+            <View style={styles.scrollView}>
+        <Text>Live Chat</Text>
+
+       {props.chatMsgState.allChat.map((chat,index) => 
+    <View style={[styles.msgView,{flexDirection: token.userObjId ==chat.userObjId ?"row-reverse":"row"}]}>
+         <Image
+         
+					style={{width:50, height:50}}
+							source={{
+								uri: `data:image/png;base64,${chat.img}`,
+							}}
+					    />
+       <Text 
+       key={index}
+       style={styles.chatMsg}>{chat.message}</Text>
+    </View>
         )}
+        
+        </View>
         </ScrollView>
         <Link to="/map">
 
         <Text>Map</Text>
         </Link>
-        <TextInput style={styles.textInput} onChangeText={e => setMsg(e)} placeholder="Nachricht"/>
+        <TextInput 
+        value={msg}
+        style={styles.textInput} onChangeText={e => setMsg(e)} placeholder="Nachricht"/>
         <Button title="senden" onPress={sendMesage}></Button>
       
     </View>
@@ -104,15 +141,21 @@ const styles = StyleSheet.create({
     },
     chatMsg:{
         textAlign: 'center',
-        borderWidth:1,
+        
         width:"70%",
         height:25
     },
     scroll:{
-        marginTop:100,
-        width:350,
-        
-        
+        borderWidth:1,
+        marginTop:10,
+        width:300,
+    },
+    scrollView:{
+        alignItems: "center",
+    },
+    msgView:{
+        justifyContent:"space-around",
+        alignItems: "baseline",
     }
 })
 

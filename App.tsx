@@ -12,6 +12,7 @@ import Login from "./component/login/Login"
 import UsersSettings from "./component/userSettings/UserSettings"
 import ChangeInfos from './component/userSettings/ChangeInfos';
 import Chat from "./component/chat/Chat"
+import {io} from "socket.io-client"
 interface user{
  
     img:string
@@ -89,7 +90,27 @@ const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 const [allChat,setAllChat] = useState<chattMsg[]>([])
 
 
+const socket =io("http://192.168.178.33:2020/")
+// useEffect(() => {
 
+
+//   socket.onAny((event, ...args) => {
+//     console.log(event, args[0].userObjId);
+//   });
+  
+  
+  
+  
+//   // socket.on("chat",(data)=>{
+   
+   
+ 
+ 
+    
+    
+//   // })
+  
+// },[socket])
 
 
   return (
@@ -102,7 +123,7 @@ const [allChat,setAllChat] = useState<chattMsg[]>([])
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/map" element={<MapViews/>}/>
+            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}}/>}/>
             <Route path="/userSettings" element={<UsersSettings/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
