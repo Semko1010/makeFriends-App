@@ -42,10 +42,11 @@ type chatMessage={
       setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
   }
 }
+
 const MapViews = (props:chatMessage) =>{
 
-
-    const socket =io("http://192.168.178.33:2020/")
+  
+    
     // const socket =io("https://makefriendsapp.herokuapp.com/")
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -56,6 +57,9 @@ const MapViews = (props:chatMessage) =>{
     const [modalVisible, setModalVisible] = useState(false);
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
+    const socket =io("http://192.168.178.33:2020/",{
+      transports: ["websocket", "polling"],
+    })
     const userToken = token.token
     
    
@@ -106,56 +110,30 @@ useEffect(() => {
         })();
       }, []);
 
+      
+      
       useEffect(() => {
-
-        socket.onAny((event, ...args) => {
-          console.log(event, args[0].userObjId);
-        if(token.userObjId == args[0].userObjId){
-        alert("Nachricht")
-        socket.close()
-}
-           //   if(token.userObjId == data.userObjId){
-        //     props.chatMsgState.setAllChat((list) =>[...list,data])
-        //     alert("Neue Nachricht")
-            
-        //   }
-        //   else{
-        //       console.log("nichts");
-              
-            
-        //   }
-         
-         
-       
-          
-          
-        // })
+        socket.on("connect", () => {
+          socket.emit("username", token.userName);
         });
-        
-       
-        
-        
-        // socket.on("recived_message",(data)=>{
-        //   if(token.userObjId == data.userObjId){
-        //     props.chatMsgState.setAllChat((list) =>[...list,data])
-        //     alert("Neue Nachricht")
-            
-        //   }
-        //   else{
-        //       console.log("nichts");
-              
-            
-        //   }
-         
-         
-       
+    
+        socket.on("users", users => {
+          console.log(users);
           
-          
-        // })
+        });
+    
         
-      },[socket])
-
-
+    
+        socket.on("connected", user => {
+         console.log(user);
+         
+        });
+    
+        socket.on("disconnected", id => {
+          console.log("DC",id);
+          
+        });
+      }, []);
 
 
 

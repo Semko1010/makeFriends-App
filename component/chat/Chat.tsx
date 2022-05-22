@@ -30,15 +30,10 @@ const Chat = (props:chatMessage) =>{
     useEffect(() => {
         
        
-        socket.on("chat",(data)=>{
-      
-        
-        
-        props.chatMsgState.setAllChat((list) =>[...list,data])
-        
-        
-       
-        
+        socket.on("recieved_message",(data)=>{
+           
+            
+        props.chatMsgState.setAllChat((list) =>[...list,data.text]);
         })
       },[socket])
         
@@ -47,14 +42,24 @@ const Chat = (props:chatMessage) =>{
 console.log(props.chatMsgState.allChat);
 
 
-
-
-const joinRoom = () => {
-    if(room !== ""){
-        socket.emit("join_room",room)
-    }
+const joinRoom = async () => {
+    
+    const close = await socket.off()
+    const join = await socket.emit("join_room",room)
+    console.log("dd");
     
 }
+
+// const joinRoom = () => {
+    
+//     socket.off()
+    
+    
+//     if(room !== ""){
+//         socket.emit("join_room",room)
+//     }
+    
+// }
 
 const sendMesage = async() =>{
     const userInfosMessage={
