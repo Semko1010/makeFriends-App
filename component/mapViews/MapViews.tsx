@@ -62,6 +62,7 @@ const MapViews = (props:chatMessage) =>{
     })
     const userToken = token.token
     
+  
    
 
 async function currentGps (){
@@ -112,29 +113,7 @@ useEffect(() => {
 
       
       
-      useEffect(() => {
-        socket.on("connect", () => {
-          socket.emit("username", token.userName);
-        });
-    
-        socket.on("users", users => {
-          console.log(users);
-          
-        });
-    
-        
-    
-        socket.on("connected", user => {
-         console.log(user);
-         
-        });
-    
-        socket.on("disconnected", id => {
-          console.log("DC",id);
-          
-        });
-      }, []);
-
+     
 
 
 
@@ -186,6 +165,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
         <SetCoordsButton
         location={location}
         call={{mapRefresh,currentGps}}
+        socket={props.socket}
         />
        
         

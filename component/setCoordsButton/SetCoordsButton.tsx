@@ -98,6 +98,8 @@ async function setLocationUser () {
 
     if(setPosition.data.locationSet){
         
+        
+ 
         setGpsButton(false)
         
     }
@@ -109,10 +111,13 @@ async function deleteLocationUser () {
     const URLRemove = "https://makefriendsapp.herokuapp.com/api/friend/users/deleteLocation";
     const setPosition = await axios.post(URLRemove,token)
     const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
-const fetchInfos = await axios.get(URL,{headers:{userToken}})
-const setInfosUsers = await setUserInfos(fetchInfos.data)
+    const fetchInfos = await axios.get(URL,{headers:{userToken}})
+    const setInfosUsers = await setUserInfos(fetchInfos.data)
+
     if(setPosition.data.locationRemoved){
-        
+        props.socket.on("connect", () => {
+            props.socket.emit("username", "dd");
+                })
         setGpsButton(true)
         
     }

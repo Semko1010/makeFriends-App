@@ -18,63 +18,38 @@ type chatMessage={
 }
 
 const Chat = (props:chatMessage) =>{
-
+    const {info,setInfo} = useContext(userInfo)
     const { token, setToken} = useContext(Token)
     const [msg, setMsg] = useState("")
     const [allChat,setAllChat] = useState([])
     const [room,setRoom] = useState("")
-    const socket =io("http://192.168.178.33:2020/")
-    // const socket =io("https://makefriendsapp.herokuapp.com/")
     
-    
-    useEffect(() => {
-        
-       
-        socket.on("recieved_message",(data)=>{
-           
-            
-        props.chatMsgState.setAllChat((list) =>[...list,data.text]);
-        })
-      },[socket])
         
 
 
-console.log(props.chatMsgState.allChat);
+console.log(info);
 
 
-const joinRoom = async () => {
-    
-    const close = await socket.off()
-    const join = await socket.emit("join_room",room)
-    console.log("dd");
-    
-}
 
-// const joinRoom = () => {
-    
-//     socket.off()
-    
-    
-//     if(room !== ""){
-//         socket.emit("join_room",room)
-//     }
-    
-// }
+
+
 
 const sendMesage = async() =>{
     const userInfosMessage={
         userName:token.userName ,
         img:token.img,
-        userObjId:"626c485c9eb1548fef1972c5" ,
+        userObjId:token.userObjId ,
         message:msg,
-        room:room
+        room:props.socketId.id,
+        socketId:props.socketId.id
     }
     
    
-    socket.emit("chat",userInfosMessage)
+    props.socket.emit("chat",userInfosMessage)
    setMsg("")
    
 }
+
 
 
 
@@ -88,9 +63,9 @@ const sendMesage = async() =>{
         <Text>Chat</Text>
 
         </View>
-        <TextInput style={styles.textInput} onChangeText={e => setRoom(e)} placeholder="Room"/>
+        {/* <TextInput style={styles.textInput} onChangeText={e => setRoom(e)} placeholder="Room"/>
 
-        <Button title="Raum beitreten" onPress={joinRoom}></Button>
+        <Button title="Raum beitreten" onPress={joinRoom}></Button> */}
         <ScrollView style={styles.scroll}>
             <View style={styles.scrollView}>
         <Text>Live Chat</Text>

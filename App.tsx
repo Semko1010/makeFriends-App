@@ -88,29 +88,48 @@ const [hobby, setHobby] = useState<string>()
 const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 const [allChat,setAllChat] = useState<chattMsg[]>([])
-
-
+const [socketId, setSocketId] = useState<string>("")
+const [allUsersOnline, setAllUsersOnline] = useState<[]>([])
 const socket =io("http://192.168.178.33:2020/")
-// useEffect(() => {
 
 
-//   socket.onAny((event, ...args) => {
-//     console.log(event, args[0].userObjId);
-//   });
+useEffect(() => {
   
   
-  
-  
-//   // socket.on("chat",(data)=>{
-   
-   
- 
+    
  
     
     
-//   // })
-  
-// },[socket])
+    socket.on("recieved_message",(data)=>{
+           
+            console.log(data);
+            
+        setAllChat((list) =>[...list,data.text]);
+        })
+
+  socket.on("users", users => {
+    console.log("User",users);
+    
+    
+  });
+
+  socket.on("connected", user => {
+    
+    
+    setSocketId(user)
+   console.log("ConnectedUser",user);
+   
+  });
+
+  socket.on("disconnected", id => {
+    console.log("DC",id);
+    
+  });
+}, [socket]);
+
+console.log("AllUsers",allUsersOnline);
+
+
 
 
   return (
@@ -123,14 +142,14 @@ const socket =io("http://192.168.178.33:2020/")
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}}/>}/>
+            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}} socket={socket}/>}/>
             <Route path="/userSettings" element={<UsersSettings/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
             <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/changeInfos" element={<ChangeInfos/>}/>
-            <Route path="/Chat" element={<Chat chatMsgState={{allChat,setAllChat}}/>}/>
+            <Route path="/Chat" element={<Chat chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId}/>}/>
 
 
           </Routes>
