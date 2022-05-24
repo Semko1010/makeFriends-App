@@ -13,7 +13,7 @@ type semir={
 	}
 }
 
-const Login = () =>{
+const Login = (props) =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -28,6 +28,7 @@ const Login = () =>{
     
 	   
 		
+		console.log(props.socket);
 		
 		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
 		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
@@ -42,7 +43,7 @@ const Login = () =>{
 						setToken(fetch.data);
 						setLoading(false)
 						navigate("/map")
-						
+						props.socket.emit("join_room",fetch.data.userObjId)
 					}else{
 						console.log("Pleaser Verify Account");
 						

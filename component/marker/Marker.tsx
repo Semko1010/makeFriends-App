@@ -12,6 +12,7 @@ interface Props {
   age:number
   hobby :string
   desc:string
+  userObjId:string
 }
 const Markers = (props:Props) => {
 

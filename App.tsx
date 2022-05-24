@@ -22,7 +22,7 @@ interface user{
     age:number
     hobby:string
     desc:string
-  
+    userObjId:string
 }
 
 type settName = {
@@ -89,19 +89,19 @@ const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 const [allChat,setAllChat] = useState<chattMsg[]>([])
 const [socketId, setSocketId] = useState<string>("")
-const [allUsersOnline, setAllUsersOnline] = useState<[]>([])
+
 const socket =io("http://192.168.178.33:2020/")
 
 
 useEffect(() => {
-  
-  
-    
+
  
+    
     
     
     socket.on("recieved_message",(data)=>{
            
+            alert(`Neue Nachricht von: ${data.text.userName}`)
             console.log(data);
             
         setAllChat((list) =>[...list,data.text]);
@@ -114,10 +114,8 @@ useEffect(() => {
   });
 
   socket.on("connected", user => {
-    
-    
-    setSocketId(user)
-   console.log("ConnectedUser",user);
+  setSocketId(user)
+   
    
   });
 
@@ -127,7 +125,6 @@ useEffect(() => {
   });
 }, [socket]);
 
-console.log("AllUsers",allUsersOnline);
 
 
 
@@ -147,7 +144,7 @@ console.log("AllUsers",allUsersOnline);
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
             <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
-            <Route path="/login" element={<Login/>}/>
+            <Route path="/login" element={<Login socket={socket}/>}/>
             <Route path="/changeInfos" element={<ChangeInfos/>}/>
             <Route path="/Chat" element={<Chat chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId}/>}/>
 

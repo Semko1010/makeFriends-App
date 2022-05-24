@@ -15,6 +15,9 @@ type chatMessage={
         allChat: chattMsg[],
         setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
     }
+    socket:any,
+    socketId:string,
+    
 }
 
 const Chat = (props:chatMessage) =>{
@@ -27,11 +30,12 @@ const Chat = (props:chatMessage) =>{
         
 
 
+
+
+
+
+
 console.log(info);
-
-
-
-
 
 
 const sendMesage = async() =>{
@@ -40,7 +44,7 @@ const sendMesage = async() =>{
         img:token.img,
         userObjId:token.userObjId ,
         message:msg,
-        room:props.socketId.id,
+        room:info.userObjId,
         socketId:props.socketId.id
     }
     
@@ -52,6 +56,7 @@ const sendMesage = async() =>{
 
 
 
+console.log(props.chatMsgState.allChat);
 
 
 
@@ -63,11 +68,23 @@ const sendMesage = async() =>{
         <Text>Chat</Text>
 
         </View>
-        {/* <TextInput style={styles.textInput} onChangeText={e => setRoom(e)} placeholder="Room"/>
-
-        <Button title="Raum beitreten" onPress={joinRoom}></Button> */}
+        <View style={{flexDirection:"row"}}>
+        {props.chatMsgState.allChat.map(msg =>
+            <Image
+         
+            style={{width:50, height:50}}
+                    source={{
+                        uri: `data:image/png;base64,${msg.img}`,
+                    }}
+                />
+        
+        )}
+        
+        </View>
+        
         <ScrollView style={styles.scroll}>
             <View style={styles.scrollView}>
+           
         <Text>Live Chat</Text>
 
        {props.chatMsgState.allChat.map((chat,index) => 

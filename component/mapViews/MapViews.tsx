@@ -165,7 +165,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
         <SetCoordsButton
         location={location}
         call={{mapRefresh,currentGps}}
-        socket={props.socket}
+        
         />
        
         
@@ -193,6 +193,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
     age={e.age}
     hobby={e.hobby}
     desc={e.desc}
+    userObjId={e.userObjId}
     />
     
   )}

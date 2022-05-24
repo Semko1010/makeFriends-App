@@ -61,7 +61,9 @@ const SetCoordsButton = (props:coordinates) =>{
 
         const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo"
         const fetchLoggedUser = await Axios.get(URL,{headers:{userToken,userObjId}})  
-        const setUsr = await setUserData(fetchLoggedUser.data)  
+        const setUsr = await setUserData(fetchLoggedUser.data) 
+        
+        
         })();
     },[])
 
@@ -82,7 +84,7 @@ const SetCoordsButton = (props:coordinates) =>{
         setGpsButton(false)
         
         }
-        
+      
         
     })
     },[userInfos])
@@ -98,7 +100,7 @@ async function setLocationUser () {
 
     if(setPosition.data.locationSet){
         
-        
+       
  
         setGpsButton(false)
         
@@ -115,14 +117,15 @@ async function deleteLocationUser () {
     const setInfosUsers = await setUserInfos(fetchInfos.data)
 
     if(setPosition.data.locationRemoved){
-        props.socket.on("connect", () => {
-            props.socket.emit("username", "dd");
-                })
+        
         setGpsButton(true)
         
     }
     
 }
+
+
+
 
 
 
