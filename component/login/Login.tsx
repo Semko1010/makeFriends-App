@@ -13,7 +13,7 @@ type semir={
 	}
 }
 
-const Login = (props) =>{
+const Login = (props:any) =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ const Login = (props) =>{
     
 	   
 		
-		console.log(props.socket);
+		
 		
 		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
 		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";

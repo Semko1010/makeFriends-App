@@ -12,6 +12,7 @@ import {userInfo,Token,allInfosUser} from "../../App"
 import Markers from "../marker/Marker"
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 import ModalMenu from "../modalMenu/ModalMenu"
+import ChatModal from "../chat/ChatModal"
 import { Link } from 'react-router-native';
 import { userImage } from '../context/Context';
 
@@ -55,6 +56,7 @@ const MapViews = (props:chatMessage) =>{
     const {info,setInfo} = useContext(userInfo)
     const { token, setToken} = useContext(Token)
     const [modalVisible, setModalVisible] = useState(false);
+    const [chatModalVisible, setChatModalVissible] = useState(false);
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
     const socket =io("http://192.168.178.33:2020/",{
@@ -211,7 +213,8 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             </View>
 
             <Link to='/chat'>
-            <Text>Chaten</Text>
+              <Button onPress={() => setChatModalVissible(true)} title='Chat'/>
+            
             </Link>
     </View>
     
@@ -225,7 +228,9 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
      <ModalMenu 
      modalValue={{modalVisible,setModalVisible}}
      />
-      
+      <ChatModal
+      chatModalValue={{chatModalVisible, setChatModalVissible}}
+      />
      </>
     </View>
     )

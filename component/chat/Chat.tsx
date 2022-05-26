@@ -71,11 +71,11 @@ console.log(props.chatMsgState.allChat);
         <View style={{flexDirection:"row"}}>
         {props.chatMsgState.allChat.map(msg =>
             <Image
-         
+            
             style={{width:50, height:50}}
-                    source={{
-                        uri: `data:image/png;base64,${msg.img}`,
-                    }}
+            source={{
+            uri: `data:image/png;base64,${msg.img}`,
+            }}
                 />
         
         )}
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
         height:"80%",
       textAlign: 'center',
         alignItems: "center",
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
+        backgroundColor:"white"
     },
     headline:{
         borderBottomWidth:1,
