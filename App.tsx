@@ -101,7 +101,7 @@ useEffect(() => {
     
     socket.on("recieved_message",(data)=>{
            
-            alert(`Neue Nachricht von: ${data.text.userName}`)
+           
             console.log(data);
             
         setAllChat((list) =>[...list,data.text]);
@@ -139,7 +139,7 @@ useEffect(() => {
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}} socket={socket}/>}/>
+            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId}/>}/>
             <Route path="/userSettings" element={<UsersSettings/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>

@@ -135,6 +135,8 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 
 
 
+
+
     return(
         <View style={styles.container}>
           {loading&&(
@@ -230,6 +232,9 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
      />
       <ChatModal
       chatModalValue={{chatModalVisible, setChatModalVissible}}
+      socket={props.socket}
+      allChat={props.chatMsgState}
+      socketId={props.socketId}
       />
      </>
     </View>
