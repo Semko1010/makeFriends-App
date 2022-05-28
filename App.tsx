@@ -89,7 +89,7 @@ const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 const [allChat,setAllChat] = useState<chattMsg[]>([])
 const [socketId, setSocketId] = useState<string>("")
-
+let arr =[]
 const socket =io("http://192.168.178.33:2020/")
 
 
@@ -105,11 +105,26 @@ useEffect(() => {
             console.log("App",data);
             
         setAllChat((list) =>[...list,data[0]]);
+        // allChat.sort((a,b)=> b.createdAt - a.acreatedAt)
+// setAllChat((list) =>[...list,
+//   {
+//     _id: data[0].user._id,
+//      text: data[0].text,
+//      createdAt: new Date(),
+//      user: {
+//        _id: 2,
+//        name: 'React Native',
+//        avatar: 'https://placeimg.com/140/140/any',
+//      },
+//    }
 
+
+
+// ])
         // setAllChat([
 
         //   {
-        //     _id: data[0].user._id,
+        //    _id: data[0].user._id,
         //     text: data[0].text,
         //     createdAt: new Date(),
         //     user: {
@@ -117,7 +132,7 @@ useEffect(() => {
         //       name: 'React Native',
         //       avatar: 'https://placeimg.com/140/140/any',
         //     },
-        //   },
+        //   }
         // ])
         })
 

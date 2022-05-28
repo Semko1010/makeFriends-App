@@ -82,13 +82,12 @@ const ChatModal = (props:ModalFC) =>{
     const onSend = useCallback((messages = []) => {
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
         props.socket.emit("chat",messages,info.userObjId)
-        console.log("MSG",messages);
-        console.log("Semko",props.allChat.allChat);
+        
       }, [])
 
        
     
-    console.log(info);
+    console.log(props.allChat.allChat);
     
     
     return(
@@ -151,6 +150,7 @@ const ChatModal = (props:ModalFC) =>{
 <GiftedChat
       messages={props.allChat.allChat}
       onSend={messages => onSend(messages)}
+      inverted={false}
       user={{
         _id: token.userObjId,
       }}
