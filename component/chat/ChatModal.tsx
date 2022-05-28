@@ -1,7 +1,7 @@
 import React, { SetStateAction, useCallback, useContext, useState } from "react"
 import { Modal, View , Button,StyleSheet, ScrollView, Image,Text, TextInput, Dimensions} from "react-native"
 import { Link } from "react-router-native"
-
+import uuid from 'react-native-uuid';
 //imports
 import Chat from "./Chat"
 import {userInfo,Token} from "../../App"
@@ -27,7 +27,7 @@ type ModalFC={
         chatModalVisible:boolean,
         setChatModalVissible:React.Dispatch<React.SetStateAction<boolean>>
     }
-    
+    allChat:{}
 }
 export interface IMessage {
     _id: string | number
@@ -54,41 +54,23 @@ const ChatModal = (props:ModalFC) =>{
 
 
 
-    // const sendMesage = async(message: []) =>{
-    //     const userInfosMessage:IMessage={
-    //         _id:token.userObjId,
-    //         text:msg,
-    //         createdAt:new Date(),
-    //         user:token.userName,
-        
-    //         // userName:token.userName ,
-    //         // img:token.img,
-    //         // userObjId:token.userObjId ,
-    //         // message:msg,
-    //         // room:info.userObjId,
-    //         // socketId:props.socketId
-    //     }
-      
-      
-        
-       
-    //     props.socket.emit("chat",message)
-       
-    //    setMsg("")
-       
-    // }
-
+ 
+    
 
     const onSend = useCallback((messages = []) => {
+        
+        
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
         props.socket.emit("chat",messages,info.userObjId)
         
       }, [])
 
        
+   
     
-    console.log(props.allChat.allChat);
+    console.log("unsort",props.allChat.allChat);
     
+    console.log("sort",props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt));
     
     return(
 
@@ -105,52 +87,14 @@ const ChatModal = (props:ModalFC) =>{
        
      }}>
     
-    {/* <View style={styles.container}>
-        
-        <View style={styles.headline}>
-        <Text>Live Chat</Text>
-
-        </View>
-       
-        
-        <ScrollView style={styles.scroll}>
-           
-           
-        
-
-       {props.allChat.allChat.map((chat,index) => 
-        <View style={[styles.msgView,{flexDirection: token.userObjId ==chat.userObjId ?"row-reverse":"row"}]}>
-                <Image
-                style={{width:50, height:50}}
-		        source={{
-		        uri: `data:image/png;base64,${chat.img}`,
-	            }}
-		        />
-
-            <Text 
-            key={index}
-            style={styles.chatMsg}>{chat.message}</Text>
-        </View>
-        )}
-        
-      
-        </ScrollView>
-       
-        <TextInput 
-        value={msg}
-        style={styles.textInput} onChangeText={e => setMsg(e)} placeholder="Nachricht"/>
-        <Button title="senden" onPress={sendMesage}></Button>
-        <Button title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
-      
-    </View> */}
-
+    
 
 
 
 <GiftedChat
       messages={props.allChat.allChat}
       onSend={messages => onSend(messages)}
-      inverted={false}
+    //   inverted={false}
       user={{
         _id: token.userObjId,
       }}

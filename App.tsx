@@ -13,6 +13,7 @@ import UsersSettings from "./component/userSettings/UserSettings"
 import ChangeInfos from './component/userSettings/ChangeInfos';
 import Chat from "./component/chat/Chat"
 import {io} from "socket.io-client"
+import uuid from 'react-native-uuid';
 interface user{
  
     img:string
@@ -93,6 +94,8 @@ let arr =[]
 const socket =io("http://192.168.178.33:2020/")
 
 
+
+
 useEffect(() => {
 
  
@@ -100,11 +103,25 @@ useEffect(() => {
     
     
     socket.on("recieved_message",(data)=>{
+           const msg={
+            _id: uuid.v4(),
+             text: data[0].text,
+             createdAt: new Date(),
+             user: {
+               _id: 2,
+               name: 'React Native',
+               avatar: 'https://placeimg.com/140/140/any',
+             },
+           }
            
            
-            console.log("App",data);
+
+      setAllChat((list) =>[...list,msg])
+            // data.sort((a:any,b:any)=>b.createdAt - a.createdAt)
+
+            // setAllChat((list) =>[...list,data[0]])
             
-        setAllChat((list) =>[...list,data[0]]);
+        
         // allChat.sort((a,b)=> b.createdAt - a.acreatedAt)
 // setAllChat((list) =>[...list,
 //   {
@@ -121,19 +138,8 @@ useEffect(() => {
 
 
 // ])
-        // setAllChat([
 
-        //   {
-        //    _id: data[0].user._id,
-        //     text: data[0].text,
-        //     createdAt: new Date(),
-        //     user: {
-        //       _id: 2,
-        //       name: 'React Native',
-        //       avatar: 'https://placeimg.com/140/140/any',
-        //     },
-        //   }
-        // ])
+        
         })
 
   socket.on("users", users => {
