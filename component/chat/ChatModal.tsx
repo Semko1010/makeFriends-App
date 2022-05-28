@@ -12,28 +12,11 @@ type chattMsg={
     message:string
   }
 
-type chatMessage={
-    chatMsgState:{
-        allChat: chattMsg[],
-        setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
-    }
-    socket:any,
-    socketId:string,
-    
-}
-
-type ModalFC={
-    chatModalValue:{
-        chatModalVisible:boolean,
-        setChatModalVissible:React.Dispatch<React.SetStateAction<boolean>>
-    }
-    allChat:{}
-}
-export interface IMessage {
+   interface IMessage {
     _id: string | number
     text: string
     createdAt: Date | number
-    user: string
+    user: any
     image?: string
     video?: string
     audio?: string
@@ -41,8 +24,28 @@ export interface IMessage {
     sent?: boolean
     received?: boolean
     pending?: boolean
-    
+    quickReplies?: any
   }
+
+type ModalFC={
+    chatModalValue:{
+        chatModalVisible:boolean,
+        setChatModalVissible:React.Dispatch<React.SetStateAction<boolean>>
+    }
+    allChat:{
+      allChat: IMessage[],
+        setAllChat:React.Dispatch<React.SetStateAction<IMessage[]>>  
+    }
+        
+   
+    socket:{
+        emit:any
+    }
+    socketId:{
+        socketId:string
+      }
+}
+
 const ChatModal = (props:ModalFC) =>{
     const [chatModalVisible, setChatModalVissible] = useState(false);
     const {info,setInfo} = useContext(userInfo)
@@ -88,7 +91,7 @@ const ChatModal = (props:ModalFC) =>{
      }}>
     
     
-
+<View style={styles.container}>
 
 
 <GiftedChat
@@ -103,18 +106,14 @@ const ChatModal = (props:ModalFC) =>{
 
                 
                 <Button title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
-    
+    </View>
    </Modal>
      
     )
 }
 const styles = StyleSheet.create({
     container:{
-        width: '100%',
-        height:"100%",
-        textAlign: 'center',
-        alignItems: "center",
-        justifyContent: 'space-evenly',
+        height: '100%',
         backgroundColor:"white"
     },
     headline:{

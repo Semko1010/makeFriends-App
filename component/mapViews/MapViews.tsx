@@ -32,16 +32,36 @@ import { userImage } from '../context/Context';
         latitude: number,
        
 } 
-
+interface IMessage {
+  _id: string | number
+  text: string
+  createdAt: Date | number
+  user: any
+  image?: string
+  video?: string
+  audio?: string
+  system?: boolean
+  sent?: boolean
+  received?: boolean
+  pending?: boolean
+  quickReplies?: any
+}
 type chattMsg={
     
   message:string
 }
 type chatMessage={
   chatMsgState:{
-      allChat: chattMsg[],
-      setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
+      allChat: IMessage[],
+      setAllChat:React.Dispatch<React.SetStateAction<IMessage[]>>
   }
+  socket:{
+    emit:any
+}
+  socketId:{
+    socketId:string
+  }
+
 }
 
 const MapViews = (props:chatMessage) =>{
