@@ -1,10 +1,11 @@
-import React, { SetStateAction, useContext, useState } from "react"
+import React, { SetStateAction, useCallback, useContext, useState } from "react"
 import { Modal, View , Button,StyleSheet, ScrollView, Image,Text, TextInput, Dimensions} from "react-native"
 import { Link } from "react-router-native"
 
 //imports
 import Chat from "./Chat"
 import {userInfo,Token} from "../../App"
+import { GiftedChat } from 'react-native-gifted-chat'
 
 type chattMsg={
     
@@ -28,7 +29,20 @@ type ModalFC={
     }
     
 }
-
+export interface IMessage {
+    _id: string | number
+    text: string
+    createdAt: Date | number
+    user: string
+    image?: string
+    video?: string
+    audio?: string
+    system?: boolean
+    sent?: boolean
+    received?: boolean
+    pending?: boolean
+    
+  }
 const ChatModal = (props:ModalFC) =>{
     const [chatModalVisible, setChatModalVissible] = useState(false);
     const {info,setInfo} = useContext(userInfo)
@@ -38,29 +52,49 @@ const ChatModal = (props:ModalFC) =>{
     const [room,setRoom] = useState("")
 
 
-console.log("da",info);
 
-    const sendMesage = async() =>{
-        const userInfosMessage={
-            userName:token.userName ,
-            img:token.img,
-            userObjId:token.userObjId ,
-            message:msg,
-            room:info.userObjId,
-            socketId:props.socketId
-        }
+
+    // const sendMesage = async(message: []) =>{
+    //     const userInfosMessage:IMessage={
+    //         _id:token.userObjId,
+    //         text:msg,
+    //         createdAt:new Date(),
+    //         user:token.userName,
+        
+    //         // userName:token.userName ,
+    //         // img:token.img,
+    //         // userObjId:token.userObjId ,
+    //         // message:msg,
+    //         // room:info.userObjId,
+    //         // socketId:props.socketId
+    //     }
+      
+      
         
        
-        props.socket.emit("chat",userInfosMessage)
-       setMsg("")
+    //     props.socket.emit("chat",message)
        
-    }
+    //    setMsg("")
+       
+    // }
 
 
+    const onSend = useCallback((messages = []) => {
+        props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
+        props.socket.emit("chat",messages,info.userObjId)
+        console.log("MSG",messages);
+        console.log("Semko",props.allChat.allChat);
+      }, [])
 
+       
+    
+    console.log(info);
+    
+    
     return(
 
-       
+ 
+  
 
 <Modal
      
@@ -72,7 +106,7 @@ console.log("da",info);
        
      }}>
     
-    <View style={styles.container}>
+    {/* <View style={styles.container}>
         
         <View style={styles.headline}>
         <Text>Live Chat</Text>
@@ -109,13 +143,22 @@ console.log("da",info);
         <Button title="senden" onPress={sendMesage}></Button>
         <Button title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
       
-    </View>
+    </View> */}
 
 
+
+
+<GiftedChat
+      messages={props.allChat.allChat}
+      onSend={messages => onSend(messages)}
+      user={{
+        _id: token.userObjId,
+      }}
+    />
 
 
                 
-    
+                <Button title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
     
    </Modal>
      

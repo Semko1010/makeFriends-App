@@ -102,9 +102,23 @@ useEffect(() => {
     socket.on("recieved_message",(data)=>{
            
            
-            console.log(data);
+            console.log("App",data);
             
-        setAllChat((list) =>[...list,data.text]);
+        setAllChat((list) =>[...list,data[0]]);
+
+        // setAllChat([
+
+        //   {
+        //     _id: data[0].user._id,
+        //     text: data[0].text,
+        //     createdAt: new Date(),
+        //     user: {
+        //       _id: 2,
+        //       name: 'React Native',
+        //       avatar: 'https://placeimg.com/140/140/any',
+        //     },
+        //   },
+        // ])
         })
 
   socket.on("users", users => {
@@ -124,6 +138,7 @@ useEffect(() => {
     
   });
 }, [socket]);
+
 
 
 
