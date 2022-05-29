@@ -58,13 +58,19 @@ const ChatModal = (props:ModalFC) =>{
 
 
  
-    
+    const send = (messages) =>{
+        props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
+        props.socket.emit("chat",messages,info.userObjId)
+        console.log(info.userObjId);
+        
+    }
 
-    const onSend = useCallback((messages = []) => {
+    const onSend = useCallback((messages = [],info) => {
+        
         
         
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-        props.socket.emit("chat",messages,info.userObjId)
+        props.socket.emit("chat",messages,info)
         
       }, [])
 
@@ -96,7 +102,7 @@ const ChatModal = (props:ModalFC) =>{
 
 <GiftedChat
       messages={props.allChat.allChat}
-      onSend={messages => onSend(messages)}
+      onSend={messages => onSend(messages,info.userObjId)}
     //   inverted={false}
       user={{
         _id: token.userObjId,
@@ -104,8 +110,9 @@ const ChatModal = (props:ModalFC) =>{
     />
 
 
-                
-                <Button title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
+                <View style={{backgroundColor:"#1e90ff"}}>
+                <Button color="white" title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
+                </View>
     </View>
    </Modal>
      
@@ -113,8 +120,9 @@ const ChatModal = (props:ModalFC) =>{
 }
 const styles = StyleSheet.create({
     container:{
+        
         height: '100%',
-        backgroundColor:"white"
+        backgroundColor:"rgba(0, 0, 0,0.4)"
     },
     headline:{
         textAlign: 'center',

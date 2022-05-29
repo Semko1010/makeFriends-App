@@ -234,11 +234,11 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             <Text>Über mich: {info.desc}</Text>
             </View>
 
-            <Link to='/chat'>
-              <Button onPress={() => setChatModalVissible(true)} title='Chat'/>
+          
+              <Button onPress={() =>  setChatModalVissible(info ? true : false)} title='Chat'/>
             
-            </Link>
-    </View>
+            
+            </View>
     
   </View>
 
