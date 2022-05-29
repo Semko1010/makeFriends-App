@@ -41,9 +41,9 @@ type ModalFC={
     socket:{
         emit:any
     }
-    socketId:{
+   
         socketId:string
-      }
+    
 }
 
 const ChatModal = (props:ModalFC) =>{
@@ -58,12 +58,12 @@ const ChatModal = (props:ModalFC) =>{
 
 
  
-    const send = (messages) =>{
-        props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-        props.socket.emit("chat",messages,info.userObjId)
-        console.log(info.userObjId);
+    // const send = (messages) =>{
+    //     props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
+    //     props.socket.emit("chat",messages,info.userObjId)
+    //     console.log(info.userObjId);
         
-    }
+    // }
 
     const onSend = useCallback((messages = [],info) => {
         

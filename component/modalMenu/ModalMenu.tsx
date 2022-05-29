@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient"
 import React, { useContext } from "react"
-import { Dimensions, Modal, View, StyleSheet, Image, Text, ImageBackground, Pressable} from "react-native"
+import { Dimensions, Modal, View, StyleSheet, Image, Text, ImageBackground, Pressable, Button, TouchableOpacity} from "react-native"
 import { Link } from "react-router-native"
 import {Token} from "../../App"
 
@@ -9,16 +9,25 @@ type ModalFC={
         modalVisible:boolean,
         setModalVisible:React.Dispatch<React.SetStateAction<boolean>>
     }
-    
+    socket:{
+    close:any
+    }
 }
+
 
 const ModalMenu = (props:ModalFC) =>{
     const { token, setToken} = useContext(Token)
 
+    const logout = () =>{
+      props.socket.close()
+    console.log("fdsd");
+      
+    }
+
 
     return (
         
-            <Modal
+    <Modal
      
      animationType="slide"
      transparent={true}
@@ -30,7 +39,7 @@ const ModalMenu = (props:ModalFC) =>{
        
      <View style={styles.centeredView}>
      <LinearGradient
-       colors={['#2980B9', '#6DD5FA', '#FFFFFF']}
+       colors={['#E6DADA', '#274046']}
        >
        <View style={styles.modalView}>
 
@@ -46,33 +55,62 @@ const ModalMenu = (props:ModalFC) =>{
            </ImageBackground>
          
         <View style={styles.date}>
-         <Text style={{fontSize:20,borderBottomWidth:1,width:"100%"}}>Menü</Text>
+         <Text style={{fontSize:35,borderBottomWidth:1,width:"100%"}}>Menü</Text>
          
          <View>
          
            </View>
          <View style={styles.buttons}>
+         <Image
+            style={{width:20, height:20,marginRight:20}}
+            source={require("../../assets/img/user.png")}
+            />
              <Link to="/userSettings">
-               <Text style={{fontSize:20}}>Profil</Text>
+               <Text style={{fontSize:20,color:"white"}}>Profil</Text>
              </Link>
          </View>
          <View style={styles.buttons}>
+         <Image
+            style={{width:20, height:20,marginRight:20}}
+            source={require("../../assets/img/map.png")}
+            />
              <Link to="/map">
-               <Text style={{fontSize:20}}>Map</Text>
+               <Text style={{fontSize:20,color:"white"}}>Map</Text>
              </Link>
          </View>
           <View style={styles.buttons}>
+          <Image
+            style={{width:20, height:20,marginRight:20}}
+            source={require("../../assets/img/user.png")}
+            />
              <Link to="/">
-               <Text style={{fontSize:20}}>Daten</Text>
+               <Text style={{fontSize:20,color:"white"}}>Daten</Text>
              </Link>
+
+             
          </View>
+         <View style={styles.buttons}>
+         <TouchableOpacity
+             style={{flexDirection:"row",alignItems:"center"}}
+            onPress={logout}
+                >
+            <Image
+            style={{width:20, height:20,marginRight:20}}
+            source={require("../../assets/img/logout.png")}
+            />
+            <Link underlayColor="transparent" to="/">
+            <Text style={{fontSize:20,color:"white"}}>Logout</Text>
+            </Link>
+            
+        </TouchableOpacity>
+        </View>
          </View>
 
          <View style={styles.footerView}>
          <View style={styles.buttons}>
-             <Link to="/">
-               <Text style={{fontSize:20}}>Logout</Text>
-             </Link>
+         
+            
+          
          </View>
          
          <Pressable
@@ -126,8 +164,7 @@ const styles = StyleSheet.create({
     },
     buttons:{
       marginTop:5,
-      borderRadius:10,
-      borderWidth:1,
+      flexDirection:"row",
       justifyContent: 'center',
       alignItems: 'center',
       width: 150, 
@@ -153,6 +190,7 @@ const styles = StyleSheet.create({
       
     },
     button: {
+      
       borderRadius: 20,
       padding: 10,
     },

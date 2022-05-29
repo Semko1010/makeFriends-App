@@ -58,9 +58,9 @@ type chatMessage={
   socket:{
     emit:any
 }
-  socketId:{
+  
     socketId:string
-  }
+
 
 }
 
@@ -102,6 +102,7 @@ async function currentGps (){
  
   
 }
+
 
 
 
@@ -249,6 +250,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
      <>
      <ModalMenu 
      modalValue={{modalVisible,setModalVisible}}
+     socket={props.socket}
      />
       <ChatModal
       chatModalValue={{chatModalVisible, setChatModalVissible}}

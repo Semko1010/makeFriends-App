@@ -39,6 +39,7 @@ interface tokenInfos{
  userObjId:string,
  verifyUser:boolean
  desc:string
+ 
 }
 type setToken={
   token:tokenInfos
@@ -62,8 +63,6 @@ interface InterFaceInfos{
     setUserInfos:React.Dispatch<React.SetStateAction<InterFaceInfos[]>>
   }
 
-
-
   type chattMsg={
   
       message:string
@@ -74,6 +73,20 @@ type chatMessage={
   
   allChat:chattMsg[]
   setAllChat:React.Dispatch<React.SetStateAction<chattMsg[]>>
+}
+interface IMessage {
+  _id: string | number
+  text: string
+  createdAt: Date | number
+  user: any
+  image?: string
+  video?: string
+  audio?: string
+  system?: boolean
+  sent?: boolean
+  received?: boolean
+  pending?: boolean
+  quickReplies?: any
 }
 
 const userInfo = createContext<settName>({} as settName)
@@ -88,7 +101,7 @@ const [age,  setAge] =   useState<string>()
 const [hobby, setHobby] = useState<string>()
 const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
-const [allChat,setAllChat] = useState<chattMsg[]>([])
+const [allChat,setAllChat] = useState<IMessage[]>([])
 const [socketId, setSocketId] = useState<string>("")
 let arr =[]
 const socket =io("http://192.168.178.33:2020/")
@@ -117,28 +130,7 @@ useEffect(() => {
            
 
       setAllChat((list) =>[...list,msg])
-            // data.sort((a:any,b:any)=>b.createdAt - a.createdAt)
-
-            // setAllChat((list) =>[...list,data[0]])
-            
-        
-        // allChat.sort((a,b)=> b.createdAt - a.acreatedAt)
-// setAllChat((list) =>[...list,
-//   {
-//     _id: data[0].user._id,
-//      text: data[0].text,
-//      createdAt: new Date(),
-//      user: {
-//        _id: 2,
-//        name: 'React Native',
-//        avatar: 'https://placeimg.com/140/140/any',
-//      },
-//    }
-
-
-
-// ])
-
+     
         
         })
 
@@ -182,7 +174,7 @@ useEffect(() => {
             <Route path="/registerB" element={<RegisterB infos={{age,setAge,hobby,setHobby,desc,setDesc, img,setImg}}/>}/>
             <Route path="/login" element={<Login socket={socket}/>}/>
             <Route path="/changeInfos" element={<ChangeInfos/>}/>
-            <Route path="/Chat" element={<Chat chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId}/>}/>
+            
 
 
           </Routes>
