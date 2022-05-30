@@ -57,7 +57,8 @@ type chatMessage={
   }
   socket:{
     emit:any
-}
+    close:any
+  }
   
     socketId:string
 
@@ -110,7 +111,10 @@ async function currentGps (){
 useEffect(() => {
 
         (async () => {
-
+          const connectToChat = await socket.on("connect", () => {
+            console.log(socket.connected); // true
+            socket.emit("username",token.userName)
+          });
         
           const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
           const fetchInfos = await axios.get(URL,{headers:{userToken}})
