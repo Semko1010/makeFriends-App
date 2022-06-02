@@ -1,4 +1,4 @@
-import React, { SetStateAction, useCallback, useContext, useState } from "react"
+import React, { SetStateAction, useCallback, useContext, useEffect, useState } from "react"
 import { Modal, View , Button,StyleSheet, ScrollView, Image,Text, TextInput, Dimensions} from "react-native"
 import { Link } from "react-router-native"
 import uuid from 'react-native-uuid';
@@ -53,34 +53,54 @@ const ChatModal = (props:ModalFC) =>{
     const [msg, setMsg] = useState("")
     const [allChat,setAllChat] = useState([])
     const [room,setRoom] = useState("")
+    const [prv,setPrv] = useState("")
 
 
 
+ useEffect(() => {
+     console.log("dsadasd");
+     
+props.allUsers.allUsers.find(user => {
 
- 
-    // const send = (messages) =>{
-    //     props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-    //     props.socket.emit("chat",messages,info.userObjId)
-    //     console.log(info.userObjId);
-        
-    // }
+if(user.userObjId == token.userObjId){
+setPrv(user.id)
 
-    const onSend = useCallback((messages = [],info) => {
-        
-        
+
+}
+
+})
+
+    
+ },[props.socket])
+    const send = (messages,info) =>{
+        let test = "htlZLy8fIhyIFzXqAATk"
+        console.log(props.socket);
         
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
         props.socket.emit("chat",messages,info)
         
-      }, [])
+        
+    }
+// console.log("usrId",props.socket);
+console.log("usrId",prv);
+
+
+    // const onSend = useCallback((messages = [],info) => {
+        
+        
+        
+    //     props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
+    //     props.socket.emit("chat",messages,info)
+        
+    //   }, [])
 
        
    
     
-    console.log("unsort",props.allChat.allChat);
+    // console.log("unsort",props.allChat.allChat);
     
-    console.log("sort",props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt));
-    
+    // console.log("sort",props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt));
+   props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt)
     return(
 
  
@@ -102,7 +122,7 @@ const ChatModal = (props:ModalFC) =>{
 
 <GiftedChat
       messages={props.allChat.allChat}
-      onSend={messages => onSend(messages,info.userObjId)}
+      onSend={messages => send(messages,info.userObjId)}
     //   inverted={false}
       user={{
         _id: token.userObjId,

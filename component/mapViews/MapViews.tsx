@@ -68,7 +68,7 @@ type chatMessage={
 const MapViews = (props:chatMessage) =>{
 
   
-    
+  
     // const socket =io("https://makefriendsapp.herokuapp.com/")
     const [location, setLocation] = useState<coordinates | undefined>();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -111,11 +111,8 @@ async function currentGps (){
 useEffect(() => {
 
         (async () => {
-          const connectToChat = await socket.on("connect", () => {
-            console.log(socket.connected); // true
-            socket.emit("username",token.userName)
-          });
-        
+         
+
           const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
           const fetchInfos = await axios.get(URL,{headers:{userToken}})
           const setInfosUsers = await setUserInfos(fetchInfos.data)
@@ -132,6 +129,22 @@ useEffect(() => {
           
           
           setLoading(false)
+          
+          
+          
+        })();
+      }, []);
+
+useEffect(() => {
+
+        (async () => {
+         
+          const connectToChat = await socket.on("connect", () => {
+            console.log(socket.connected); // true
+            socket.emit("username",token.userName,token.userObjId)
+          });
+
+         
           
           
           
@@ -261,6 +274,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
       socket={props.socket}
       allChat={props.chatMsgState}
       socketId={props.socketId}
+      allUsers={props.allUsers}
       />
      </>
     </View>

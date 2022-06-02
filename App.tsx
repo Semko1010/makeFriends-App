@@ -103,9 +103,9 @@ const [desc, setDesc] = useState<string>()
 const [userInfos, setUserInfos] = useState<InterFaceInfos[]>([])
 const [allChat,setAllChat] = useState<IMessage[]>([])
 const [socketId, setSocketId] = useState<string>("")
-let arr =[]
-const socket =io("http://192.168.178.33:2020/")
-
+const [allUsers,setAllUsers] = useState([])
+ const socket =io("http://192.168.178.33:2020/")
+// const socket =io("https://makefriendsapp.herokuapp.com/")
 
 
 
@@ -127,16 +127,18 @@ useEffect(() => {
              },
            }
            
+           console.log("semko", data);
            
 
       setAllChat((list) =>[...list,msg])
-     
+     allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt)
+        console.log(allChat);
         
         })
 
   socket.on("users", users => {
     console.log("User",users);
-    
+    setAllUsers(users)
     
   });
 
@@ -167,7 +169,7 @@ useEffect(() => {
         <NativeRouter>
           <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId}/>}/>
+            <Route path="/map" element={<MapViews chatMsgState={{allChat,setAllChat}} socket={socket} socketId={socketId} allUsers={{allUsers,setAllUsers}}/>}/>
             <Route path="/userSettings" element={<UsersSettings/>}/>
             <Route path="/registerA" element={<RegisterA Image={{img,setImg}}/>}/>
             <Route path="/registerInfos" element={<RegisterInfos infos={{age,setAge,hobby,setHobby,desc,setDesc}}/>}/>
