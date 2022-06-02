@@ -37,9 +37,11 @@ type ModalFC={
         setAllChat:React.Dispatch<React.SetStateAction<IMessage[]>>  
     }
         
-   
+   allusers:{}
     socket:{
         emit:any
+        close:any
+        on:any
     }
    
         socketId:string
@@ -47,22 +49,19 @@ type ModalFC={
 }
 
 const ChatModal = (props:ModalFC) =>{
-    const [chatModalVisible, setChatModalVissible] = useState(false);
+   
     const {info,setInfo} = useContext(userInfo)
     const { token, setToken} = useContext(Token)
-    const [msg, setMsg] = useState("")
-    const [allChat,setAllChat] = useState([])
-    const [room,setRoom] = useState("")
     const [prv,setPrv] = useState("")
 
 
 
  useEffect(() => {
-     console.log("dsadasd");
+
      
 props.allUsers.allUsers.find(user => {
 
-if(user.userObjId == token.userObjId){
+if(user.userObjId == info.userObjId){
 setPrv(user.id)
 
 
@@ -73,16 +72,16 @@ setPrv(user.id)
     
  },[props.socket])
     const send = (messages,info) =>{
-        let test = "htlZLy8fIhyIFzXqAATk"
+        let test = "UIFpa3euexQfYl_jAAAL"
         console.log(props.socket);
         
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-        props.socket.emit("chat",messages,info)
+        props.socket.emit("chat",messages,prv)
         
         
     }
 // console.log("usrId",props.socket);
-console.log("usrId",prv);
+
 
 
     // const onSend = useCallback((messages = [],info) => {

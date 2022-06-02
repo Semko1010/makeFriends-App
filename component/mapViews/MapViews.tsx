@@ -58,8 +58,9 @@ type chatMessage={
   socket:{
     emit:any
     close:any
+    on:any
   }
-  
+  allusers:{}
     socketId:string
 
 
@@ -80,9 +81,7 @@ const MapViews = (props:chatMessage) =>{
     const [chatModalVisible, setChatModalVissible] = useState(false);
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
-    const socket =io("http://192.168.178.33:2020/",{
-      transports: ["websocket", "polling"],
-    })
+   
     const userToken = token.token
     
   
@@ -139,9 +138,9 @@ useEffect(() => {
 
         (async () => {
          
-          const connectToChat = await socket.on("connect", () => {
-            console.log(socket.connected); // true
-            socket.emit("username",token.userName,token.userObjId)
+          const connectToChat = await props.socket.on("connect", () => {
+           
+            props.socket.emit("username",token.userName,token.userObjId)
           });
 
          
