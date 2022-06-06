@@ -14,7 +14,7 @@ import SetCoordsButton from "../setCoordsButton/SetCoordsButton"
 import ModalMenu from "../modalMenu/ModalMenu"
 import ChatModal from "../chat/ChatModal"
 import { Link } from 'react-router-native';
-import { userImage } from '../context/Context';
+
 
  interface InterFaceInfos{
     age:number,
@@ -60,9 +60,23 @@ type chatMessage={
     close:any
     on:any
   }
-  allusers:{}
+  allUsers:{
+    allUsers: [],
+    setAllUsers:React.Dispatch<React.SetStateAction<[]>>
+   }
     socketId:string
-
+    showChat:{
+      showChat:boolean
+      setShowChat:React.Dispatch<React.SetStateAction<boolean>>
+    }
+    chatModalVisible:{
+      chatModalVisible:boolean
+      setChatModalVisible:React.Dispatch<React.SetStateAction<boolean>>
+    }
+    notification:{
+      notification:boolean
+      setNotification:React.Dispatch<React.SetStateAction<boolean>>
+    }
 
 }
 
@@ -78,7 +92,7 @@ const MapViews = (props:chatMessage) =>{
     const {info,setInfo} = useContext(userInfo)
     const { token, setToken} = useContext(Token)
     const [modalVisible, setModalVisible] = useState(false);
-    const [chatModalVisible, setChatModalVissible] = useState(false);
+    
     const [ loading, setLoading] = useState<boolean>(true)
     const [ calling, setCalling] = useState<boolean>(true)
    
@@ -102,6 +116,7 @@ async function currentGps (){
  
   
 }
+
 
 
 
@@ -146,19 +161,16 @@ useEffect(() => {
          
           
           
-          
+
         })();
       }, []);
 
       
-      
-     
-
-
-
 async function mapRefresh  () {
-
-  
+    // const leaveRoom = await props.socket.emit("leave_room", token.userObjId)
+   
+  //  const jo = await props.socket.emit("join_room",token.userObjId)
+ 
 
   
 const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation"
@@ -169,10 +181,25 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
 
 
 
+async function notificationMessage(){
+  const recievedMessageuser = await props.allUsers.allUsers.map(user => {
+    if(user.userObjId == props.lastMessage.lastMessage){
+    userInfos.map(userInfo =>{
+      if(props.lastMessage.lastMessage == userInfo.userObjId){
+        setInfo(userInfo)
+      }
+    })
 
+    }
+    
+  })
+  
+  const removeNotification = await props.notification.setNotification(false)
+  const openChat = await props.
+  chatModalVisible.setChatModalVisible(true)
 
-
-
+}
+console.log(userInfos);
 
     return(
         <View style={styles.container}>
@@ -235,6 +262,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
     hobby={e.hobby}
     desc={e.desc}
     userObjId={e.userObjId}
+    showChat={props.showChat}
     />
     
   )}
@@ -251,10 +279,19 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
             <Text>Über mich: {info.desc}</Text>
             </View>
 
-          
-              <Button onPress={() =>  setChatModalVissible(info ? true : false)} title='Chat'/>
+              {props.showChat.showChat  &&(
+              <Button onPress={() =>  props.
+                chatModalVisible.setChatModalVisible(true)} title='Chat'/>
+             )}
+
+              {props.notification.notification &&(
+            <View>
+              <Text>Neue Nachricht</Text>
+              
+            <Button title="OK" onPress={notificationMessage}/>
             
-            
+            </View>
+            )}
             </View>
     
   </View>
@@ -269,7 +306,7 @@ const setInfosUsers = await setUserInfos(fetchInfos.data)
      socket={props.socket}
      />
       <ChatModal
-      chatModalValue={{chatModalVisible, setChatModalVissible}}
+      chatModalVisible={props.chatModalVisible}
       socket={props.socket}
       allChat={props.chatMsgState}
       socketId={props.socketId}

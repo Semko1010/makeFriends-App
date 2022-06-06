@@ -13,6 +13,10 @@ interface Props {
   hobby :string
   desc:string
   userObjId:string
+  showChat:{
+
+    setShowChat:React.Dispatch<React.SetStateAction<boolean>>
+  }
 }
 const Markers = (props:Props) => {
 
@@ -21,9 +25,10 @@ const Markers = (props:Props) => {
    const eachInfoOfUser = () =>{
     
     setInfo(props)
-     
+     props.showChat.setShowChat(true)
    }
    
+ 
    
    
    
@@ -47,7 +52,10 @@ const Markers = (props:Props) => {
 								uri: `data:image/png;base64,${props.img}`,
 							}}
 					    />
+              
+              
            </View>
+          
         </Marker>
        </>
        

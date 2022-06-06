@@ -28,16 +28,19 @@ type chattMsg={
   }
 
 type ModalFC={
-    chatModalValue:{
-        chatModalVisible:boolean,
-        setChatModalVissible:React.Dispatch<React.SetStateAction<boolean>>
-    }
+    chatModalVisible:{
+        chatModalVisible:boolean
+        setChatModalVisible:React.Dispatch<React.SetStateAction<boolean>>
+      }
     allChat:{
       allChat: IMessage[],
         setAllChat:React.Dispatch<React.SetStateAction<IMessage[]>>  
     }
         
-   allusers:{}
+   allUsers:{
+    allUsers: [],
+    setAllUsers:React.Dispatch<React.SetStateAction<[]>>
+   }
     socket:{
         emit:any
         close:any
@@ -72,15 +75,15 @@ setPrv(user.id)
     
  },[props.socket])
     const send = (messages,info) =>{
-        let test = "UIFpa3euexQfYl_jAAAL"
-        console.log(props.socket);
+       
+        
         
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-        props.socket.emit("chat",messages,prv)
+        props.socket.emit("chat",messages,prv,token.userObjId)
         
         
     }
-// console.log("usrId",props.socket);
+
 
 
 
@@ -95,10 +98,9 @@ setPrv(user.id)
 
        
    
+  
     
-    // console.log("unsort",props.allChat.allChat);
     
-    // console.log("sort",props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt));
    props.allChat.allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt)
     return(
 
@@ -109,17 +111,26 @@ setPrv(user.id)
      
      animationType="slide"
      transparent={true}
-     visible={props.chatModalValue.chatModalVisible}
+     visible={props.chatModalVisible.chatModalVisible}
      onRequestClose={() => {
-        props.chatModalValue.setChatModalVissible
+        props.chatModalVisible.setChatModalVisible
        
      }}>
     
     
 <View style={styles.container}>
 
-
-<GiftedChat
+    <View style={{width: '100%',height:"15%",alignItems: "center",backgroundColor:"white", paddingTop:30}}>
+        <Text> Du Chatest mit:</Text>
+        <Image
+        style={{width:50,height:50}}
+        source={{
+        uri: `data:image/png;base64,${info.img}`,
+        }}
+        />
+    </View>
+    <View style={{height:"80%",backgroundColor:"rgba(0, 0, 0,0.5)"}}>
+    <GiftedChat
       messages={props.allChat.allChat}
       onSend={messages => send(messages,info.userObjId)}
     //   inverted={false}
@@ -127,10 +138,11 @@ setPrv(user.id)
         _id: token.userObjId,
       }}
     />
+    </View>
 
 
-                <View style={{backgroundColor:"#1e90ff"}}>
-                <Button color="white" title="Zurück" onPress={() =>props.chatModalValue.setChatModalVissible(false)}/>
+                <View style={{backgroundColor:"#1e90ff",height:"5%"}}>
+                <Button color="black" title="Zurück" onPress={() =>props.chatModalVisible.setChatModalVisible(false)}/>
                 </View>
     </View>
    </Modal>
@@ -139,9 +151,10 @@ setPrv(user.id)
 }
 const styles = StyleSheet.create({
     container:{
-        
+        justifyContent:"space-between",
+       width:Dimensions.get('window').width,
         height: '100%',
-        backgroundColor:"rgba(0, 0, 0,0.4)"
+        
     },
     headline:{
         textAlign: 'center',

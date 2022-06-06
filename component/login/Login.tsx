@@ -43,7 +43,7 @@ const Login = (props:any) =>{
 						setToken(fetch.data);
 						setLoading(false)
 						navigate("/map")
-						props.socket.emit("join_room",fetch.data.userObjId)
+						// props.socket.emit("join_room",fetch.data.userObjId) 
 					}else{
 						console.log("Pleaser Verify Account");
 						
