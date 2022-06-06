@@ -79,7 +79,7 @@ setPrv(user.id)
         
         
         props.allChat.setAllChat(previousMessages => GiftedChat.append(previousMessages, messages))
-        props.socket.emit("chat",messages,prv,token.userObjId)
+        props.socket.emit("chat",messages,prv,token)
         
         
     }

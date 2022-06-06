@@ -151,15 +151,16 @@ useEffect(() => {
              createdAt: new Date(),
              user: {
                _id: 2,
-               name: 'React Native',
-               avatar: 'https://placeimg.com/140/140/any',
+               name: data.token.userName,
+               avatar: `data:image/png;base64,${data.token.img}`,
              },
            }
           
            
+            console.log(data);
             
           
-      setLastMessage(data.userObjId)
+      setLastMessage(data.token.userObjId)
       setAllChat((list) =>[...list,msg])
       allChat.sort((a:any,b:any)=>b.createdAt - a.createdAt)
       setBugNotification(true)
