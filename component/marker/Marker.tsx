@@ -6,7 +6,6 @@ import {
 	Dimensions,
 	Image,
 	Button,
-	ImageBackground,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { userInfo } from "../../App";
@@ -27,37 +26,31 @@ const Markers = (props: Props) => {
 	const eachInfoOfUser = () => {
 		setInfo(props);
 	};
+	console.log("ded", props);
 
 	return (
 		<>
 			{/* @ts-ignore  */}
-			<Marker
-				tracksViewChanges={false}
-				onPress={eachInfoOfUser}
-				coordinate={{
-					latitude: props.latitude,
-					longitude: props.longitude,
-				}}
-				title={props.userName}
-				description={`Status: ${props.desc}`}>
-				<View>
-					<Image
-						style={styles.userImg}
-						source={{
-							uri: `data:image/png;base64,${props.img}`,
-						}}
-					/>
-					{/* <Text style={{ width: 0, height: 0 }}>{Math.random()}</Text> */}
-					{/* <Svg height='50' width='50' key={2000}>
+			{props && (
+				<Marker
+					tracksViewChanges={false}
+					onPress={eachInfoOfUser}
+					coordinate={{
+						latitude: props.latitude,
+						longitude: props.longitude,
+					}}
+					title={props.userName}
+					description={`Status: ${props.desc}`}>
+					{/* <View>
 						<Image
 							style={styles.userImg}
 							source={{
 								uri: `data:image/png;base64,${props.img}`,
 							}}
 						/>
-					</Svg> */}
-				</View>
-			</Marker>
+					</View> */}
+				</Marker>
+			)}
 		</>
 	);
 };

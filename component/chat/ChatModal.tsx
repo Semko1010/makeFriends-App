@@ -69,36 +69,48 @@ const ChatModal = (props: ModalFC) => {
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
 	const [lastMessage, setLastMessage] = useState("");
+	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
 
+	// const privateMsg = user => {
+	// 	setLastMessage(user.name);
+	// 	setPrivateMsgStat(true);
+	// 	setPrivateMsgStat(false);
+	// };
+
+	async function privateMsg(user) {
+		const setUserName = await setLastMessage(user.name);
+		const setTrue = await setPrivateMsgStat(true);
+		const setFalse = await setPrivateMsgStat(false);
+	}
 	const send = messages => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
-		const chatId =
-			token.userObjId > info.userObjId
-				? `${token.userObjId + info.userObjId}`
-				: `${info.userObjId + token.userObjId}`;
+		// const chatId =
+		// 	token.userObjId > info.userObjId
+		// 		? `${token.userObjId + info.userObjId}`
+		// 		: `${info.userObjId + token.userObjId}`;
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
 
 		const { _id, text, user } = messages[0];
 		if (db) {
-			db.collection(chatId).add({
+			db.collection("messages").add({
 				_id,
 				createdAt,
 				text,
 				user,
 			});
 		}
-		if (db) {
-			db.collection(`lastMsg:${info.userObjId}`).doc(token.userObjId).set({
-				_id,
-				createdAt,
-				text,
-				user,
-				unread: true,
-			});
-		}
+		// if (db) {
+		// 	db.collection(`lastMsg:${info.userObjId}`).doc(token.userObjId).set({
+		// 		_id,
+		// 		createdAt,
+		// 		text,
+		// 		user,
+		// 		unread: true,
+		// 	});
+		// }
 	};
 
 	useEffect(() => {
@@ -109,7 +121,7 @@ const ChatModal = (props: ModalFC) => {
 					: `${info.userObjId + token.userObjId}`;
 
 			const unscribe = db
-				.collection(chatId)
+				.collection("messages")
 				.limit(100)
 				.onSnapshot(querySnapshot => {
 					const data = querySnapshot.docs.map(doc => ({
@@ -154,11 +166,14 @@ const ChatModal = (props: ModalFC) => {
 						onSend={messages => send(messages)}
 						// inverted={false}
 						showAvatarForEveryMessage={true}
-						onPressAvatar={() => console.log("Test")}
+						renderUsernameOnMessage={true}
+						text={privateMsgStat ? `@${lastMessage}` : undefined}
 						user={{
+							name: token.userName,
 							_id: token.userObjId,
 							avatar: `data:image/png;base64,${token.img}`,
 						}}
+						onPressAvatar={user => privateMsg(user)}
 						renderBubble={props => {
 							return (
 								<Bubble

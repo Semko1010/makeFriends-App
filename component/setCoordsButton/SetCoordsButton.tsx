@@ -46,10 +46,10 @@ const SetCoordsButton = (props: coordinates) => {
 		latitude: props.location.latitude,
 		longitude: props.location.longitude,
 		userName: userData?.userName,
-		age: userData?.age,
-		hobby: userData?.hobby,
-		img: userData?.img,
-		desc: userData?.desc,
+		age: token.age,
+		hobby: token.hobby,
+		img: token.img,
+		desc: token.desc,
 		token: token.token,
 		userObjId: token.userObjId,
 	};
@@ -73,18 +73,18 @@ const SetCoordsButton = (props: coordinates) => {
 		});
 	}, [userInfos]);
 
-	useEffect(() => {
-		if (db) {
-			const unscribe = db.collection("location").onSnapshot(querySnapshot => {
-				const data = querySnapshot.docs.map(doc => ({
-					...doc.data(),
-					id: doc.id,
-				}));
-			});
+	// useEffect(() => {
+	// 	if (db) {
+	// 		const unscribe = db.collection("location").onSnapshot(querySnapshot => {
+	// 			const data = querySnapshot.docs.map(doc => ({
+	// 				...doc.data(),
+	// 				id: doc.id,
+	// 			}));
+	// 		});
 
-			return unscribe;
-		}
-	}, [db]);
+	// 		return unscribe;
+	// 	}
+	// }, [db]);
 
 	async function setLocationUser() {
 		if (db) {

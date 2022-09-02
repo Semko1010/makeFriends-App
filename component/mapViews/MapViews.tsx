@@ -122,22 +122,21 @@ const MapViews = (props: chatMessage) => {
 
 	// 	console.log("TEstds", lastMessage);
 	// }, [db]);
-	useEffect(() => {
-		if (db) {
-			const unscribe = db
-				.collection(`lastMsg:${token.userObjId}`)
-				.limit(100)
-				.onSnapshot(querySnapshot => {
-					const data = querySnapshot.docs.map(doc => ({
-						...doc.data(),
-						id: doc.id,
-					}));
-					setLastMessage(data);
-				});
-			return unscribe;
-		}
-	}, [db]);
-	console.log("Test", lastMessage);
+	// useEffect(() => {
+	// 	if (db) {
+	// 		const unscribe = db
+	// 			.collection(`lastMsg:${token.userObjId}`)
+	// 			.limit(100)
+	// 			.onSnapshot(querySnapshot => {
+	// 				const data = querySnapshot.docs.map(doc => ({
+	// 					...doc.data(),
+	// 					id: doc.id,
+	// 				}));
+	// 				setLastMessage(data);
+	// 			});
+	// 		return unscribe;
+	// 	}
+	// }, [db]);
 
 	async function currentGps() {
 		let { status } = await Location.requestForegroundPermissionsAsync();
