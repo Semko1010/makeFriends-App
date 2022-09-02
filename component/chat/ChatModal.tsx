@@ -16,8 +16,7 @@ import {
 	TextInput,
 	Dimensions,
 } from "react-native";
-import { Link } from "react-router-native";
-import uuid from "react-native-uuid";
+
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token } from "../../App";
@@ -69,31 +68,48 @@ const ChatModal = (props: ModalFC) => {
 	const [messages, setMessages] = useState([]);
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
-	const [prv, setPrv] = useState("");
+	const [lastMessage, setLastMessage] = useState("");
 
 	const send = messages => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
+		const chatId =
+			token.userObjId > info.userObjId
+				? `${token.userObjId + info.userObjId}`
+				: `${info.userObjId + token.userObjId}`;
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
 
 		const { _id, text, user } = messages[0];
 		if (db) {
-			db.collection("messages").add({
+			db.collection(chatId).add({
 				_id,
 				createdAt,
 				text,
 				user,
 			});
 		}
+		if (db) {
+			db.collection(`lastMsg:${info.userObjId}`).doc(token.userObjId).set({
+				_id,
+				createdAt,
+				text,
+				user,
+				unread: true,
+			});
+		}
 	};
 
 	useEffect(() => {
 		if (db) {
+			const chatId =
+				token.userObjId > info.userObjId
+					? `${token.userObjId + info.userObjId}`
+					: `${info.userObjId + token.userObjId}`;
+
 			const unscribe = db
-				.collection("messages")
-				// .orderBy("createdAt")
+				.collection(chatId)
 				.limit(100)
 				.onSnapshot(querySnapshot => {
 					const data = querySnapshot.docs.map(doc => ({
@@ -101,12 +117,11 @@ const ChatModal = (props: ModalFC) => {
 						id: doc.id,
 					}));
 					setMessages(data);
-
-					console.log(messages);
 				});
 			return unscribe;
 		}
-	}, [db]);
+	}, [db, info]);
+
 	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
 	return (
 		<Modal
@@ -147,7 +162,6 @@ const ChatModal = (props: ModalFC) => {
 
 				<View style={{ backgroundColor: "#1e90ff", height: "5%" }}>
 					<Button
-						color='black'
 						title='Zurück'
 						onPress={() => props.chatModalVisible.setChatModalVisible(false)}
 					/>

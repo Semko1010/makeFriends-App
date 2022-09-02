@@ -38,7 +38,7 @@ const Markers = (props: Props) => {
 					longitude: props.longitude,
 				}}
 				title={props.userName}
-				description='Semko'>
+				description={`Status: ${props.desc}`}>
 				<View>
 					<Image
 						style={styles.userImg}

@@ -107,16 +107,6 @@ export default function App() {
 	const [lastMessage, setLastMessage] = useState("");
 
 	const socket = io("http://192.168.178.33:2020/");
-	// const socket =io("https://makefriendsapp.herokuapp.com/")
-
-	// async function notificationMessage  () {
-	//  const sing = await setChatModalVisible(true)
-	//   if(!chatModalVisible){
-	//     console.log("test",chatModalVisible);
-
-	//    setNotification(true)
-	//   }
-	// }
 
 	useEffect(() => {
 		if (bugNotification) {

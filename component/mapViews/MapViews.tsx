@@ -16,11 +16,11 @@ import {
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
-import { io } from "socket.io-client";
-import axios from "axios";
 
+import axios from "axios";
+import { LinearGradient } from "expo-linear-gradient";
 //Imports
-import Api from "../../component/api/Api.json";
+
 import { userInfo, Token, allInfosUser } from "../../App";
 import Markers from "../marker/Marker";
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton";
@@ -101,8 +101,44 @@ const MapViews = (props: chatMessage) => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [calling, setCalling] = useState<boolean>(true);
-
+	const [lastMessage, setLastMessage] = useState<[] | undefined>();
 	const userToken = token.token;
+
+	// useEffect(() => {
+	// 	const docRef = db.collection("lastMsg").doc(token.userObjId);
+
+	// 	docRef
+	// 		.get()
+	// 		.then(doc => {
+	// 			if (doc.exists) {
+	// 				setLastMessage(doc.data());
+	// 			} else {
+	// 				// doc.data() will be undefined in this case
+	// 				console.log("No such document!");
+	// 			}
+	// 		})
+	// 		.catch(error => {
+	// 			console.log("Error getting document:", error);
+	// 		});
+
+	// 	console.log("TEstds", lastMessage);
+	// }, [db]);
+	useEffect(() => {
+		if (db) {
+			const unscribe = db
+				.collection(`lastMsg:${token.userObjId}`)
+				.limit(100)
+				.onSnapshot(querySnapshot => {
+					const data = querySnapshot.docs.map(doc => ({
+						...doc.data(),
+						id: doc.id,
+					}));
+					setLastMessage(data);
+				});
+			return unscribe;
+		}
+	}, [db]);
+	console.log("Test", lastMessage);
 
 	async function currentGps() {
 		let { status } = await Location.requestForegroundPermissionsAsync();
@@ -128,15 +164,9 @@ const MapViews = (props: chatMessage) => {
 			return unscribe;
 		}
 	}, [db]);
-	console.log(userInfos);
 
 	useEffect(() => {
 		(async () => {
-			// const URL =
-			// 	"https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation";
-			// const fetchInfos = await axios.get(URL, { headers: { userToken } });
-			// const setInfosUsers = await setUserInfos(fetchInfos.data);
-
 			let { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== "granted") {
 				setErrorMsg("Permission to access location was denied");
@@ -150,64 +180,25 @@ const MapViews = (props: chatMessage) => {
 		})();
 	}, []);
 
-	useEffect(() => {
-		(async () => {
-			const connectToChat = await props.socket.on("connect", () => {
-				props.socket.emit("username", token.userName, token.userObjId);
-			});
-		})();
-	}, []);
-
-	async function mapRefresh() {
-		// const leaveRoom = await props.socket.emit("leave_room", token.userObjId)
-
-		//  const jo = await props.socket.emit("join_room",token.userObjId)
-
-		const URL =
-			"https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation";
-		const fetchInfos = await axios.get(URL, { headers: { userToken } });
-		const setInfosUsers = await setUserInfos(fetchInfos.data);
-	}
-
-	// async function notificationMessage() {
-	// 	const recievedMessageuser = await props.allUsers.allUsers.map(user => {
-	// 		if (user.userObjId == props.lastMessage.lastMessage) {
-	// 			userInfos.map(userInfo => {
-	// 				if (props.lastMessage.lastMessage == userInfo.userObjId) {
-	// 					setInfo(userInfo);
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-
-	// 	const removeNotification = await props.notification.setNotification(false);
-	// 	const openChat = await props.chatModalVisible.setChatModalVisible(true);
-	// }
-
 	return (
 		<View style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
 			{location && (
 				<View style={styles.container}>
-					<View style={styles.menu}>
+					<LinearGradient
+						// Button Linear Gradient
+
+						colors={["#ADA996", "#F2F2F2", "#DBDBDB", "#EAEAEA"]}
+						style={styles.menu}>
 						<TouchableOpacity onPress={() => setModalVisible(true)}>
 							<Image
 								style={{ width: 35, height: 35, marginLeft: 15 }}
-								source={require("../../assets/img/menu.png")}
+								source={require("../../assets/img/speisekarte.png")}
 							/>
 						</TouchableOpacity>
 
-						<TouchableOpacity onPress={mapRefresh}>
-							<Image
-								style={{ width: 50, height: 50 }}
-								source={require("../../assets/img/refresh.png")}
-							/>
-						</TouchableOpacity>
-						<SetCoordsButton
-							location={location}
-							call={{ mapRefresh, currentGps }}
-						/>
-					</View>
+						<SetCoordsButton location={location} call={{ currentGps }} />
+					</LinearGradient>
 					{/* @ts-ignore  */}
 					<MapView
 						style={styles.map}
@@ -236,7 +227,10 @@ const MapViews = (props: chatMessage) => {
 
 					{/* INFO VIEW*/}
 
-					<View style={styles.infos}>
+					<LinearGradient
+						// Button Linear Gradient
+						colors={["#ECE9E6", "#FFFFFF", "#DBDBDB", "#EAEAEA"]}
+						style={styles.infos}>
 						<View style={styles.infosText}>
 							<Text>Name: {info.userName}</Text>
 							<Text>Alter: {info.age}</Text>
@@ -244,19 +238,13 @@ const MapViews = (props: chatMessage) => {
 							<Text>Über mich: {info.desc}</Text>
 						</View>
 
-						<Button
-							onPress={() => props.chatModalVisible.setChatModalVisible(true)}
-							title='Chat'
-						/>
-
-						{/* {props.notification.notification && (
-							<View>
-								<Text>Neue Nachricht</Text>
-
-								<Button title='OK' onPress={notificationMessage} />
-							</View>
-						)} */}
-					</View>
+						<TouchableOpacity
+							style={styles.chatBtn}
+							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
+							<Text>Chat</Text>
+						</TouchableOpacity>
+						{/* <Text style={styles}>{lastMessage.text}</Text> */}
+					</LinearGradient>
 				</View>
 			)}
 
@@ -288,15 +276,24 @@ const styles = StyleSheet.create({
 		height: "75%",
 	},
 	infos: {
-		width: "100%",
-
 		backgroundColor: "white",
-		textAlign: "center",
+
 		flexDirection: "row",
-		justifyContent: "space-evenly",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	infosText: {
 		flexDirection: "column",
+		marginLeft: 15,
+	},
+	chatBtn: {
+		backgroundColor: "#7fff00",
+		marginRight: 15,
+		paddingBottom: 15,
+		paddingTop: 15,
+		paddingRight: 30,
+		paddingLeft: 30,
+		borderRadius: 10,
 	},
 	userImg: {
 		width: 110,

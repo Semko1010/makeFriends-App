@@ -65,12 +65,6 @@ const SetCoordsButton = (props: coordinates) => {
 		})();
 	}, []);
 
-	// useEffect(() => {
-	// 	(async () => {
-	// 		const refreshMap = await props.call.mapRefresh();
-	// 	})();
-	// }, [gpsButton]);
-
 	useEffect(() => {
 		userInfos.find(item => {
 			if (item.userLocationinfos.userObjId == token.userObjId) {
@@ -78,7 +72,6 @@ const SetCoordsButton = (props: coordinates) => {
 			}
 		});
 	}, [userInfos]);
-	console.log("dasd", userInfos);
 
 	useEffect(() => {
 		if (db) {
@@ -87,7 +80,6 @@ const SetCoordsButton = (props: coordinates) => {
 					...doc.data(),
 					id: doc.id,
 				}));
-				console.log("try", data);
 			});
 
 			return unscribe;
@@ -101,24 +93,10 @@ const SetCoordsButton = (props: coordinates) => {
 			});
 			setGpsButton(false);
 		}
-
-		// const wa = await props.call.currentGps();
-		// const URLPost =
-		// 	"https://makefriendsapp.herokuapp.com/api/friend/users/userLocation";
-		// const setPosition = await axios.post(URLPost, userLocationinfos);
-		// const URL =
-		// 	"https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation";
-		// const fetchInfos = await axios.get(URL, { headers: { userToken } });
-		// const setInfosUsers = await setUserInfos(fetchInfos.data);
-
-		// if (setPosition.data.locationSet) {
-		// setGpsButton(false);
-		// }
 	}
 	async function deleteLocationUser() {
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
-			console.log(e.userLocationinfos);
 			if (e.userLocationinfos.userObjId === token.userObjId) {
 				gpsId = e.id;
 			}
@@ -129,18 +107,6 @@ const SetCoordsButton = (props: coordinates) => {
 			.doc(gpsId)
 			.delete();
 		setGpsButton(true);
-
-		// const URLRemove =
-		// 	"https://makefriendsapp.herokuapp.com/api/friend/users/deleteLocation";
-		// const setPosition = await axios.post(URLRemove, token);
-		// const URL =
-		// 	"https://makefriendsapp.herokuapp.com/api/friend/users/gpsLocation";
-		// const fetchInfos = await axios.get(URL, { headers: { userToken } });
-		// const setInfosUsers = await setUserInfos(fetchInfos.data);
-
-		// if (setPosition.data.locationRemoved) {
-		// 	setGpsButton(true);
-		// }
 	}
 
 	return (
@@ -148,14 +114,14 @@ const SetCoordsButton = (props: coordinates) => {
 			{gpsButton ? (
 				<TouchableOpacity onPress={setLocationUser}>
 					<Image
-						style={{ width: 60, height: 60, marginRight: 10 }}
+						style={{ width: 50, height: 50, marginRight: 30 }}
 						source={require("../../assets/img/gps.png")}
 					/>
 				</TouchableOpacity>
 			) : (
 				<TouchableOpacity onPress={deleteLocationUser}>
 					<Image
-						style={{ width: 60, height: 60 }}
+						style={{ width: 50, height: 50, marginRight: 30 }}
 						source={require("../../assets/img/location.png")}
 					/>
 				</TouchableOpacity>
