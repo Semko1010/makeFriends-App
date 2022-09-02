@@ -20,7 +20,7 @@ import {
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token } from "../../App";
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 
 type chattMsg = {
 	message: string;
@@ -153,9 +153,34 @@ const ChatModal = (props: ModalFC) => {
 						messages={messages}
 						onSend={messages => send(messages)}
 						// inverted={false}
+						showAvatarForEveryMessage={true}
+						onPressAvatar={() => console.log("Test")}
 						user={{
 							_id: token.userObjId,
-							avatar: "https://i.pravatar.cc/300",
+							avatar: `data:image/png;base64,${token.img}`,
+						}}
+						renderBubble={props => {
+							return (
+								<Bubble
+									{...props}
+									textStyle={{
+										right: {
+											color: "white",
+										},
+										left: {
+											color: "#24204F",
+										},
+									}}
+									wrapperStyle={{
+										left: {
+											backgroundColor: "#E6F5F3",
+										},
+										right: {
+											backgroundColor: "green",
+										},
+									}}
+								/>
+							);
 						}}
 					/>
 				</View>

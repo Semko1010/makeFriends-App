@@ -6,6 +6,7 @@ import {
 	Dimensions,
 	Image,
 	Button,
+	ImageBackground,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { userInfo } from "../../App";
@@ -46,6 +47,15 @@ const Markers = (props: Props) => {
 							uri: `data:image/png;base64,${props.img}`,
 						}}
 					/>
+					{/* <Text style={{ width: 0, height: 0 }}>{Math.random()}</Text> */}
+					{/* <Svg height='50' width='50' key={2000}>
+						<Image
+							style={styles.userImg}
+							source={{
+								uri: `data:image/png;base64,${props.img}`,
+							}}
+						/>
+					</Svg> */}
 				</View>
 			</Marker>
 		</>

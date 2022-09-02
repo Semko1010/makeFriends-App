@@ -90,7 +90,6 @@ type chatMessage = {
 };
 
 const MapViews = (props: chatMessage) => {
-	// const socket =io("https://makefriendsapp.herokuapp.com/")
 	const [location, setLocation] = useState<coordinates | undefined>();
 	const [errorMsg, setErrorMsg] = useState<string>("");
 	const [infos, setInfos] = useState<boolean>(true);
