@@ -167,7 +167,7 @@ const ChatModal = (props: ModalFC) => {
 						// inverted={false}
 						showAvatarForEveryMessage={true}
 						renderUsernameOnMessage={true}
-						text={privateMsgStat ? `@${lastMessage}` : undefined}
+						text={privateMsgStat ? `@${lastMessage} ` : undefined}
 						user={{
 							name: token.userName,
 							_id: token.userObjId,
@@ -178,17 +178,38 @@ const ChatModal = (props: ModalFC) => {
 							return (
 								<Bubble
 									{...props}
+									timeTextStyle={{
+										right: {
+											fontSize: 8,
+										},
+										left: {
+											fontSize: 8,
+										},
+									}}
+									UsernameTextStyle={{
+										right: {
+											fontSize: 8,
+											color: "red",
+										},
+										left: {
+											fontSize: 8,
+											color: "red",
+										},
+									}}
 									textStyle={{
 										right: {
 											color: "white",
+											fontSize: 12,
 										},
 										left: {
 											color: "#24204F",
+											fontSize: 12,
 										},
 									}}
 									wrapperStyle={{
 										left: {
 											backgroundColor: "#E6F5F3",
+											height: 40,
 										},
 										right: {
 											backgroundColor: "green",

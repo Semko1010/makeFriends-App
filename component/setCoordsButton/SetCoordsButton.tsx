@@ -18,10 +18,6 @@ type coordinates = {
 		longitude: number;
 		latitude: number;
 	};
-	call: {
-		mapRefresh: () => {};
-		currentGps: () => {};
-	};
 };
 
 interface user {
@@ -45,7 +41,7 @@ const SetCoordsButton = (props: coordinates) => {
 	const userLocationinfos = {
 		latitude: props.location.latitude,
 		longitude: props.location.longitude,
-		userName: userData?.userName,
+		userName: token.userName,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
@@ -54,16 +50,16 @@ const SetCoordsButton = (props: coordinates) => {
 		userObjId: token.userObjId,
 	};
 
-	useEffect(() => {
-		(async () => {
-			const URL =
-				"https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo";
-			const fetchLoggedUser = await Axios.get(URL, {
-				headers: { userToken, userObjId },
-			});
-			const setUsr = await setUserData(fetchLoggedUser.data);
-		})();
-	}, []);
+	// useEffect(() => {
+	// 	(async () => {
+	// 		const URL =
+	// 			"https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo";
+	// 		const fetchLoggedUser = await Axios.get(URL, {
+	// 			headers: { userToken, userObjId },
+	// 		});
+	// 		const setUsr = await setUserData(fetchLoggedUser.data);
+	// 	})();
+	// }, []);
 
 	useEffect(() => {
 		userInfos.find(item => {
@@ -73,20 +69,9 @@ const SetCoordsButton = (props: coordinates) => {
 		});
 	}, [userInfos]);
 
-	// useEffect(() => {
-	// 	if (db) {
-	// 		const unscribe = db.collection("location").onSnapshot(querySnapshot => {
-	// 			const data = querySnapshot.docs.map(doc => ({
-	// 				...doc.data(),
-	// 				id: doc.id,
-	// 			}));
-	// 		});
-
-	// 		return unscribe;
-	// 	}
-	// }, [db]);
-
 	async function setLocationUser() {
+		// props.setGps.setGps(true);
+		// setGpsButton(false);
 		if (db) {
 			db.collection("location").add({
 				userLocationinfos,
@@ -95,6 +80,7 @@ const SetCoordsButton = (props: coordinates) => {
 		}
 	}
 	async function deleteLocationUser() {
+		// props.setGps.setGps(false);
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
 			if (e.userLocationinfos.userObjId === token.userObjId) {

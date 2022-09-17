@@ -11,6 +11,7 @@ import {
 	Pressable,
 	Button,
 	TouchableOpacity,
+	SafeAreaView,
 } from "react-native";
 import { Link } from "react-router-native";
 import { Token } from "../../App";
@@ -33,96 +34,100 @@ const ModalMenu = (props: ModalFC) => {
 	};
 
 	return (
-		<Modal
-			animationType='slide'
-			transparent={true}
-			visible={props.modalValue.modalVisible}
-			onRequestClose={() => {
-				props.modalValue.setModalVisible(!props.modalValue.modalVisible);
-			}}>
-			<View style={styles.centeredView}>
-				<LinearGradient colors={["#2980B9", "#6DD5FA", "#FFFFFF"]}>
-					<View style={styles.modalView}>
-						{/* @ts-ignore  */}
-						<ImageBackground
-							source={require("../../assets/img/bck.jpg")}
-							resizeMode='cover'
-							style={styles.userImgView}>
-							<Image
-								style={styles.userImg}
-								source={{
-									uri: `data:image/png;base64,${token.img}`,
-								}}
-							/>
-							<Text style={styles.modalText}>{token.userName}</Text>
-						</ImageBackground>
+		<SafeAreaView>
+			<Modal
+				animationType='slide'
+				transparent={true}
+				visible={props.modalValue.modalVisible}
+				onRequestClose={() => {
+					props.modalValue.setModalVisible(!props.modalValue.modalVisible);
+				}}>
+				<View style={styles.centeredView}>
+					<LinearGradient colors={["#ADA996", "#F2F2F2", "#DBDBDB", "#EAEAEA"]}>
+						<View style={styles.modalView}>
+							{/* @ts-ignore  */}
+							<ImageBackground
+								source={require("../../assets/img/bck.jpg")}
+								resizeMode='cover'
+								style={styles.userImgView}>
+								<Image
+									style={styles.userImg}
+									source={{
+										uri: `data:image/png;base64,${token.img}`,
+									}}
+								/>
+								<Text style={styles.modalText}>{token.userName}</Text>
+							</ImageBackground>
 
-						<View style={styles.date}>
-							<Text
-								style={{ fontSize: 35, borderBottomWidth: 1, width: "100%" }}>
-								Menü
-							</Text>
+							<View style={styles.date}>
+								<Text
+									style={{ fontSize: 35, borderBottomWidth: 1, width: "100%" }}>
+									Menü
+								</Text>
 
-							<View></View>
-							<View style={styles.buttons}>
-								<Image
-									style={{ width: 20, height: 20, marginRight: 20 }}
-									source={require("../../assets/img/user.png")}
-								/>
-								<Link to='/userSettings'>
-									<Text style={{ fontSize: 20, color: "white" }}>Profil</Text>
-								</Link>
-							</View>
-							<View style={styles.buttons}>
-								<Image
-									style={{ width: 20, height: 20, marginRight: 20 }}
-									source={require("../../assets/img/map.png")}
-								/>
-								<Link to='/map'>
-									<Text style={{ fontSize: 20, color: "white" }}>Map</Text>
-								</Link>
-							</View>
-							<View style={styles.buttons}>
-								<Image
-									style={{ width: 20, height: 20, marginRight: 20 }}
-									source={require("../../assets/img/user.png")}
-								/>
-								<Link to='/'>
-									<Text style={{ fontSize: 20, color: "white" }}>Daten</Text>
-								</Link>
-							</View>
-							<View style={styles.buttons}>
-								<TouchableOpacity
-									style={{ flexDirection: "row", alignItems: "center" }}
-									onPress={logout}>
+								<View></View>
+								<View style={styles.buttons}>
 									<Image
 										style={{ width: 20, height: 20, marginRight: 20 }}
-										source={require("../../assets/img/logout.png")}
+										source={require("../../assets/img/user.png")}
 									/>
-									<Link underlayColor='transparent' to='/'>
-										<Text style={{ fontSize: 20, color: "white" }}>Logout</Text>
+									<Link to='/userSettings'>
+										<Text style={{ fontSize: 20, color: "white" }}>Profil</Text>
 									</Link>
-								</TouchableOpacity>
+								</View>
+								<View style={styles.buttons}>
+									<Image
+										style={{ width: 20, height: 20, marginRight: 20 }}
+										source={require("../../assets/img/map.png")}
+									/>
+									<Link to='/map'>
+										<Text style={{ fontSize: 20, color: "white" }}>Map</Text>
+									</Link>
+								</View>
+								<View style={styles.buttons}>
+									<Image
+										style={{ width: 20, height: 20, marginRight: 20 }}
+										source={require("../../assets/img/user.png")}
+									/>
+									<Link to='/'>
+										<Text style={{ fontSize: 20, color: "white" }}>Daten</Text>
+									</Link>
+								</View>
+								<View style={styles.buttons}>
+									<TouchableOpacity
+										style={{ flexDirection: "row", alignItems: "center" }}
+										onPress={logout}>
+										<Image
+											style={{ width: 20, height: 20, marginRight: 20 }}
+											source={require("../../assets/img/logout.png")}
+										/>
+										<Link underlayColor='transparent' to='/'>
+											<Text style={{ fontSize: 20, color: "white" }}>
+												Logout
+											</Text>
+										</Link>
+									</TouchableOpacity>
+								</View>
+							</View>
+
+							<View style={styles.footerView}>
+								<View style={styles.buttons}></View>
+
+								<Pressable
+									style={[styles.button, styles.buttonClose]}
+									onPress={() =>
+										props.modalValue.setModalVisible(
+											!props.modalValue.modalVisible,
+										)
+									}>
+									<Text style={styles.textStyle}>Zurück</Text>
+								</Pressable>
 							</View>
 						</View>
-
-						<View style={styles.footerView}>
-							<View style={styles.buttons}></View>
-
-							<Pressable
-								style={[styles.button, styles.buttonClose]}
-								onPress={() =>
-									props.modalValue.setModalVisible(
-										!props.modalValue.modalVisible,
-									)
-								}>
-								<Text style={styles.textStyle}>Zurück</Text>
-							</Pressable>
-						</View>
-					</View>
-				</LinearGradient>
-			</View>
-		</Modal>
+					</LinearGradient>
+				</View>
+			</Modal>
+		</SafeAreaView>
 	);
 };
 
@@ -164,7 +169,7 @@ const styles = StyleSheet.create({
 
 	modalView: {
 		justifyContent: "space-between",
-		height: Dimensions.get("window").height,
+		flex: 1,
 		width: "100%",
 
 		borderRadius: 20,

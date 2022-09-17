@@ -13,6 +13,7 @@ import {
 	Modal,
 	Alert,
 	TouchableOpacity,
+	SafeAreaView,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
@@ -100,67 +101,39 @@ const MapViews = (props: chatMessage) => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [calling, setCalling] = useState<boolean>(true);
-	const [lastMessage, setLastMessage] = useState<[] | undefined>();
+	const [Gps, setGps] = useState<boolean>(false);
+	const [viewFix, setViewFix] = useState<boolean>(true);
 	const userToken = token.token;
-
-	// useEffect(() => {
-	// 	const docRef = db.collection("lastMsg").doc(token.userObjId);
-
-	// 	docRef
-	// 		.get()
-	// 		.then(doc => {
-	// 			if (doc.exists) {
-	// 				setLastMessage(doc.data());
-	// 			} else {
-	// 				// doc.data() will be undefined in this case
-	// 				console.log("No such document!");
-	// 			}
-	// 		})
-	// 		.catch(error => {
-	// 			console.log("Error getting document:", error);
-	// 		});
-
-	// 	console.log("TEstds", lastMessage);
-	// }, [db]);
-	// useEffect(() => {
-	// 	if (db) {
-	// 		const unscribe = db
-	// 			.collection(`lastMsg:${token.userObjId}`)
-	// 			.limit(100)
-	// 			.onSnapshot(querySnapshot => {
-	// 				const data = querySnapshot.docs.map(doc => ({
-	// 					...doc.data(),
-	// 					id: doc.id,
-	// 				}));
-	// 				setLastMessage(data);
-	// 			});
-	// 		return unscribe;
-	// 	}
-	// }, [db]);
-
-	async function currentGps() {
-		let { status } = await Location.requestForegroundPermissionsAsync();
-		if (status !== "granted") {
-			setErrorMsg("Permission to access location was denied");
-			return;
-		}
-
-		let location = await Location.getCurrentPositionAsync({});
-		setLocation(location.coords);
-	}
+	const userLocationinfos = {
+		latitude: location?.latitude,
+		longitude: location?.longitude,
+		userName: token.userName,
+		age: token.age,
+		hobby: token.hobby,
+		img: token.img,
+		desc: token.desc,
+		token: token.token,
+		userObjId: token.userObjId,
+	};
 
 	useEffect(() => {
-		if (db) {
-			const unscribe = db.collection("location").onSnapshot(querySnapshot => {
-				const data = querySnapshot.docs.map(doc => ({
-					...doc.data(),
-					id: doc.id,
-				}));
-				setUserInfos(data);
-			});
+		(async () => {
+			const settingView = await setViewFix(true);
+			const unscribe = await db
+				.collection("location")
+				.onSnapshot(querySnapshot => {
+					const data = querySnapshot.docs.map(doc => ({
+						...doc.data(),
+						id: doc.id,
+					}));
+					setUserInfos(data);
+				});
+			if (userInfos) {
+				const settingViewFix = await setViewFix(true);
+			}
 
 			return unscribe;
-		}
+		})();
 	}, [db]);
 
 	useEffect(() => {
@@ -176,13 +149,33 @@ const MapViews = (props: chatMessage) => {
 
 			setLoading(false);
 		})();
-	}, []);
+	}, [db]);
 
+	// async function setLocationUser() {
+	// 	(async () => {
+	// 		if (Gps) {
+	// 			let { status } = await Location.requestForegroundPermissionsAsync();
+	// 			if (status !== "granted") {
+	// 				setErrorMsg("Permission to access location was denied");
+	// 				return;
+	// 			}
+
+	// 			let location = await Location.getCurrentPositionAsync({});
+	// 			const setLoc = await setLocation(location.coords);
+	// 			const setGps = await db
+	// 				.collection("location")
+	// 				.doc(token.userObjId)
+	// 				.set({
+	// 					userLocationinfos,
+	// 				});
+	// 		}
+	// 	})();
+	// }
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
 			{location && (
-				<View style={styles.container}>
+				<SafeAreaView style={styles.container}>
 					<LinearGradient
 						// Button Linear Gradient
 
@@ -194,8 +187,17 @@ const MapViews = (props: chatMessage) => {
 								source={require("../../assets/img/speisekarte.png")}
 							/>
 						</TouchableOpacity>
+						<View style={styles.groupChatText}>
+							<Image
+								style={{ width: 50, height: 50 }}
+								source={{
+									uri: `data:image/png;base64,${info.img}`,
+								}}
+							/>
+							<Text style={{ textAlign: "center" }}>Ausgewählt</Text>
+						</View>
 
-						<SetCoordsButton location={location} call={{ currentGps }} />
+						<SetCoordsButton location={location} setGps={{ Gps, setGps }} />
 					</LinearGradient>
 					{/* @ts-ignore  */}
 					<MapView
@@ -206,6 +208,7 @@ const MapViews = (props: chatMessage) => {
 							latitudeDelta: 0.0922,
 							longitudeDelta: 0.0421,
 						}}
+						// onUserLocationChange={setLocationUser}
 						showsUserLocation={true}
 						provider='google'>
 						{userInfos.map((e, index) => (
@@ -219,6 +222,7 @@ const MapViews = (props: chatMessage) => {
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
 								userObjId={e.userLocationinfos.userObjId}
+								viewFix={{ viewFix, setViewFix }}
 							/>
 						))}
 					</MapView>
@@ -230,7 +234,11 @@ const MapViews = (props: chatMessage) => {
 						colors={["#ECE9E6", "#FFFFFF", "#DBDBDB", "#EAEAEA"]}
 						style={styles.infos}>
 						<View style={styles.infosText}>
-							<Text>Name: {info.userName}</Text>
+							<Text>
+								<Text style={{ color: "black" }}>Name: </Text>
+								{info.userName}
+							</Text>
+
 							<Text>Alter: {info.age}</Text>
 							<Text>Hobbys: {info.hobby}</Text>
 							<Text>Über mich: {info.desc}</Text>
@@ -239,11 +247,11 @@ const MapViews = (props: chatMessage) => {
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
-							<Text>Chat</Text>
+							<Text style={{ color: "white" }}>Chat</Text>
 						</TouchableOpacity>
 						{/* <Text style={styles}>{lastMessage.text}</Text> */}
 					</LinearGradient>
-				</View>
+				</SafeAreaView>
 			)}
 
 			{/* Menü */}
@@ -260,7 +268,7 @@ const MapViews = (props: chatMessage) => {
 					allUsers={props.allUsers}
 				/>
 			</>
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -271,26 +279,28 @@ const styles = StyleSheet.create({
 
 	map: {
 		width: Dimensions.get("window").width,
-		height: "75%",
+		flex: 1,
 	},
 	infos: {
+		borderTopWidth: 1,
 		backgroundColor: "white",
-
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 	},
 	infosText: {
 		flexDirection: "column",
-		marginLeft: 15,
+		marginLeft: 25,
 	},
 	chatBtn: {
-		backgroundColor: "#7fff00",
-		marginRight: 15,
+		backgroundColor: "#00bfff",
+
+		marginRight: 25,
 		paddingBottom: 15,
 		paddingTop: 15,
 		paddingRight: 30,
 		paddingLeft: 30,
+		borderWidth: 1,
 		borderRadius: 10,
 	},
 	userImg: {
@@ -305,7 +315,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	footerView: {
-		borderTopWidth: 1,
 		width: Dimensions.get("window").width,
 		justifyContent: "center",
 		alignItems: "center",
@@ -373,6 +382,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		marginTop: 22,
+	},
+	groupChatText: {
+		alignItems: "center",
 	},
 });
 

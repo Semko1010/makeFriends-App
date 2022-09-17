@@ -26,31 +26,36 @@ const Markers = (props: Props) => {
 	const eachInfoOfUser = () => {
 		setInfo(props);
 	};
-	console.log("ded", props);
+
+	// useEffect(() => {
+	// 	(async () => {
+	// 		const setViewTrue = await setViewFix(true);
+	// 		// const setViewFalse = await setViewFix(false);
+	// 	})();
+	// }, [props]);
 
 	return (
 		<>
 			{/* @ts-ignore  */}
-			{props && (
-				<Marker
-					tracksViewChanges={false}
-					onPress={eachInfoOfUser}
-					coordinate={{
-						latitude: props.latitude,
-						longitude: props.longitude,
-					}}
-					title={props.userName}
-					description={`Status: ${props.desc}`}>
-					{/* <View>
-						<Image
-							style={styles.userImg}
-							source={{
-								uri: `data:image/png;base64,${props.img}`,
-							}}
-						/>
-					</View> */}
-				</Marker>
-			)}
+
+			<Marker
+				tracksViewChanges={props.viewFix.viewFix}
+				onPress={eachInfoOfUser}
+				coordinate={{
+					latitude: props.latitude,
+					longitude: props.longitude,
+				}}
+				title={props.userName}
+				description={`Status: ${props.desc}`}>
+				<View>
+					<Image
+						style={styles.userImg}
+						source={{
+							uri: `data:image/png;base64,${props.img}`,
+						}}
+					/>
+				</View>
+			</Marker>
 		</>
 	);
 };
