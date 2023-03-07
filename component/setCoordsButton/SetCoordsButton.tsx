@@ -25,6 +25,7 @@ interface user {
 	latitude: number;
 	longitude: number;
 	userName: string;
+	email: string;
 	age: number;
 	hobby: string;
 	desc: string;
@@ -36,42 +37,36 @@ const SetCoordsButton = (props: coordinates) => {
 	const { userInfos, setUserInfos } = useContext(allInfosUser);
 	const [userData, setUserData] = useState<user | undefined>();
 	const userToken = token.token;
-	const userObjId = token.userObjId;
+	
 
 	const userLocationinfos = {
 		latitude: props.location.latitude,
 		longitude: props.location.longitude,
-		userName: token.userName,
+		userName: token.username,
+		email: token.email,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
 		desc: token.desc,
-		token: token.token,
-		userObjId: token.userObjId,
+		
 	};
 
-	// useEffect(() => {
-	// 	(async () => {
-	// 		const URL =
-	// 			"https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo";
-	// 		const fetchLoggedUser = await Axios.get(URL, {
-	// 			headers: { userToken, userObjId },
-	// 		});
-	// 		const setUsr = await setUserData(fetchLoggedUser.data);
-	// 	})();
-	// }, []);
+
 
 	useEffect(() => {
+		console.log("userInfos",userInfos);
+		
 		userInfos.find(item => {
-			if (item.userLocationinfos.userObjId == token.userObjId) {
+			if (item.userLocationinfos.email == token.email) {
+				
+				
 				setGpsButton(false);
 			}
 		});
 	}, [userInfos]);
 
 	async function setLocationUser() {
-		// props.setGps.setGps(true);
-		// setGpsButton(false);
+		
 		if (db) {
 			db.collection("location").add({
 				userLocationinfos,
@@ -80,10 +75,10 @@ const SetCoordsButton = (props: coordinates) => {
 		}
 	}
 	async function deleteLocationUser() {
-		// props.setGps.setGps(false);
+		
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
-			if (e.userLocationinfos.userObjId === token.userObjId) {
+			if (e.userLocationinfos.email === token.email) {
 				gpsId = e.id;
 			}
 		});

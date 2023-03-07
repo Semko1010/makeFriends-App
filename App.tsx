@@ -14,15 +14,17 @@ import ChangeInfos from "./component/userSettings/ChangeInfos";
 
 import { io } from "socket.io-client";
 import uuid from "react-native-uuid";
+import { db } from "./component/fireBase/FireBase";
 interface user {
 	img: string;
 	latitude: number;
 	longitude: number;
-	userName: string;
+	username: string;
 	age: number;
 	hobby: string;
 	desc: string;
 	userObjId: string;
+	email: string
 }
 
 type settName = {
@@ -34,10 +36,11 @@ interface tokenInfos {
 	hobby: string;
 	img: string;
 	token: string;
-	userName: string;
+	username: string;
 	userObjId: string;
 	verifyUser: boolean;
 	desc: string;
+	email:string
 }
 type setToken = {
 	token: tokenInfos;
@@ -46,6 +49,7 @@ type setToken = {
 
 interface InterFaceInfos {
 	userLocationinfos: {
+		email: string;
 		age: number;
 		img: string;
 		latitude: number;
@@ -88,6 +92,7 @@ interface IMessage {
 const userInfo = createContext<settName>({} as settName);
 const Token = createContext<setToken>({} as setToken);
 const allInfosUser = createContext({} as setAllUserinfo);
+
 
 export default function App() {
 	const [info, setInfo] = useState<user>({} as user);

@@ -20,14 +20,16 @@ import { Token, allInfosUser } from "../../App";
 import ModalMenu from "../modalMenu/ModalMenu";
 import ButtonChangeInfos from "./ChangeInfos";
 import { LinearGradient } from "expo-linear-gradient";
+import { db } from "../fireBase/FireBase";
 interface user {
 	img: string;
 	latitude: number;
 	longitude: number;
-	userName: string;
+	username: string;
 	age: number;
 	hobby: string;
 	desc: string;
+	email: string
 }
 
 const UserSettings = () => {
@@ -36,19 +38,28 @@ const UserSettings = () => {
 	const [userData, setUserData] = useState<user | undefined>();
 	const [modalVisible, setModalVisible] = useState<boolean>(false);
 	const userToken = token.token;
-	const userObjId = token.userObjId;
+	
 
+console.log("tok",token);
+
+
+	
 	useEffect(() => {
-		(async () => {
-			// const URL = "http://10.0.2.2:2020/api/friend/users/loggedUserInfo"
-			const URL =
-				"https://makefriendsapp.herokuapp.com/api/friend/users/loggedUserInfo";
-			const fetchLoggedUser = await Axios.get(URL, {
-				headers: { userToken, userObjId },
-			});
-			const setUsr = await setUserData(fetchLoggedUser.data);
-			setLoading(false);
-		})();
+		db
+			.collection("login")
+			.limit(100)
+			.onSnapshot(querySnapshot => {
+			const data = querySnapshot.docs.map(doc => ({
+			...doc.data(),
+			id: doc.id,
+		}));
+		
+		setLoading(false);
+		
+			})
+
+
+		
 	}, []);
 
 	return (
@@ -72,7 +83,7 @@ const UserSettings = () => {
 				<View style={styles.infoView}>
 					<Image
 						style={styles.userImg}
-						source={{ uri: `data:image/png;base64,${userData?.img}` }}
+						source={{ uri: token?.img }}
 					/>
 					<View style={styles.menus}>
 						<Image
@@ -80,7 +91,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/emails.png")}
 						/>
 						<Text>
-							Email:{userData?.userName}
+							Email: {token?.email}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>
@@ -90,7 +101,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/age.png")}
 						/>
 						<Text>
-							Alter: {userData?.age}
+							Alter: {token?.age}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>
@@ -100,7 +111,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/user.png")}
 						/>
 						<Text>
-							Username: {userData?.userName}
+							Username: {token?.username}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>
@@ -110,7 +121,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/hobby.png")}
 						/>
 						<Text>
-							Hobbys: {userData?.hobby}
+							Hobbys: {token?.hobby}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>
@@ -120,7 +131,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/desc.png")}
 						/>
 						<Text>
-							Beschreibung: {userData?.desc}
+							Beschreibung: {token?.desc}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>

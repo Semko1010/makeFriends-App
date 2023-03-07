@@ -24,7 +24,7 @@ const ChangeInfos = () => {
 	const [desc, setDesc] = useState<string>(token.desc);
 	const [error, setError] = useState<boolean>(false);
 	const userToken = token.token;
-	const userObjId = token.userObjId;
+	
 	const user = {
 		userName,
 		hobby,
@@ -37,7 +37,7 @@ const ChangeInfos = () => {
 			"https://makefriendsapp.herokuapp.com/api/friend/users/changeUserInfos";
 		if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
 			const postInfos = await Axios.post(URL, user, {
-				headers: { userToken, userObjId },
+				headers: { userToken },
 			});
 			if (postInfos.data.infosUpdate) {
 				navigate("/userSettings");

@@ -14,7 +14,7 @@ interface Props {
 	img: string;
 	latitude: number;
 	longitude: number;
-	userName: string;
+	username: string;
 	age: number;
 	hobby: string;
 	desc: string;
@@ -33,25 +33,27 @@ const Markers = (props: Props) => {
 	// 		// const setViewFalse = await setViewFix(false);
 	// 	})();
 	// }, [props]);
+	
+
 
 	return (
 		<>
 			{/* @ts-ignore  */}
 
 			<Marker
-				tracksViewChanges={props.viewFix.viewFix}
+				tracksViewChanges={true}
 				onPress={eachInfoOfUser}
 				coordinate={{
 					latitude: props.latitude,
 					longitude: props.longitude,
 				}}
-				title={props.userName}
+				title={props.username}
 				description={`Status: ${props.desc}`}>
 				<View>
 					<Image
 						style={styles.userImg}
 						source={{
-							uri: `data:image/png;base64,${props.img}`,
+							uri: props.img,
 						}}
 					/>
 				</View>

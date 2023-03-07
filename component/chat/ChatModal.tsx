@@ -71,11 +71,7 @@ const ChatModal = (props: ModalFC) => {
 	const [lastMessage, setLastMessage] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
 
-	// const privateMsg = user => {
-	// 	setLastMessage(user.name);
-	// 	setPrivateMsgStat(true);
-	// 	setPrivateMsgStat(false);
-	// };
+	
 
 	async function privateMsg(user) {
 		const setUserName = await setLastMessage(user.name);
@@ -86,10 +82,8 @@ const ChatModal = (props: ModalFC) => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
-		// const chatId =
-		// 	token.userObjId > info.userObjId
-		// 		? `${token.userObjId + info.userObjId}`
-		// 		: `${info.userObjId + token.userObjId}`;
+		
+	
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
 
@@ -102,15 +96,7 @@ const ChatModal = (props: ModalFC) => {
 				user,
 			});
 		}
-		// if (db) {
-		// 	db.collection(`lastMsg:${info.userObjId}`).doc(token.userObjId).set({
-		// 		_id,
-		// 		createdAt,
-		// 		text,
-		// 		user,
-		// 		unread: true,
-		// 	});
-		// }
+		
 	};
 
 	useEffect(() => {
@@ -156,7 +142,7 @@ const ChatModal = (props: ModalFC) => {
 					<Image
 						style={{ width: 50, height: 50 }}
 						source={{
-							uri: `data:image/png;base64,${token.img}`,
+							uri: token.img,
 						}}
 					/>
 				</View>
@@ -169,9 +155,9 @@ const ChatModal = (props: ModalFC) => {
 						renderUsernameOnMessage={true}
 						text={privateMsgStat ? `@${lastMessage} ` : undefined}
 						user={{
-							name: token.userName,
-							_id: token.userObjId,
-							avatar: `data:image/png;base64,${token.img}`,
+							name: token.username,
+							_id: token.email,
+							avatar: token.img,
 						}}
 						onPressAvatar={user => privateMsg(user)}
 						renderBubble={props => {

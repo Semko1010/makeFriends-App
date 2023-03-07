@@ -102,39 +102,42 @@ const MapViews = (props: chatMessage) => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [calling, setCalling] = useState<boolean>(true);
 	const [Gps, setGps] = useState<boolean>(false);
-	const [viewFix, setViewFix] = useState<boolean>(true);
+	const [viewFix, setViewFix] = useState<boolean>();
 	const userToken = token.token;
 	const userLocationinfos = {
 		latitude: location?.latitude,
 		longitude: location?.longitude,
-		userName: token.userName,
+		userName: token.username,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
 		desc: token.desc,
-		token: token.token,
-		userObjId: token.userObjId,
+		
 	};
 
 	useEffect(() => {
 		(async () => {
-			const settingView = await setViewFix(true);
 			const unscribe = await db
+
 				.collection("location")
 				.onSnapshot(querySnapshot => {
 					const data = querySnapshot.docs.map(doc => ({
 						...doc.data(),
 						id: doc.id,
 					}));
+					setViewFix(true);
 					setUserInfos(data);
+
+					const myTimeout = setTimeout(myGreeting, 1000);
+					function myGreeting() {
+						setViewFix(false);
+					}
 				});
-			if (userInfos) {
-				const settingViewFix = await setViewFix(true);
-			}
 
 			return unscribe;
 		})();
 	}, [db]);
+
 
 	useEffect(() => {
 		(async () => {
@@ -151,26 +154,7 @@ const MapViews = (props: chatMessage) => {
 		})();
 	}, [db]);
 
-	// async function setLocationUser() {
-	// 	(async () => {
-	// 		if (Gps) {
-	// 			let { status } = await Location.requestForegroundPermissionsAsync();
-	// 			if (status !== "granted") {
-	// 				setErrorMsg("Permission to access location was denied");
-	// 				return;
-	// 			}
 
-	// 			let location = await Location.getCurrentPositionAsync({});
-	// 			const setLoc = await setLocation(location.coords);
-	// 			const setGps = await db
-	// 				.collection("location")
-	// 				.doc(token.userObjId)
-	// 				.set({
-	// 					userLocationinfos,
-	// 				});
-	// 		}
-	// 	})();
-	// }
 	return (
 		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
@@ -211,7 +195,11 @@ const MapViews = (props: chatMessage) => {
 						// onUserLocationChange={setLocationUser}
 						showsUserLocation={true}
 						provider='google'>
+							
 						{userInfos.map((e, index) => (
+							
+							
+							
 							<Markers
 								key={index}
 								latitude={e.userLocationinfos.latitude}
@@ -221,9 +209,10 @@ const MapViews = (props: chatMessage) => {
 								age={e.userLocationinfos.age}
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
-								userObjId={e.userLocationinfos.userObjId}
-								viewFix={{ viewFix, setViewFix }}
+								
+								
 							/>
+							
 						))}
 					</MapView>
 
@@ -236,7 +225,7 @@ const MapViews = (props: chatMessage) => {
 						<View style={styles.infosText}>
 							<Text>
 								<Text style={{ color: "black" }}>Name: </Text>
-								{info.userName}
+								{/* {info.userName} */}
 							</Text>
 
 							<Text>Alter: {info.age}</Text>

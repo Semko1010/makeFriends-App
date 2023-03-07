@@ -1,5 +1,5 @@
 //modules
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
 	View,
 	TextInput,
@@ -13,6 +13,8 @@ import { Link, useNavigate } from "react-router-native";
 //imports
 import { Token } from "../../App";
 import { LinearGradient } from "expo-linear-gradient";
+import { db } from "../fireBase/FireBase";
+import { useJwt } from "react-jwt";
 
 type semir = {
 	value: {
@@ -21,6 +23,12 @@ type semir = {
 	};
 };
 
+
+
+
+
+
+
 const Login = (props: any) => {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
@@ -28,26 +36,39 @@ const Login = (props: any) => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const { token, setToken } = useContext(Token);
 	const user = { email, password };
+	const tokens = "Your JWT";
+	const { decodedToken, isExpired } = useJwt(tokens);
 
 	async function login() {
-		// const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
-		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/login";
+		console.log("tokens",tokens);
+		
 
 		setLoading(true);
+		
 		try {
-			const fetch = await Axios.post(URL, user);
-			console.log("WSdad", fetch.data);
-
-			if (fetch.data.token) {
-				if (fetch.data.verifyUser) {
-					setToken(fetch.data);
-					setLoading(false);
-					navigate("/map");
-					// props.socket.emit("join_room",fetch.data.userObjId)
-				} else {
-					console.log("Pleaser Verify Account");
-				}
+			db
+			.collection("login")
+			.limit(100)
+			.onSnapshot(querySnapshot => {
+			const data = querySnapshot.docs.map(doc => ({
+			...doc.data(),
+			id: doc.id,
+		}));
+		data.find((user) => {
+			if (email === user.username && password === user.password) {
+				setToken(user)
+				console.log("user",user);
+				navigate("/map")
+			}else{
+				console.log("fail");
+				
 			}
+			
+		})
+		
+			})
+
+			
 		} catch (err) {
 			console.log(err);
 		}

@@ -56,7 +56,7 @@ const ModalMenu = (props: ModalFC) => {
 										uri: `data:image/png;base64,${token.img}`,
 									}}
 								/>
-								<Text style={styles.modalText}>{token.userName}</Text>
+								<Text style={styles.modalText}>{token.username}</Text>
 							</ImageBackground>
 
 							<View style={styles.date}>
@@ -95,6 +95,7 @@ const ModalMenu = (props: ModalFC) => {
 								</View>
 								<View style={styles.buttons}>
 									<TouchableOpacity
+										underlayColor='none'
 										style={{ flexDirection: "row", alignItems: "center" }}
 										onPress={logout}>
 										<Image
