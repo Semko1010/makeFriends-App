@@ -27,6 +27,7 @@ const Markers = (props: Props) => {
 		setInfo(props);
 	};
 
+
 	// useEffect(() => {
 	// 	(async () => {
 	// 		const setViewTrue = await setViewFix(true);
@@ -47,13 +48,13 @@ const Markers = (props: Props) => {
 					latitude: props.latitude,
 					longitude: props.longitude,
 				}}
-				title={props.username}
+				title={props.userName}
 				description={`Status: ${props.desc}`}>
 				<View>
 					<Image
 						style={styles.userImg}
 						source={{
-							uri: props.img,
+							uri: `data:image/png;base64,${props.img}`,
 						}}
 					/>
 				</View>

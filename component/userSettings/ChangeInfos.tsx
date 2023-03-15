@@ -30,11 +30,11 @@ const ChangeInfos = () => {
 		hobby,
 		desc,
 	};
-	console.log(token);
+	
 
 	async function changeUserInfos() {
 		const URL =
-			"https://makefriendsapp.herokuapp.com/api/friend/users/changeUserInfos";
+			"https://friendserver.onrender.com/api/friend/users/changeUserInfos";
 		if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
 			const postInfos = await Axios.post(URL, user, {
 				headers: { userToken },

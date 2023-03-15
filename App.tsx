@@ -11,15 +11,18 @@ import RegisterB from "./component/register/RegisterB";
 import Login from "./component/login/Login";
 import UsersSettings from "./component/userSettings/UserSettings";
 import ChangeInfos from "./component/userSettings/ChangeInfos";
+import Chat from "./component/chat/Chat";
 
 import { io } from "socket.io-client";
 import uuid from "react-native-uuid";
 import { db } from "./component/fireBase/FireBase";
+import PrivateChat from "./component/chat/PrivateChat";
 interface user {
+	
 	img: string;
 	latitude: number;
 	longitude: number;
-	username: string;
+	userName: string;
 	age: number;
 	hobby: string;
 	desc: string;
@@ -32,6 +35,7 @@ type settName = {
 	setInfo: React.Dispatch<React.SetStateAction<user>>;
 };
 interface tokenInfos {
+	userName: string | undefined;
 	age: number;
 	hobby: string;
 	img: string;
@@ -40,7 +44,7 @@ interface tokenInfos {
 	userObjId: string;
 	verifyUser: boolean;
 	desc: string;
-	email:string
+	emails:string
 }
 type setToken = {
 	token: tokenInfos;
@@ -48,7 +52,9 @@ type setToken = {
 };
 
 interface InterFaceInfos {
+	id: any;
 	userLocationinfos: {
+		emails: string;
 		email: string;
 		age: number;
 		img: string;
@@ -59,6 +65,7 @@ interface InterFaceInfos {
 		verifyUser: boolean;
 		userObjId: string;
 		desc: string;
+		id:number
 	};
 }
 
@@ -113,13 +120,13 @@ export default function App() {
 
 	const socket = io("http://192.168.178.33:2020/");
 
-	useEffect(() => {
-		if (bugNotification) {
-			if (!chatModalVisible) {
-				setNotification(true);
-			}
-		}
-	}, [allChat]);
+	// useEffect(() => {
+	// 	if (bugNotification) {
+	// 		if (!chatModalVisible) {
+	// 			setNotification(true);
+	// 		}
+	// 	}
+	// }, [allChat]);
 
 	// useEffect(() => {
 	// 	socket.on("recieved_message", data => {
@@ -163,7 +170,7 @@ export default function App() {
 									path='/map'
 									element={
 										<MapViews
-											lastMessage={{ lastMessage, setLastMessage }}
+											
 											chatModalVisible={{
 												chatModalVisible,
 												setChatModalVisible,
@@ -172,8 +179,12 @@ export default function App() {
 											chatMsgState={{ allChat, setAllChat }}
 											socket={socket}
 											socketId={socketId}
-											allUsers={{ allUsers, setAllUsers }}
-										/>
+											allUsers={{ allUsers, setAllUsers }} showChat={{
+												showChat: false,
+												setShowChat: function (value: React.SetStateAction<boolean>): void {
+													throw new Error("Function not implemented.");
+												}
+											}}										/>
 									}
 								/>
 								<Route path='/userSettings' element={<UsersSettings />} />
@@ -208,6 +219,8 @@ export default function App() {
 								/>
 								<Route path='/login' element={<Login socket={socket} />} />
 								<Route path='/changeInfos' element={<ChangeInfos />} />
+								<Route path='/privateChat' element={<PrivateChat />} />
+								<Route path='/chat' element={<Chat />} />
 							</Routes>
 						</NativeRouter>
 					</userInfo.Provider>

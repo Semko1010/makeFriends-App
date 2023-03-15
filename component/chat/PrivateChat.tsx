@@ -4,6 +4,7 @@ import React, {
 	useContext,
 	useEffect,
 	useState,
+    useRef
 } from "react";
 import {
 	Modal,
@@ -21,6 +22,7 @@ import {
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token } from "../../App";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { Link } from "react-router-native";
 
 type chattMsg = {
 	message: string;
@@ -64,13 +66,13 @@ type ModalFC = {
 	socketId: string;
 };
 
-const ChatModal = (props: ModalFC) => {
+const PrivateChat = (props: ModalFC) => {
 	const [messages, setMessages] = useState([]);
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
 	const [lastMessage, setLastMessage] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
-
+    const testRef = useRef()
 	
 
 	async function privateMsg(user) {
@@ -84,61 +86,77 @@ const ChatModal = (props: ModalFC) => {
 		);
 		
 	
-	
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
-
+		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
 		const { _id, text, user } = messages[0];
 		if (db) {
 			
-			// db.collection("privateMessages").doc(info.userObjId).collection(token.userObjId + info.userObjId).add({
-			// 	_id,
-			// 	createdAt,
-			// 	text,
-			// 	userObjId:token.userObjId,
-			// 	user,
-			// })
-
-			db.collection(info.userObjId).add({
+			db.collection("privateMessages")
+			.doc(chatId)
+			.collection("chats")
+			.add({
 				_id,
 				createdAt,
 				text,
 				userObjId:token.userObjId,
 				user,
-			});
+			})
+
+			
 		}
 		
 	};
-
+let arr = []
 
 	useEffect(() => {
+		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
 		if (db) {
 			
 
+			console.log(chatId);
 			
 			const unscribe = db
-				.collection("messages")
-				.limit(100)
+				.collection("privateMessages")
+                .doc(chatId)
+				.collection("chats")
 				.onSnapshot(querySnapshot => {
 					const data = querySnapshot.docs.map(doc => ({
 						...doc.data(),
 						id: doc.id,
 					}));
-					
-					setMessages(data);
+                  console.log("privateChat",data);
+                  
+                    // const tes = data.map((item) => {
+                    //     if(info.userObjId === item.userObjId) {
+                            
+                            
+                           
+                    //    return item == undefined ? null : item
+                    //     }
+                    // })
+                    
+                    
+                    
+					 setMessages(data);
 				});
 				
 				
 			return unscribe;
+            
+           
 		}
+        
+        
 	}, [db, info]);
-
-	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
+   console.log(messages);
+   
+	 messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
 	return (
 		<Modal
 			animationType='slide'
 			transparent={true}
-			visible={props.chatModalVisible.chatModalVisible}
+			visible={true}
 			onRequestClose={() => {
 				props.chatModalVisible.setChatModalVisible;
 			}}>
@@ -221,10 +239,9 @@ const ChatModal = (props: ModalFC) => {
 				</View>
 
 				<View style={{ backgroundColor: "#1e90ff", height: "5%" }}>
-					<Button
-						title='Zurück'
-						onPress={() => props.chatModalVisible.setChatModalVisible(false)}
-					/>
+                <Link underlayColor={"transparent"} to='/chat'>
+								<Text style={{ color: "white" }}>Zurück</Text>
+							</Link>
 				</View>
 			</View>
 		</Modal>
@@ -266,4 +283,4 @@ const styles = StyleSheet.create({
 		alignItems: "baseline",
 	},
 });
-export default ChatModal;
+export default PrivateChat;

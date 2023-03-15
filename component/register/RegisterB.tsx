@@ -38,12 +38,12 @@ const RegisterB = (props:infosUser) =>{
 		
         
 	
-		const URL = "https://makefriendsapp.herokuapp.com/api/friend/users/register";
+		const URL = "https://friendserver.onrender.com/api/friend/users/register";
 		
 		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
 			try {
 				const fetch = await Axios.post(URL, user);
-				console.log(fetch);
+				
 				
 				if(fetch.data.userCreated){
 					navigate("/login");

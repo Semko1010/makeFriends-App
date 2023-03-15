@@ -1,3 +1,6 @@
+
+
+
 import { useContext, useEffect, useState } from "react";
 import {
 	Button,
@@ -29,6 +32,7 @@ interface user {
 	age: number;
 	hobby: string;
 	desc: string;
+	emails:string
 }
 
 const SetCoordsButton = (props: coordinates) => {
@@ -39,31 +43,40 @@ const SetCoordsButton = (props: coordinates) => {
 	const userToken = token.token;
 	
 
+
 	const userLocationinfos = {
 		latitude: props.location.latitude,
 		longitude: props.location.longitude,
-		userName: token.username,
-		email: token.email,
+		userName: token.userName,
+		emails: token.emails,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
 		desc: token.desc,
+		userObjId: token.userObjId
 		
 	};
 
+	
+	
 
 
 	useEffect(() => {
-		console.log("userInfos",userInfos);
+	
 		
 		userInfos.find(item => {
-			if (item.userLocationinfos.email == token.email) {
+			console.log("item",item);
+			
+			
+			if (item.userLocationinfos.userObjId === token.userObjId) {
+				
 				
 				
 				setGpsButton(false);
 			}
 		});
 	}, [userInfos]);
+
 
 	async function setLocationUser() {
 		
@@ -78,7 +91,9 @@ const SetCoordsButton = (props: coordinates) => {
 		
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
-			if (e.userLocationinfos.email === token.email) {
+			if (e.userLocationinfos.userObjId === token.userObjId) {
+				
+				
 				gpsId = e.id;
 			}
 		});

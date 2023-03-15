@@ -27,7 +27,7 @@ import Markers from "../marker/Marker";
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton";
 import ModalMenu from "../modalMenu/ModalMenu";
 import ChatModal from "../chat/ChatModal";
-import { Link } from "react-router-native";
+import { Link, useNavigate } from "react-router-native";
 import { db } from "../fireBase/FireBase";
 interface InterFaceInfos {
 	age: number;
@@ -98,7 +98,7 @@ const MapViews = (props: chatMessage) => {
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
 	const [modalVisible, setModalVisible] = useState(false);
-
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [calling, setCalling] = useState<boolean>(true);
 	const [Gps, setGps] = useState<boolean>(false);
@@ -125,9 +125,9 @@ const MapViews = (props: chatMessage) => {
 						...doc.data(),
 						id: doc.id,
 					}));
-					setViewFix(true);
+					// setViewFix(true);
 					setUserInfos(data);
-
+					
 					const myTimeout = setTimeout(myGreeting, 1000);
 					function myGreeting() {
 						setViewFix(false);
@@ -155,6 +155,36 @@ const MapViews = (props: chatMessage) => {
 	}, [db]);
 
 
+	const chatWithUser = () =>{
+		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
+	
+		
+		if (db) {
+			
+			db.collection("privateMessages").doc(chatId).set({
+				users:[{
+					userName:token.userName,
+					age:token.age,
+					desc:token.desc,
+					hobby:token.hobby,
+					img:token.img,
+					userObjId:token.userObjId
+				},{
+					userName:info.userName,
+					age:info.age,
+					desc:info.desc,
+					hobby:info.hobby,
+					img:info.img,
+					userObjId:info.userObjId
+				}
+					
+					
+				]
+			})
+		}
+		// navigate("/chat")
+		
+	}
 	return (
 		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
@@ -209,7 +239,7 @@ const MapViews = (props: chatMessage) => {
 								age={e.userLocationinfos.age}
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
-								
+								userObjId={e.userLocationinfos.userObjId}
 								
 							/>
 							
@@ -222,28 +252,37 @@ const MapViews = (props: chatMessage) => {
 						// Button Linear Gradient
 						colors={["#ECE9E6", "#FFFFFF", "#DBDBDB", "#EAEAEA"]}
 						style={styles.infos}>
-						<View style={styles.infosText}>
+						{/* <View style={styles.infosText}>
 							<Text>
-								<Text style={{ color: "black" }}>Name: </Text>
-								{/* {info.userName} */}
+								<Text style={{ color: "black" }}>Name: {info.userName}</Text>
+								
 							</Text>
 
 							<Text>Alter: {info.age}</Text>
 							<Text>Hobbys: {info.hobby}</Text>
 							<Text>Über mich: {info.desc}</Text>
-						</View>
+						</View> */}
 
+						
+							
+						
+						<TouchableOpacity
+							style={styles.chatBtn}
+							onPress={() => chatWithUser()}>
+							<Text style={{ color: "white" }}>{`Chatten mit ${info.userName}`}</Text>
+						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
-							<Text style={{ color: "white" }}>Chat</Text>
+							<Text style={{ color: "white" }}>G</Text>
 						</TouchableOpacity>
+						
 						{/* <Text style={styles}>{lastMessage.text}</Text> */}
 					</LinearGradient>
 				</SafeAreaView>
 			)}
 
-			{/* Menü */}
+		
 			<>
 				<ModalMenu
 					modalValue={{ modalVisible, setModalVisible }}
