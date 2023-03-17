@@ -71,8 +71,6 @@ const ChatModal = (props: ModalFC) => {
 	const [lastMessage, setLastMessage] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
 
-	
-
 	async function privateMsg(user) {
 		const setUserName = await setLastMessage(user.name);
 		const setTrue = await setPrivateMsgStat(true);
@@ -82,15 +80,12 @@ const ChatModal = (props: ModalFC) => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
-		
-	
-	
+
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
 
 		const { _id, text, user } = messages[0];
 		if (db) {
-			
 			// db.collection("privateMessages").doc(info.userObjId).collection(token.userObjId + info.userObjId).add({
 			// 	_id,
 			// 	createdAt,
@@ -103,19 +98,14 @@ const ChatModal = (props: ModalFC) => {
 				_id,
 				createdAt,
 				text,
-				userObjId:token.userObjId,
+				userObjId: token.userObjId,
 				user,
 			});
 		}
-		
 	};
-
 
 	useEffect(() => {
 		if (db) {
-			
-
-			
 			const unscribe = db
 				.collection("messages")
 				.limit(100)
@@ -124,11 +114,10 @@ const ChatModal = (props: ModalFC) => {
 						...doc.data(),
 						id: doc.id,
 					}));
-					
+
 					setMessages(data);
 				});
-				
-				
+
 			return unscribe;
 		}
 	}, [db, info]);

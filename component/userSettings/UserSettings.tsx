@@ -170,10 +170,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default UserSettings; 
-
-
-
+export default UserSettings;
 
 //Modules
 // import React, { useContext, useEffect, useState } from "react";
@@ -215,12 +212,9 @@ export default UserSettings;
 // 	const [userData, setUserData] = useState<user | undefined>();
 // 	const [modalVisible, setModalVisible] = useState<boolean>(false);
 // 	const userToken = token.token;
-	
 
 // console.log("tok",token);
 
-
-	
 // 	useEffect(() => {
 // 		db
 // 			.collection("login")
@@ -230,13 +224,11 @@ export default UserSettings;
 // 			...doc.data(),
 // 			id: doc.id,
 // 		}));
-		
+
 // 		setLoading(false);
-		
+
 // 			})
 
-
-		
 // 	}, []);
 
 // 	return (

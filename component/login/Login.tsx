@@ -1,100 +1,89 @@
 // //modules
 
-import React, { useState ,useContext} from "react"
-import { View ,TextInput,StyleSheet, Button,ActivityIndicator } from "react-native"
+import React, { useState, useContext } from "react";
+import {
+	View,
+	TextInput,
+	StyleSheet,
+	Button,
+	ActivityIndicator,
+} from "react-native";
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-native";
 //imports
-import {Token} from "../../App"
+import { Token } from "../../App";
 
-type semir={
-	value:{
-		img:string
-		setImg:React.Dispatch<React.SetStateAction<string>>
-	}
-}
+type semir = {
+	value: {
+		img: string;
+		setImg: React.Dispatch<React.SetStateAction<string>>;
+	};
+};
 
-const Login = (props:any) =>{
-    const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+const Login = (props: any) => {
+	const navigate = useNavigate();
+	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [ loading, setLoading] = useState<boolean>(false)
-	const { token, setToken} = useContext(Token)
-    const user = { email, password};
-	
-	
+	const [loading, setLoading] = useState<boolean>(false);
+	const { token, setToken } = useContext(Token);
+	const user = { email, password };
 
-    async function login() {
-		
-    
-	   
-		
-		
-		
+	async function login() {
 		// const URL = "http://localhost:2020/api/friend/users/login";
 		const URL = "https://friendserver.onrender.com/api/friend/users/login";
-		
-		setLoading(true)
-			try {
-				const fetch = await Axios.post(URL, user);
-			
-				console.log(fetch);
-				
-				if(fetch.data.token){
-					if(fetch.data.verifyUser){
-						setToken(fetch.data);
-						setLoading(false)
-						navigate("/map")
-						// props.socket.emit("join_room",fetch.data.userObjId) 
-					}else{
-						console.log("Pleaser Verify Account");
-						
-					}
-                
-                }
-				
-			} catch (err) {
-				console.log(err);
+
+		setLoading(true);
+		try {
+			const fetch = await Axios.post(URL, user);
+
+			console.log(fetch);
+
+			if (fetch.data.token) {
+				if (fetch.data.verifyUser) {
+					setToken(fetch.data);
+					setLoading(false);
+					navigate("/map");
+					// props.socket.emit("join_room",fetch.data.userObjId)
+				} else {
+					console.log("Pleaser Verify Account");
+				}
 			}
-		
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
-    return(
-        <View>
-        <View style={styles.linkView}>
-		{loading&&(
-            <ActivityIndicator size="large" color="#00ff00" />
-          )}
-					<TextInput
-						onChangeText={e => setEmail(e)}
-						style={styles.textInput}
-						placeholder='Email'
-						placeholderTextColor='black'
-						
-					/>
-				</View>
-				<View style={styles.linkView}>
-					<TextInput
-						onChangeText={e => setPassword(e)}
-						style={styles.textInput}
-						placeholder='Password'
-						placeholderTextColor='black'
-						
-					/>
-				</View>
-                <Button onPress={login} title='Login'></Button>
-        </View>
-    )
-}
+	return (
+		<View>
+			<View style={styles.linkView}>
+				{loading && <ActivityIndicator size='large' color='#00ff00' />}
+				<TextInput
+					onChangeText={e => setEmail(e)}
+					style={styles.textInput}
+					placeholder='Email'
+					placeholderTextColor='black'
+				/>
+			</View>
+			<View style={styles.linkView}>
+				<TextInput
+					onChangeText={e => setPassword(e)}
+					style={styles.textInput}
+					placeholder='Password'
+					placeholderTextColor='black'
+				/>
+			</View>
+			<Button onPress={login} title='Login'></Button>
+		</View>
+	);
+};
 const styles = StyleSheet.create({
-	
 	textInput: {
 		margin: 5,
 		textAlign: "center",
 		padding: 3,
 		color: "black",
 	},
-	
+
 	linkContainer: {
 		marginBottom: 100,
 		alignItems: "center",
@@ -107,11 +96,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fffaf0",
 		color: "black",
 	},
-	
 });
-export default Login
-
-
+export default Login;
 
 // import React, { useState, useContext, useEffect } from "react";
 // import {
@@ -137,12 +123,6 @@ export default Login
 // 	};
 // };
 
-
-
-
-
-
-
 // const Login = (props: any) => {
 // 	const navigate = useNavigate();
 // 	const [email, setEmail] = useState("");
@@ -155,10 +135,9 @@ export default Login
 
 // 	async function login() {
 // 		console.log("tokens",tokens);
-		
 
 // 		setLoading(true);
-		
+
 // 		try {
 // 			db
 // 			.collection("login")
@@ -175,14 +154,13 @@ export default Login
 // 				navigate("/map")
 // 			}else{
 // 				console.log("fail");
-				
+
 // 			}
-			
+
 // 		})
-		
+
 // 			})
 
-			
 // 		} catch (err) {
 // 			console.log(err);
 // 		}

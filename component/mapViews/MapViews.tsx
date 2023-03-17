@@ -112,7 +112,6 @@ const MapViews = (props: chatMessage) => {
 		hobby: token.hobby,
 		img: token.img,
 		desc: token.desc,
-		
 	};
 
 	useEffect(() => {
@@ -127,7 +126,7 @@ const MapViews = (props: chatMessage) => {
 					}));
 					// setViewFix(true);
 					setUserInfos(data);
-					
+
 					const myTimeout = setTimeout(myGreeting, 1000);
 					function myGreeting() {
 						setViewFix(false);
@@ -137,7 +136,6 @@ const MapViews = (props: chatMessage) => {
 			return unscribe;
 		})();
 	}, [db]);
-
 
 	useEffect(() => {
 		(async () => {
@@ -154,37 +152,45 @@ const MapViews = (props: chatMessage) => {
 		})();
 	}, [db]);
 
+	async function chatWithUser() {
+		const chatId =
+			token.userObjId > info.userObjId
+				? token.userObjId + info.userObjId
+				: info.userObjId + token.userObjId;
 
-	const chatWithUser = () =>{
-		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
-	
-		
 		if (db) {
-			
-			db.collection("privateMessages").doc(chatId).set({
-				users:[{
-					userName:token.userName,
-					age:token.age,
-					desc:token.desc,
-					hobby:token.hobby,
-					img:token.img,
-					userObjId:token.userObjId
-				},{
-					userName:info.userName,
-					age:info.age,
-					desc:info.desc,
-					hobby:info.hobby,
-					img:info.img,
-					userObjId:info.userObjId
-				}
-					
-					
-				]
-			})
+			const res = await db.collection("privateMessages").doc(chatId);
+			const exists = (await res.get()).exists;
+			if (!exists) {
+				db.collection("privateMessages")
+					.doc(chatId)
+					.set({
+						users: [
+							{
+								userName: token.userName,
+								age: token.age,
+								desc: token.desc,
+								hobby: token.hobby,
+								img: token.img,
+								userObjId: token.userObjId,
+							},
+							{
+								userName: info.userName,
+								age: info.age,
+								desc: info.desc,
+								hobby: info.hobby,
+								img: info.img,
+								userObjId: info.userObjId,
+							},
+						],
+					});
+			} else {
+				console.log("exists");
+			}
 		}
-		// navigate("/chat")
-		
+		const navigateToChat = await navigate("/privateChat");
 	}
+
 	return (
 		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
@@ -225,11 +231,7 @@ const MapViews = (props: chatMessage) => {
 						// onUserLocationChange={setLocationUser}
 						showsUserLocation={true}
 						provider='google'>
-							
 						{userInfos.map((e, index) => (
-							
-							
-							
 							<Markers
 								key={index}
 								latitude={e.userLocationinfos.latitude}
@@ -240,9 +242,7 @@ const MapViews = (props: chatMessage) => {
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
 								userObjId={e.userLocationinfos.userObjId}
-								
 							/>
-							
 						))}
 					</MapView>
 
@@ -263,26 +263,25 @@ const MapViews = (props: chatMessage) => {
 							<Text>Über mich: {info.desc}</Text>
 						</View> */}
 
-						
-							
-						
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => chatWithUser()}>
-							<Text style={{ color: "white" }}>{`Chatten mit ${info.userName}`}</Text>
+							<Text
+								style={{
+									color: "white",
+								}}>{`Chatten mit ${info.userName}`}</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
 							<Text style={{ color: "white" }}>G</Text>
 						</TouchableOpacity>
-						
+
 						{/* <Text style={styles}>{lastMessage.text}</Text> */}
 					</LinearGradient>
 				</SafeAreaView>
 			)}
 
-		
 			<>
 				<ModalMenu
 					modalValue={{ modalVisible, setModalVisible }}

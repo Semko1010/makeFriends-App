@@ -4,7 +4,7 @@ import React, {
 	useContext,
 	useEffect,
 	useState,
-    useRef
+	useRef,
 } from "react";
 import {
 	Modal,
@@ -16,14 +16,17 @@ import {
 	Text,
 	TextInput,
 	Dimensions,
+	SafeAreaView,
+	TouchableOpacity,
 } from "react-native";
 
 //imports
 import { db } from "../fireBase/FireBase";
-import { userInfo, Token } from "../../App";
+import { userInfo, Token, lastMsg } from "../../App";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
-import { Link } from "react-router-native";
-
+import { Link, useNavigate } from "react-router-native";
+import uuid from "react-native-uuid";
+import firebase from "firebase";
 type chattMsg = {
 	message: string;
 };
@@ -70,88 +73,136 @@ const PrivateChat = (props: ModalFC) => {
 	const [messages, setMessages] = useState([]);
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
+	const { countMsg, setCountMsg } = useContext(lastMsg);
 	const [lastMessage, setLastMessage] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
-    const testRef = useRef()
-	
+
+	const navigate = useNavigate();
 
 	async function privateMsg(user) {
 		const setUserName = await setLastMessage(user.name);
 		const setTrue = await setPrivateMsgStat(true);
 		const setFalse = await setPrivateMsgStat(false);
 	}
+	console.log(uuid.v4());
+
 	const send = messages => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
-		
-	
+
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
-		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
+		const chatId =
+			token.userObjId > info.userObjId
+				? token.userObjId + info.userObjId
+				: info.userObjId + token.userObjId;
 		const { _id, text, user } = messages[0];
 		if (db) {
-			
-			db.collection("privateMessages")
-			.doc(chatId)
-			.collection("chats")
-			.add({
+			db.collection("privateMessages").doc(chatId).collection("chats").add({
 				_id,
 				createdAt,
 				text,
-				userObjId:token.userObjId,
+				userObjId: token.userObjId,
 				user,
-			})
-
-			
+				status: false,
+			});
+			// .update({
+			// 	chats: firebase.firestore.FieldValue.arrayUnion({
+			// 		_id,
+			// 		createdAt,
+			// 		text,
+			// 		userObjId: token.userObjId,
+			// 		user,
+			// 		status: false,
+			// 	}),
+			// 	users: [
+			// 		{
+			// 			userName: token.userName,
+			// 			age: token.age,
+			// 			desc: token.desc,
+			// 			hobby: token.hobby,
+			// 			img: token.img,
+			// 			userObjId: token.userObjId,
+			// 			msgnotReaded: true,
+			// 		},
+			// 		{
+			// 			userName: info.userName,
+			// 			age: info.age,
+			// 			desc: info.desc,
+			// 			hobby: info.hobby,
+			// 			img: info.img,
+			// 			userObjId: info.userObjId,
+			// 			msgnotReaded: false,
+			// 		},
+			// 	],
+			// });
+			console.log("chatIda", chatId);
 		}
-		
 	};
-let arr = []
+	let arr: (firebase.firestore.DocumentData | undefined)[] = [];
 
 	useEffect(() => {
-		const chatId = token.userObjId > info.userObjId ? token.userObjId + info.userObjId : info.userObjId + token.userObjId
-		if (db) {
-			
+		const chatId =
+			token.userObjId > info.userObjId
+				? token.userObjId + info.userObjId
+				: info.userObjId + token.userObjId;
+		console.log("chatId", chatId);
 
-			console.log(chatId);
-			
-			const unscribe = db
+		(async () => {
+			if (db) {
+				const res = await db.collection("privateMessages").doc(chatId);
+				const test = await res
+					.get()
+					.then(doc => {
+						if (doc.exists) {
+							console.log("Document data:", doc.data());
+							arr.push(doc.data());
+
+							console.log("messages", messages);
+						} else {
+							// doc.data() will be undefined in this case
+							console.log("No such document!");
+						}
+					})
+					.catch(error => {
+						console.log("Error getting document:", error);
+					});
+			}
+
+			const uptNotRead = await db
 				.collection("privateMessages")
-                .doc(chatId)
-				.collection("chats")
-				.onSnapshot(querySnapshot => {
-					const data = querySnapshot.docs.map(doc => ({
-						...doc.data(),
-						id: doc.id,
-					}));
-                  console.log("privateChat",data);
-                  
-                    // const tes = data.map((item) => {
-                    //     if(info.userObjId === item.userObjId) {
-                            
-                            
-                           
-                    //    return item == undefined ? null : item
-                    //     }
-                    // })
-                    
-                    
-                    
-					 setMessages(data);
+				.doc(chatId)
+				.update({
+					users: [
+						{
+							userName: token.userName,
+							age: token.age,
+							desc: token.desc,
+							hobby: token.hobby,
+							img: token.img,
+							userObjId: token.userObjId,
+							msgnotReaded: true,
+						},
+						{
+							userName: info.userName,
+							age: info.age,
+							desc: info.desc,
+							hobby: info.hobby,
+							img: info.img,
+							userObjId: info.userObjId,
+							msgnotReaded: false,
+						},
+					],
 				});
-				
-				
-			return unscribe;
-            
-           
-		}
-        
-        
+		})();
 	}, [db, info]);
-   console.log(messages);
-   
-	 messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
+
+	const back = () => {
+		navigate("/chat");
+	};
+
+	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
 	return (
 		<Modal
 			animationType='slide'
@@ -160,35 +211,37 @@ let arr = []
 			onRequestClose={() => {
 				props.chatModalVisible.setChatModalVisible;
 			}}>
-			<View style={styles.container}>
-				<View
-					style={{
-						width: "100%",
-						height: "15%",
-						alignItems: "center",
-						backgroundColor: "white",
-						paddingTop: 30,
-					}}>
-					<Text> Du bist im Gruppenchat:</Text>
+			<SafeAreaView style={styles.container}>
+				<View style={styles.headline}>
+					<TouchableOpacity onPress={() => back()}>
+						<View>
+							<Image
+								style={{ width: 30, height: 30, marginRight: 20 }}
+								source={require("../../assets/img/arrow-left.png")}
+							/>
+						</View>
+					</TouchableOpacity>
+
 					<Image
-						style={{ width: 50, height: 50 }}
+						style={{ width: 50, height: 50, borderRadius: 50 }}
 						source={{
-							uri: `data:image/png;base64,${token.img}`,
+							uri: `data:image/png;base64,${info.img}`,
 						}}
 					/>
+					<Text style={styles.header}>{info.userName}</Text>
 				</View>
-				<View style={{ height: "80%", backgroundColor: "rgba(0, 0, 0,0.5)" }}>
+				<View style={{ height: "80%" }}>
 					<GiftedChat
 						messages={messages}
 						onSend={messages => send(messages)}
-						// inverted={false}
+						renderAvatar={() => null}
 						showAvatarForEveryMessage={true}
 						renderUsernameOnMessage={true}
 						text={privateMsgStat ? `@${lastMessage} ` : undefined}
 						user={{
 							name: token.userName,
 							_id: token.emails,
-							avatar: `data:image/png;base64,${token.img}`,
+							avatar: ``,
 						}}
 						onPressAvatar={user => privateMsg(user)}
 						renderBubble={props => {
@@ -215,21 +268,22 @@ let arr = []
 									}}
 									textStyle={{
 										right: {
-											color: "white",
+											color: "rgb(252,247,233)",
 											fontSize: 12,
 										},
 										left: {
-											color: "#24204F",
+											color: "rgb(250,250,250)",
 											fontSize: 12,
 										},
 									}}
 									wrapperStyle={{
 										left: {
-											backgroundColor: "#E6F5F3",
-											height: 40,
+											backgroundColor: "rgb(49,41,36)",
+											height: 50,
 										},
 										right: {
-											backgroundColor: "green",
+											backgroundColor: "rgb(230,173,91)",
+											height: 50,
 										},
 									}}
 								/>
@@ -237,13 +291,7 @@ let arr = []
 						}}
 					/>
 				</View>
-
-				<View style={{ backgroundColor: "#1e90ff", height: "5%" }}>
-                <Link underlayColor={"transparent"} to='/chat'>
-								<Text style={{ color: "white" }}>Zurück</Text>
-							</Link>
-				</View>
-			</View>
+			</SafeAreaView>
 		</Modal>
 	);
 };
@@ -252,13 +300,22 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		width: Dimensions.get("window").width,
 		height: "100%",
+		backgroundColor: "rgb(27, 27, 27)",
 	},
 	headline: {
-		textAlign: "center",
+		width: "100%",
+		flex: 1,
+		justifyContent: "space-around",
 		alignItems: "center",
-		marginTop: 50,
-		borderBottomWidth: 1,
-		width: Dimensions.get("window").width,
+		flexDirection: "row",
+		paddingLeft: 25,
+		paddingRight: 25,
+	},
+	header: {
+		marginTop: 15,
+		fontSize: 18,
+		fontWeight: "600",
+		color: "rgb(250,250,250)",
 	},
 	textInput: {
 		borderWidth: 1,

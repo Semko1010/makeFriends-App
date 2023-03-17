@@ -24,13 +24,12 @@ const ChangeInfos = () => {
 	const [desc, setDesc] = useState<string>(token.desc);
 	const [error, setError] = useState<boolean>(false);
 	const userToken = token.token;
-	
+
 	const user = {
 		userName,
 		hobby,
 		desc,
 	};
-	
 
 	async function changeUserInfos() {
 		const URL =
