@@ -122,6 +122,15 @@ const PrivateChat = (props: any) => {
 				.then(doc => {
 					if (doc.exists) {
 						setMessages(doc.data()?.chats);
+						if (
+							doc.data()?.chats[doc.data()?.chats.length - 1].id === token.id
+						) {
+							console.log("Same");
+						} else {
+							db.collection("privateMessages").doc(chatId).update({
+								msgReaded: false,
+							});
+						}
 					}
 				})
 				.catch(error => {

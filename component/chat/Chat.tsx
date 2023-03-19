@@ -115,7 +115,7 @@ const Chat = (props: chatMessage) => {
 				});
 		}
 	}, [db, info]);
-	console.log("countMsg", countMsg);
+
 	async function chatPrv(id: any) {
 		const setInf = await setInfo(id.users);
 
