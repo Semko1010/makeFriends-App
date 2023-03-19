@@ -1,6 +1,3 @@
-
-
-
 import { useContext, useEffect, useState } from "react";
 import {
 	Button,
@@ -9,11 +6,12 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	Text,
+	AppState,
 } from "react-native";
-import Axios from "axios";
+
 //Imports
 import { Token, allInfosUser } from "../../App";
-import axios from "axios";
+
 import { db } from "../fireBase/FireBase";
 
 type coordinates = {
@@ -32,7 +30,7 @@ interface user {
 	age: number;
 	hobby: string;
 	desc: string;
-	emails:string
+	emails: string;
 }
 
 const SetCoordsButton = (props: coordinates) => {
@@ -40,46 +38,28 @@ const SetCoordsButton = (props: coordinates) => {
 	const [gpsButton, setGpsButton] = useState<boolean>(true);
 	const { userInfos, setUserInfos } = useContext(allInfosUser);
 	const [userData, setUserData] = useState<user | undefined>();
-	const userToken = token.token;
-	
-
 
 	const userLocationinfos = {
 		latitude: props.location.latitude,
 		longitude: props.location.longitude,
 		userName: token.userName,
-		emails: token.emails,
+		email: token.email,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
 		desc: token.desc,
-		userObjId: token.userObjId
-		
+		id: token.id,
 	};
 
-	
-	
-
-
 	useEffect(() => {
-	
-		
 		userInfos.find(item => {
-			console.log("item",item);
-			
-			
-			if (item.userLocationinfos.userObjId === token.userObjId) {
-				
-				
-				
+			if (item.userLocationinfos.id === token.id) {
 				setGpsButton(false);
 			}
 		});
-	}, [userInfos]);
-
+	}, [userInfos, db]);
 
 	async function setLocationUser() {
-		
 		if (db) {
 			db.collection("location").add({
 				userLocationinfos,
@@ -88,12 +68,10 @@ const SetCoordsButton = (props: coordinates) => {
 		}
 	}
 	async function deleteLocationUser() {
-		
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
-			if (e.userLocationinfos.userObjId === token.userObjId) {
-				
-				
+			console.log("e", e);
+			if (e.userLocationinfos.id === token.id) {
 				gpsId = e.id;
 			}
 		});
@@ -105,6 +83,15 @@ const SetCoordsButton = (props: coordinates) => {
 		setGpsButton(true);
 	}
 
+	AppState.addEventListener("change", state => {
+		if (state === "active") {
+			// do this
+		} else if (state === "background") {
+			// deleteLocationUser();
+		} else if (state === "inactive") {
+			// do that other thing
+		}
+	});
 	return (
 		<View>
 			{gpsButton ? (

@@ -23,7 +23,7 @@ import {
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token, lastMsg } from "../../App";
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { GiftedChat, Bubble, IMessage } from "react-native-gifted-chat";
 import { Link, useNavigate } from "react-router-native";
 import uuid from "react-native-uuid";
 import firebase from "firebase";
@@ -69,148 +69,74 @@ type ModalFC = {
 	socketId: string;
 };
 
-const PrivateChat = (props: ModalFC) => {
+const PrivateChat = (props: any) => {
+	const navigate = useNavigate();
 	const [messages, setMessages] = useState([]);
 	const { info, setInfo } = useContext(userInfo);
 	const { token, setToken } = useContext(Token);
 	const { countMsg, setCountMsg } = useContext(lastMsg);
 	const [lastMessage, setLastMessage] = useState("");
+	const [last, setLast] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
 
-	const navigate = useNavigate();
-
-	async function privateMsg(user) {
+	async function privateMsg(user: any) {
 		const setUserName = await setLastMessage(user.name);
 		const setTrue = await setPrivateMsgStat(true);
 		const setFalse = await setPrivateMsgStat(false);
 	}
-	console.log(uuid.v4());
 
-	const send = messages => {
+	const send = (messages: any) => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
 
 		const temp = messages[0];
 		const createdAt = Date.parse(temp.createdAt);
-		const chatId =
-			token.userObjId > info.userObjId
-				? token.userObjId + info.userObjId
-				: info.userObjId + token.userObjId;
+		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
 		const { _id, text, user } = messages[0];
 		if (db) {
-			db.collection("privateMessages").doc(chatId).collection("chats").add({
-				_id,
-				createdAt,
-				text,
-				userObjId: token.userObjId,
-				user,
-				status: false,
-			});
-			// .update({
-			// 	chats: firebase.firestore.FieldValue.arrayUnion({
-			// 		_id,
-			// 		createdAt,
-			// 		text,
-			// 		userObjId: token.userObjId,
-			// 		user,
-			// 		status: false,
-			// 	}),
-			// 	users: [
-			// 		{
-			// 			userName: token.userName,
-			// 			age: token.age,
-			// 			desc: token.desc,
-			// 			hobby: token.hobby,
-			// 			img: token.img,
-			// 			userObjId: token.userObjId,
-			// 			msgnotReaded: true,
-			// 		},
-			// 		{
-			// 			userName: info.userName,
-			// 			age: info.age,
-			// 			desc: info.desc,
-			// 			hobby: info.hobby,
-			// 			img: info.img,
-			// 			userObjId: info.userObjId,
-			// 			msgnotReaded: false,
-			// 		},
-			// 	],
-			// });
-			console.log("chatIda", chatId);
-		}
-	};
-	let arr: (firebase.firestore.DocumentData | undefined)[] = [];
-
-	useEffect(() => {
-		const chatId =
-			token.userObjId > info.userObjId
-				? token.userObjId + info.userObjId
-				: info.userObjId + token.userObjId;
-		console.log("chatId", chatId);
-
-		(async () => {
-			if (db) {
-				const res = await db.collection("privateMessages").doc(chatId);
-				const test = await res
-					.get()
-					.then(doc => {
-						if (doc.exists) {
-							console.log("Document data:", doc.data());
-							arr.push(doc.data());
-
-							console.log("messages", messages);
-						} else {
-							// doc.data() will be undefined in this case
-							console.log("No such document!");
-						}
-					})
-					.catch(error => {
-						console.log("Error getting document:", error);
-					});
-			}
-
-			const uptNotRead = await db
-				.collection("privateMessages")
+			db.collection("privateMessages")
 				.doc(chatId)
 				.update({
-					users: [
-						{
-							userName: token.userName,
-							age: token.age,
-							desc: token.desc,
-							hobby: token.hobby,
-							img: token.img,
-							userObjId: token.userObjId,
-							msgnotReaded: true,
-						},
-						{
-							userName: info.userName,
-							age: info.age,
-							desc: info.desc,
-							hobby: info.hobby,
-							img: info.img,
-							userObjId: info.userObjId,
-							msgnotReaded: false,
-						},
-					],
+					chats: firebase.firestore.FieldValue.arrayUnion({
+						_id,
+						createdAt,
+						text,
+						id: token.id,
+						user,
+						status: false,
+					}),
+					msgReaded: true,
 				});
-		})();
+		}
+	};
+
+	useEffect(() => {
+		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
+		console.log("chatId", chatId);
+
+		if (db) {
+			db.collection("privateMessages")
+				.doc(chatId)
+				.get()
+				.then(doc => {
+					if (doc.exists) {
+						setMessages(doc.data()?.chats);
+					}
+				})
+				.catch(error => {
+					console.log("Errosrr getting document:", error);
+				});
+		}
 	}, [db, info]);
 
-	const back = () => {
+	async function back() {
 		navigate("/chat");
-	};
+	}
 
 	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
 	return (
-		<Modal
-			animationType='slide'
-			transparent={true}
-			visible={true}
-			onRequestClose={() => {
-				props.chatModalVisible.setChatModalVisible;
-			}}>
+		<Modal animationType='slide' transparent={true} visible={true}>
 			<SafeAreaView style={styles.container}>
 				<View style={styles.headline}>
 					<TouchableOpacity onPress={() => back()}>
@@ -240,7 +166,7 @@ const PrivateChat = (props: ModalFC) => {
 						text={privateMsgStat ? `@${lastMessage} ` : undefined}
 						user={{
 							name: token.userName,
-							_id: token.emails,
+							_id: token.email,
 							avatar: ``,
 						}}
 						onPressAvatar={user => privateMsg(user)}

@@ -13,10 +13,9 @@ import {
 } from "react-native";
 import { Link, useNavigate } from "react-router-native";
 import { io } from "socket.io-client";
-import ChatModal from "../chat/ChatModal";
+import PrivateChat from "./PrivateChat";
 import { userInfo, Token, allInfosUser, lastMsg } from "../../App";
 import { db } from "../fireBase/FireBase";
-import RegisterB from "../register/RegisterB";
 
 type chattMsg = {
 	message: string;
@@ -62,7 +61,7 @@ interface prvMessages {
 		name: string;
 		_id: string;
 	};
-	userObjId: string;
+
 	_id: string;
 }
 interface IMessage {
@@ -77,67 +76,50 @@ const Chat = (props: chatMessage) => {
 	const [msgRead, setMsgRead] = useState<boolean>(true);
 	const [allChat, setAllChat] = useState([]);
 	const [room, setRoom] = useState("");
-	const [allChats, setAllchats] = useState<prvMessages[]>([]);
+	const [modalVisible, setModalVisible] = useState(false);
 	const [myChats, setMyChats] = useState<any>([]);
 	const [search, setSearch] = useState<string>("");
-
+	const [messages, setMessages] = useState([]);
 	let arr: any[] = [];
-	let userArr = [];
 
 	useEffect(() => {
-		(async () => {
-			if (db) {
-				const unscribe = await db
-					.collection("privateMessages")
-					.limit(100)
-					.onSnapshot(querySnapshot => {
-						const data = querySnapshot.docs.map(doc => ({
-							...doc.data(),
-							id: doc.id,
-						}));
-						arr = [];
+		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
+		console.log("chatId", chatId);
 
-						data.map(chat => {
-							if (chat.id.includes(token.userObjId)) {
-								chat.users.map((u: any) => {
-									if (u.userObjId == token.userObjId) {
-										console.log("u", u.msgnotReaded);
+		if (db) {
+			db.collection("privateMessages")
+				.limit(100)
+				.onSnapshot(querySnapshot => {
+					const data = querySnapshot.docs.map(doc => ({
+						...doc.data(),
+						id: doc.id,
+					}));
+					arr = [];
 
-										setMsgRead(u.msgnotReaded);
-									} else {
-										arr.push({ chats: chat.chats, users: u });
-									}
-								});
-							}
-						});
-
-						// setAllchats(data);
-
-						setMyChats(arr);
+					data.map(chat => {
+						if (chat.id.includes(token.id)) {
+							chat.users.map((u: any) => {
+								if (u.id == token.id) {
+									setMsgRead(u.msgnotReaded);
+								} else {
+									arr.push({
+										chats: chat.chats,
+										users: u,
+										msgReaded: chat.msgReaded,
+									});
+								}
+							});
+						}
 					});
-
-				return unscribe;
-			}
-		})();
-	}, [db, info]);
-
-	async function chatPrv(id: any) {
-		console.log("dd");
-
-		const res = await db
-			.collection("privateMessages")
-			.doc("6285545d13b062ac50142efe625f7d69741fd64eb0ade4ce")
-			.collection("chats")
-			.get()
-			.then(function (querySnapshot) {
-				querySnapshot.forEach(function (doc) {
-					doc.ref.update({
-						status: true,
-					});
+					setMyChats(arr);
 				});
-			});
+		}
+	}, [db, info]);
+	console.log("countMsg", countMsg);
+	async function chatPrv(id: any) {
 		const setInf = await setInfo(id.users);
-		// const navToChat = await navigate("/privateChat");
+
+		const navToChat = await navigate("/privateChat");
 	}
 
 	return (
@@ -160,7 +142,7 @@ const Chat = (props: chatMessage) => {
 								: i.userName.toUpperCase().includes(search);
 						})
 						.map((item: any, index: React.Key | null | undefined) => {
-							console.log(item);
+							console.log("item", item.chats[item.chats.length - 1]?.id);
 
 							return (
 								<TouchableOpacity
@@ -178,11 +160,28 @@ const Chat = (props: chatMessage) => {
 
 									<View style={styles.infoContainer}>
 										<Text style={styles.name}>{item.users.userName}</Text>
-										<Text style={styles.lastMessage}>{item.userName}</Text>
+										<Text style={styles.lastMessage}>
+											{item.chats.length === 0
+												? ""
+												: item.chats[item.chats.length - 1].text}
+										</Text>
 									</View>
-									<View style={styles.notificationMessageContainer}>
+									<View>
 										<Text style={styles.notificationMessage}>
-											{msgRead ? "u" : "r"}
+											{item.chats[item.chats.length - 1]?.id === token.id ? (
+												!item.msgReaded ? (
+													""
+												) : (
+													""
+												)
+											) : !item.msgReaded ? (
+												""
+											) : (
+												<Image
+													style={{ width: 30, height: 30 }}
+													source={require("../../assets/img/msg.png")}
+												/>
+											)}
 										</Text>
 									</View>
 								</TouchableOpacity>

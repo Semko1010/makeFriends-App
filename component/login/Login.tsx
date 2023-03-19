@@ -8,10 +8,10 @@ import {
 	Button,
 	ActivityIndicator,
 } from "react-native";
-import Axios from "axios";
 import { Link, useNavigate } from "react-router-native";
 //imports
 import { Token } from "../../App";
+import { db } from "../fireBase/FireBase";
 
 type semir = {
 	value: {
@@ -30,27 +30,56 @@ const Login = (props: any) => {
 
 	async function login() {
 		// const URL = "http://localhost:2020/api/friend/users/login";
-		const URL = "https://friendserver.onrender.com/api/friend/users/login";
+		// const URL = "https://friendserver.onrender.com/api/friend/users/login";
 
-		setLoading(true);
-		try {
-			const fetch = await Axios.post(URL, user);
+		if (db) {
+			const unscribe = db
+				.collection("login")
 
-			console.log(fetch);
-
-			if (fetch.data.token) {
-				if (fetch.data.verifyUser) {
-					setToken(fetch.data);
-					setLoading(false);
-					navigate("/map");
-					// props.socket.emit("join_room",fetch.data.userObjId)
-				} else {
-					console.log("Pleaser Verify Account");
-				}
-			}
-		} catch (err) {
-			console.log(err);
+				.onSnapshot(querySnapshot => {
+					const data = querySnapshot.docs.map(doc => ({
+						...doc.data(),
+						id: doc.id,
+					}));
+					data.map(userLogin => {
+						if (
+							user.email.toLowerCase() === userLogin.email ||
+							user.password.toLowerCase() === userLogin.password
+						) {
+							if (userLogin.verify) {
+								console.log("Verify");
+								setToken(userLogin);
+								setLoading(false);
+								navigate("/map");
+							} else {
+								console.log("notVerify");
+							}
+						} else {
+							console.log("false");
+						}
+					});
+				});
 		}
+		setLoading(true);
+
+		// try {
+		// 	const fetch = await Axios.post(URL, user);
+
+		// 	console.log(fetch);
+
+		// 	if (fetch.data.token) {
+		// 		if (fetch.data.verifyUser) {
+		// 			setToken(fetch.data);
+		// 			setLoading(false);
+		// 			navigate("/map");
+		// 			// props.socket.emit("join_room",fetch.data.userObjId)
+		// 		} else {
+		// 			console.log("Pleaser Verify Account");
+		// 		}
+		// 	}
+		// } catch (err) {
+		// 	console.log(err);
+		// }
 	}
 
 	return (

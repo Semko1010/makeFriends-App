@@ -13,7 +13,6 @@ import UsersSettings from "./component/userSettings/UserSettings";
 import ChangeInfos from "./component/userSettings/ChangeInfos";
 import Chat from "./component/chat/Chat";
 
-import { io } from "socket.io-client";
 import uuid from "react-native-uuid";
 import { db } from "./component/fireBase/FireBase";
 import PrivateChat from "./component/chat/PrivateChat";
@@ -25,7 +24,7 @@ interface user {
 	age: number;
 	hobby: string;
 	desc: string;
-	userObjId: string;
+	id: string;
 	email: string;
 }
 
@@ -39,11 +38,10 @@ interface tokenInfos {
 	hobby: string;
 	img: string;
 	token: string;
-	username: string;
-	userObjId: string;
+	id: string;
 	verifyUser: boolean;
 	desc: string;
-	emails: string;
+	email: string;
 }
 type setToken = {
 	token: tokenInfos;
@@ -64,7 +62,7 @@ interface InterFaceInfos {
 		verifyUser: boolean;
 		userObjId: string;
 		desc: string;
-		id: number;
+		id: string;
 	};
 }
 
@@ -73,8 +71,8 @@ type setAllUserinfo = {
 	setUserInfos: React.Dispatch<React.SetStateAction<InterFaceInfos[]>>;
 };
 type setCount = {
-	countMsg: number;
-	setCountMsg: React.Dispatch<React.SetStateAction<number>>;
+	countMsg: boolean;
+	setCountMsg: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type chattMsg = {
@@ -107,7 +105,7 @@ const lastMsg = createContext({} as setCount);
 export default function App() {
 	const [info, setInfo] = useState<user>({} as user);
 	const [token, setToken] = useState<tokenInfos>({} as tokenInfos);
-	const [countMsg, setCountMsg] = useState<number>(7);
+	const [countMsg, setCountMsg] = useState<boolean>(false);
 	const [img, setImg] = useState<string | undefined>("");
 	const [age, setAge] = useState<string>();
 	const [hobby, setHobby] = useState<string>();

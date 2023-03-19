@@ -31,20 +31,20 @@ const ChangeInfos = () => {
 		desc,
 	};
 
-	async function changeUserInfos() {
-		const URL =
-			"https://friendserver.onrender.com/api/friend/users/changeUserInfos";
-		if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
-			const postInfos = await Axios.post(URL, user, {
-				headers: { userToken },
-			});
-			if (postInfos.data.infosUpdate) {
-				navigate("/userSettings");
-			}
-		} else {
-			setError(true);
-		}
-	}
+	// async function changeUserInfos() {
+	// 	const URL =
+	// 		"https://friendserver.onrender.com/api/friend/users/changeUserInfos";
+	// 	if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
+	// 		const postInfos = await Axios.post(URL, user, {
+	// 			headers: { userToken },
+	// 		});
+	// 		if (postInfos.data.infosUpdate) {
+	// 			navigate("/userSettings");
+	// 		}
+	// 	} else {
+	// 		setError(true);
+	// 	}
+	// }
 	return (
 		<ImageBackground
 			style={styles.container}

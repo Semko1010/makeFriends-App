@@ -18,7 +18,6 @@ import {
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 
-import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 //Imports
 
@@ -153,10 +152,7 @@ const MapViews = (props: chatMessage) => {
 	}, [db]);
 
 	async function chatWithUser() {
-		const chatId =
-			token.userObjId > info.userObjId
-				? token.userObjId + info.userObjId
-				: info.userObjId + token.userObjId;
+		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
 
 		if (db) {
 			const res = await db.collection("privateMessages").doc(chatId);
@@ -165,6 +161,8 @@ const MapViews = (props: chatMessage) => {
 				db.collection("privateMessages")
 					.doc(chatId)
 					.set({
+						chats: [],
+						msgReaded: false,
 						users: [
 							{
 								userName: token.userName,
@@ -172,7 +170,8 @@ const MapViews = (props: chatMessage) => {
 								desc: token.desc,
 								hobby: token.hobby,
 								img: token.img,
-								userObjId: token.userObjId,
+								online: false,
+								id: token.id,
 							},
 							{
 								userName: info.userName,
@@ -180,12 +179,12 @@ const MapViews = (props: chatMessage) => {
 								desc: info.desc,
 								hobby: info.hobby,
 								img: info.img,
-								userObjId: info.userObjId,
+								online: false,
+								id: info.id,
 							},
 						],
 					});
 			} else {
-				console.log("exists");
 			}
 		}
 		const navigateToChat = await navigate("/privateChat");
@@ -241,7 +240,7 @@ const MapViews = (props: chatMessage) => {
 								age={e.userLocationinfos.age}
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
-								userObjId={e.userLocationinfos.userObjId}
+								id={e.userLocationinfos.id}
 							/>
 						))}
 					</MapView>

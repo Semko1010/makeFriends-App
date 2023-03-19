@@ -11,7 +11,6 @@ import {
 	SafeAreaView,
 } from "react-native";
 import { Link } from "react-router-native";
-import Axios from "axios";
 
 //imports
 
@@ -35,20 +34,20 @@ const UserSettings = () => {
 	const [userData, setUserData] = useState<user | undefined>();
 	const [modalVisible, setModalVisible] = useState<boolean>(false);
 	const userToken = token.token;
-	const userObjId = token.userObjId;
+	const userObjId = token.id;
 
-	useEffect(() => {
-		(async () => {
-			// const URL = "http://10.0.2.2:2020/api/friend/users/loggedUserInfo"
-			const URL =
-				"https://friendserver.onrender.com/api/friend/users/loggedUserInfo";
-			const fetchLoggedUser = await Axios.get(URL, {
-				headers: { userToken, userObjId },
-			});
-			const setUsr = await setUserData(fetchLoggedUser.data);
-			setLoading(false);
-		})();
-	}, []);
+	// useEffect(() => {
+	// 	(async () => {
+	// 		// const URL = "http://10.0.2.2:2020/api/friend/users/loggedUserInfo"
+	// 		const URL =
+	// 			"https://friendserver.onrender.com/api/friend/users/loggedUserInfo";
+	// 		const fetchLoggedUser = await Axios.get(URL, {
+	// 			headers: { userToken, userObjId },
+	// 		});
+	// 		const setUsr = await setUserData(fetchLoggedUser.data);
+	// 		setLoading(false);
+	// 	})();
+	// }, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
