@@ -70,10 +70,12 @@ const SetCoordsButton = (props: coordinates) => {
 	async function deleteLocationUser() {
 		let gpsId;
 		const searchUser = await userInfos.find(e => {
-			console.log("e", e);
 			if (e.userLocationinfos.id === token.id) {
 				gpsId = e.id;
 			}
+			const onlineSet = db.collection("login").doc(token.id).update({
+				online: false,
+			});
 		});
 
 		const deleteGpsPosition = await db

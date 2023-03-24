@@ -21,11 +21,12 @@ import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 //Imports
 
-import { userInfo, Token, allInfosUser } from "../../App";
+import { userInfo, Token, allInfosUser, lastMsg } from "../../App";
 import Markers from "../marker/Marker";
 import SetCoordsButton from "../setCoordsButton/SetCoordsButton";
 import ModalMenu from "../modalMenu/ModalMenu";
 import ChatModal from "../chat/ChatModal";
+import UserInfos from "../modalMenu/UserInfos";
 import { Link, useNavigate } from "react-router-native";
 import { db } from "../fireBase/FireBase";
 interface InterFaceInfos {
@@ -99,8 +100,9 @@ const MapViews = (props: chatMessage) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
-	const [calling, setCalling] = useState<boolean>(true);
+	const [userInfosModal, setUserInfosModal] = useState<boolean>(false);
 	const [Gps, setGps] = useState<boolean>(false);
+	const { countMsg, setCountMsg } = useContext(lastMsg);
 	const [viewFix, setViewFix] = useState<boolean>();
 	const userToken = token.token;
 	const userLocationinfos = {
@@ -114,29 +116,32 @@ const MapViews = (props: chatMessage) => {
 	};
 
 	useEffect(() => {
-		(async () => {
-			const unscribe = await db
+		let unmounted = false;
 
-				.collection("location")
-				.onSnapshot(querySnapshot => {
-					const data = querySnapshot.docs.map(doc => ({
-						...doc.data(),
-						id: doc.id,
-					}));
-					// setViewFix(true);
-					setUserInfos(data);
+		db.collection("location").onSnapshot(querySnapshot => {
+			const data = querySnapshot.docs.map(doc => ({
+				...doc.data(),
+				id: doc.id,
+			}));
 
-					const myTimeout = setTimeout(myGreeting, 1000);
-					function myGreeting() {
-						setViewFix(false);
-					}
-				});
+			if (!unmounted) {
+				setUserInfos(data);
+			}
 
-			return unscribe;
-		})();
+			const myTimeout = setTimeout(myGreeting, 1000);
+			function myGreeting() {
+				setViewFix(false);
+			}
+		});
+
+		return () => {
+			unmounted = true;
+		};
 	}, [db]);
 
 	useEffect(() => {
+		setCountMsg(false);
+		let unmounted = false;
 		(async () => {
 			let { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== "granted") {
@@ -145,50 +150,17 @@ const MapViews = (props: chatMessage) => {
 			}
 
 			let location = await Location.getCurrentPositionAsync({});
-			const setLoc = await setLocation(location.coords);
-
-			setLoading(false);
-		})();
-	}, [db]);
-
-	async function chatWithUser() {
-		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
-
-		if (db) {
-			const res = await db.collection("privateMessages").doc(chatId);
-			const exists = (await res.get()).exists;
-			if (!exists) {
-				db.collection("privateMessages")
-					.doc(chatId)
-					.set({
-						chats: [],
-						msgReaded: false,
-						users: [
-							{
-								userName: token.userName,
-								age: token.age,
-								desc: token.desc,
-								hobby: token.hobby,
-								img: token.img,
-								online: false,
-								id: token.id,
-							},
-							{
-								userName: info.userName,
-								age: info.age,
-								desc: info.desc,
-								hobby: info.hobby,
-								img: info.img,
-								online: false,
-								id: info.id,
-							},
-						],
-					});
-			} else {
+			if (!unmounted) {
+				const setLoc = await setLocation(location.coords);
 			}
-		}
-		const navigateToChat = await navigate("/privateChat");
-	}
+			if (!unmounted) {
+				setLoading(false);
+			}
+		})();
+		return () => {
+			unmounted = true;
+		};
+	}, [db]);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -241,6 +213,7 @@ const MapViews = (props: chatMessage) => {
 								hobby={e.userLocationinfos.hobby}
 								desc={e.userLocationinfos.desc}
 								id={e.userLocationinfos.id}
+								userInfosModal={{ userInfosModal, setUserInfosModal }}
 							/>
 						))}
 					</MapView>
@@ -251,25 +224,6 @@ const MapViews = (props: chatMessage) => {
 						// Button Linear Gradient
 						colors={["#ECE9E6", "#FFFFFF", "#DBDBDB", "#EAEAEA"]}
 						style={styles.infos}>
-						{/* <View style={styles.infosText}>
-							<Text>
-								<Text style={{ color: "black" }}>Name: {info.userName}</Text>
-								
-							</Text>
-
-							<Text>Alter: {info.age}</Text>
-							<Text>Hobbys: {info.hobby}</Text>
-							<Text>Über mich: {info.desc}</Text>
-						</View> */}
-
-						<TouchableOpacity
-							style={styles.chatBtn}
-							onPress={() => chatWithUser()}>
-							<Text
-								style={{
-									color: "white",
-								}}>{`Chatten mit ${info.userName}`}</Text>
-						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
@@ -283,6 +237,11 @@ const MapViews = (props: chatMessage) => {
 
 			<>
 				<ModalMenu
+					modalValue={{ modalVisible, setModalVisible }}
+					socket={props.socket}
+				/>
+				<UserInfos
+					userInfosModal={{ userInfosModal, setUserInfosModal }}
 					modalValue={{ modalVisible, setModalVisible }}
 					socket={props.socket}
 				/>

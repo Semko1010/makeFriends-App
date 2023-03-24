@@ -23,7 +23,7 @@ import {
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token, lastMsg } from "../../App";
-import { GiftedChat, Bubble, IMessage } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { Link, useNavigate } from "react-router-native";
 import uuid from "react-native-uuid";
 import firebase from "firebase";
@@ -112,8 +112,8 @@ const PrivateChat = (props: any) => {
 	};
 
 	useEffect(() => {
+		let unmounted = false;
 		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
-		console.log("chatId", chatId);
 
 		if (db) {
 			db.collection("privateMessages")
@@ -121,11 +121,13 @@ const PrivateChat = (props: any) => {
 				.get()
 				.then(doc => {
 					if (doc.exists) {
-						setMessages(doc.data()?.chats);
+						if (!unmounted) {
+							setMessages(doc.data()?.chats);
+						}
+
 						if (
 							doc.data()?.chats[doc.data()?.chats.length - 1].id === token.id
 						) {
-							console.log("Same");
 						} else {
 							db.collection("privateMessages").doc(chatId).update({
 								msgReaded: false,
@@ -137,6 +139,9 @@ const PrivateChat = (props: any) => {
 					console.log("Errosrr getting document:", error);
 				});
 		}
+		return () => {
+			unmounted = true;
+		};
 	}, [db, info]);
 
 	async function back() {

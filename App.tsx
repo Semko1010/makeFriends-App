@@ -154,7 +154,7 @@ export default function App() {
 									/>
 									<Route path='/userSettings' element={<UsersSettings />} />
 									<Route
-										path='/registerA'
+										path='/RegisterA'
 										element={<RegisterA Image={{ img, setImg }} />}
 									/>
 									<Route
@@ -166,7 +166,7 @@ export default function App() {
 										}
 									/>
 									<Route
-										path='/registerB'
+										path='/RegisterB'
 										element={
 											<RegisterB
 												infos={{

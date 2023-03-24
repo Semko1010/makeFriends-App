@@ -29,7 +29,7 @@ const Home = () => {
 					</Link>
 				</LinearGradient>
 				<LinearGradient style={styles.linkView} colors={["#2c3e50", "#3498db"]}>
-					<Link underlayColor={"transparent"} to='/registerB'>
+					<Link underlayColor={"transparent"} to='/RegisterA'>
 						<Text style={styles.text}>Register</Text>
 					</Link>
 				</LinearGradient>

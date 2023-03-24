@@ -105,6 +105,7 @@ const ChatModal = (props: ModalFC) => {
 	};
 
 	useEffect(() => {
+		let unmounted = false;
 		if (db) {
 			const unscribe = db
 				.collection("messages")
@@ -114,12 +115,16 @@ const ChatModal = (props: ModalFC) => {
 						...doc.data(),
 						id: doc.id,
 					}));
-
-					setMessages(data);
+					if (!unmounted) {
+						setMessages(data);
+					}
 				});
 
 			return unscribe;
 		}
+		return () => {
+			unmounted = true;
+		};
 	}, [db, info]);
 
 	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);

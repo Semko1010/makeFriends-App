@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { View, TextInput, Text, StyleSheet, Button } from "react-native";
 
 import { useNavigate } from "react-router";
+import { auth, db } from "../fireBase/FireBase";
 //Imports
 
 // import {userImage} from "../../App"
@@ -30,26 +31,67 @@ const RegisterB = (props: infosUser) => {
 	const [email, setEmail] = useState<string | undefined>("");
 	const [password, setPassword] = useState<string | undefined>("");
 	const [verify, setVerify] = useState<boolean>(false);
-	const user = { userName, email, password, verify, props };
+	const user = {};
 	const navigate = useNavigate();
 
-	// async function register() {
-	// 	const URL = "https://friendserver.onrender.com/api/friend/users/register";
+	async function register() {
+		// auth
+		// 	.createUserWithEmailAndPassword(email, password)
+		// 	.then(credential => {
+		// 		console.log("credential", credential);
 
-	// 	// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
-	// 	try {
-	// 		const fetch = await Axios.post(URL, user);
+		// 		if (credential && credential.user) {
+		const ref = db.collection("login").doc(email);
 
-	// 		if (fetch.data.userCreated) {
-	// 			navigate("/login");
-	// 		}
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 	}
-	// 	// } else {
+		const exists = (await ref.get()).exists;
 
-	// 	// }
-	// }
+		if (!exists) {
+			db.collection("login").doc(email).set({
+				age: props.infos.age,
+				desc: props.infos.desc,
+				email,
+				hobby: props.infos.hobby,
+				img: props.infos.img,
+				online: false,
+				password,
+				userName,
+				verify,
+			});
+		} else {
+			console.log("user Exists");
+		}
+
+		// 		}
+		// 	})
+		// 	.catch(error => alert(error.message));
+
+		// auth
+		// 	.createUserWithEmailAndPassword(email, password)
+		// 	.then(auth => {
+		// 		console.log("auth", auth);
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err);
+		// 	});
+
+		// if (db) {
+		// 	db.collection("login").doc().set({
+		// 		age: props.infos.age,
+		// 		desc: props.infos.desc,
+		// 		email,
+		// 		hobby: props.infos.hobby,
+		// 		img: props.infos.img,
+		// 		online: false,
+		// 		password,
+		// 		userName,
+		// 		verify,
+		// 	});
+
+		// 	// }
+		// }
+
+		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
+	}
 
 	return (
 		<View>

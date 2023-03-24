@@ -1,6 +1,6 @@
 // //modules
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
 	View,
 	TextInput,
@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Link, useNavigate } from "react-router-native";
 //imports
-import { Token } from "../../App";
+import { lastMsg, Token } from "../../App";
 import { db } from "../fireBase/FireBase";
 
 type semir = {
@@ -20,67 +20,55 @@ type semir = {
 	};
 };
 
-const Login = (props: any) => {
+const Login = () => {
+	const { countMsg, setCountMsg } = useContext(lastMsg);
+	const { token, setToken } = useContext(Token);
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [loginUser, setLoginUser] = useState([]);
 	const [loading, setLoading] = useState<boolean>(false);
-	const { token, setToken } = useContext(Token);
+	// setCountMsg(true);
 	const user = { email, password };
 
 	async function login() {
-		// const URL = "http://localhost:2020/api/friend/users/login";
-		// const URL = "https://friendserver.onrender.com/api/friend/users/login";
-
-		if (db) {
-			const unscribe = db
-				.collection("login")
-
-				.onSnapshot(querySnapshot => {
-					const data = querySnapshot.docs.map(doc => ({
-						...doc.data(),
-						id: doc.id,
-					}));
-					data.map(userLogin => {
-						if (
-							user.email.toLowerCase() === userLogin.email ||
-							user.password.toLowerCase() === userLogin.password
-						) {
-							if (userLogin.verify) {
-								console.log("Verify");
-								setToken(userLogin);
-								setLoading(false);
-								navigate("/map");
-							} else {
-								console.log("notVerify");
-							}
-						} else {
-							console.log("false");
+		let unmounted = false;
+		const fetch = db.collection("login").onSnapshot(querySnapshot => {
+			const data = querySnapshot.docs.map(doc => ({
+				...doc.data(),
+				id: doc.id,
+			}));
+			data.map(userLogin => {
+				if (
+					user.email.toLowerCase() === userLogin.email ||
+					user.password.toLowerCase() === userLogin.password
+				) {
+					if (userLogin.verify) {
+						if (!unmounted) {
+							setToken(userLogin);
+							setCountMsg(true);
 						}
-					});
-				});
-		}
-		setLoading(true);
+						setLoading(false);
+					} else {
+					}
+				} else {
+				}
+			});
+		});
 
-		// try {
-		// 	const fetch = await Axios.post(URL, user);
-
-		// 	console.log(fetch);
-
-		// 	if (fetch.data.token) {
-		// 		if (fetch.data.verifyUser) {
-		// 			setToken(fetch.data);
-		// 			setLoading(false);
-		// 			navigate("/map");
-		// 			// props.socket.emit("join_room",fetch.data.userObjId)
-		// 		} else {
-		// 			console.log("Pleaser Verify Account");
-		// 		}
-		// 	}
-		// } catch (err) {
-		// 	console.log(err);
-		// }
+		return () => {
+			unmounted = true;
+		};
 	}
+	useEffect(() => {
+		console.log("before", countMsg);
+
+		if (countMsg) {
+			navigate("/map");
+		}
+		setCountMsg(false);
+		console.log("after", countMsg);
+	}, [countMsg]);
 
 	return (
 		<View>

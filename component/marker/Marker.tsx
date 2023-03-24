@@ -19,23 +19,21 @@ interface Props {
 	hobby: string;
 	desc: string;
 	userObjId: string;
+	userInfosModal: {
+		userInfosModal: boolean;
+		setUserInfosModal: React.Dispatch<React.SetStateAction<boolean>>;
+	};
 }
+
 const Markers = (props: Props) => {
 	const { info, setInfo } = useContext(userInfo);
 
 	const eachInfoOfUser = () => {
 		setInfo(props);
+		props.userInfosModal.setUserInfosModal(
+			!props.userInfosModal.userInfosModal,
+		);
 	};
-
-
-	// useEffect(() => {
-	// 	(async () => {
-	// 		const setViewTrue = await setViewFix(true);
-	// 		// const setViewFalse = await setViewFix(false);
-	// 	})();
-	// }, [props]);
-	
-
 
 	return (
 		<>

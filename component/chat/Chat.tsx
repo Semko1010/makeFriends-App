@@ -81,10 +81,11 @@ const Chat = (props: chatMessage) => {
 	const [search, setSearch] = useState<string>("");
 	const [messages, setMessages] = useState([]);
 	let arr: any[] = [];
+	let test: any[] = [];
 
 	useEffect(() => {
+		let unmounted = false;
 		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
-		console.log("chatId", chatId);
 
 		if (db) {
 			db.collection("privateMessages")
@@ -100,20 +101,49 @@ const Chat = (props: chatMessage) => {
 						if (chat.id.includes(token.id)) {
 							chat.users.map((u: any) => {
 								if (u.id == token.id) {
-									setMsgRead(u.msgnotReaded);
 								} else {
 									arr.push({
 										chats: chat.chats,
 										users: u,
 										msgReaded: chat.msgReaded,
 									});
+									db.collection("login")
+										.limit(100)
+										.onSnapshot(querySnapshot => {
+											const login = querySnapshot.docs.map(doc => ({
+												...doc.data(),
+												id: doc.id,
+											}));
+											test = [];
+
+											arr.map(i => {
+												login.map(l => {
+													if (i.users.id === l.id) {
+														test.push({
+															chats: i.chats,
+															msgReaded: i.msgReaded,
+															users: i.users,
+															logins: l,
+														});
+													} else {
+													}
+												});
+											});
+
+											if (!unmounted) {
+												setMyChats(test);
+											}
+										});
 								}
 							});
 						}
 					});
-					setMyChats(arr);
 				});
 		}
+		return () => {
+			unmounted = true;
+			// setMyChats(test);
+		};
 	}, [db, info]);
 
 	async function chatPrv(id: any) {
@@ -142,8 +172,6 @@ const Chat = (props: chatMessage) => {
 								: i.userName.toUpperCase().includes(search);
 						})
 						.map((item: any, index: React.Key | null | undefined) => {
-							console.log("item", item.chats[item.chats.length - 1]?.id);
-
 							return (
 								<TouchableOpacity
 									key={index}
@@ -153,37 +181,45 @@ const Chat = (props: chatMessage) => {
 										<Image
 											style={{ width: 50, height: 50, borderRadius: 50 }}
 											source={{
-												uri: `data:image/png;base64,${item.users.img}`,
+												uri: `data:image/png;base64,${item.logins.img}`,
 											}}
 										/>
 									</View>
 
 									<View style={styles.infoContainer}>
-										<Text style={styles.name}>{item.users.userName}</Text>
+										<Text style={styles.name}>{item.logins.userName}</Text>
 										<Text style={styles.lastMessage}>
 											{item.chats.length === 0
 												? ""
 												: item.chats[item.chats.length - 1].text}
 										</Text>
 									</View>
-									<View>
-										<Text style={styles.notificationMessage}>
-											{item.chats[item.chats.length - 1]?.id === token.id ? (
-												!item.msgReaded ? (
-													""
-												) : (
-													""
-												)
-											) : !item.msgReaded ? (
+
+									<Text style={styles.notificationMessage}>
+										{item.chats[item.chats.length - 1]?.id === token.id ? (
+											!item.msgReaded ? (
 												""
 											) : (
-												<Image
-													style={{ width: 30, height: 30 }}
-													source={require("../../assets/img/msg.png")}
-												/>
-											)}
-										</Text>
-									</View>
+												""
+											)
+										) : !item.msgReaded ? (
+											""
+										) : (
+											<Image
+												style={{
+													width: 30,
+													height: 30,
+												}}
+												source={require("../../assets/img/msg.png")}
+											/>
+										)}
+									</Text>
+
+									{item.logins.online ? (
+										<View style={styles.online}></View>
+									) : (
+										<View style={styles.offline}></View>
+									)}
 								</TouchableOpacity>
 							);
 						})}
@@ -208,7 +244,7 @@ const styles = StyleSheet.create({
 	userContainer: {
 		marginTop: 25,
 		width: "100%",
-		flex: 1,
+
 		justifyContent: "space-around",
 		alignItems: "center",
 		flexDirection: "row",
@@ -224,6 +260,22 @@ const styles = StyleSheet.create({
 		paddingRight: 25,
 
 		width: Dimensions.get("window").width,
+	},
+	online: {
+		position: "absolute",
+		right: 0,
+		backgroundColor: "green",
+		width: 20,
+		height: 20,
+		borderRadius: 20,
+	},
+	offline: {
+		position: "absolute",
+		right: 0,
+		backgroundColor: "red",
+		width: 20,
+		height: 20,
+		borderRadius: 20,
 	},
 	header: {
 		marginTop: 15,
@@ -247,19 +299,14 @@ const styles = StyleSheet.create({
 		marginTop: 5,
 		color: "rgb(135,133,131)",
 	},
-	notificationMessageContainer: {
-		backgroundColor: "rgb(230,173,91)",
-		color: "rgb(255,255,255)",
-		width: 25,
-		height: 25,
-		borderRadius: 25,
-		textAlign: "center",
-	},
+	notificationMessageContainer: {},
 	notificationMessage: {
 		textAlign: "center",
 		color: "rgb(255,255,255)",
 		fontSize: 18,
 		fontWeight: "700",
+		position: "absolute",
+		right: 50,
 	},
 
 	chatMsg: {
