@@ -13,13 +13,6 @@ import { Link, useNavigate } from "react-router-native";
 import { lastMsg, Token } from "../../App";
 import { db } from "../fireBase/FireBase";
 
-type semir = {
-	value: {
-		img: string;
-		setImg: React.Dispatch<React.SetStateAction<string>>;
-	};
-};
-
 const Login = () => {
 	const { countMsg, setCountMsg } = useContext(lastMsg);
 	const { token, setToken } = useContext(Token);
@@ -32,29 +25,48 @@ const Login = () => {
 	const user = { email, password };
 
 	async function login() {
+		console.log("dd");
+
 		let unmounted = false;
-		const fetch = db.collection("login").onSnapshot(querySnapshot => {
-			const data = querySnapshot.docs.map(doc => ({
-				...doc.data(),
-				id: doc.id,
-			}));
-			data.map(userLogin => {
-				if (
-					user.email.toLowerCase() === userLogin.email ||
-					user.password.toLowerCase() === userLogin.password
-				) {
-					if (userLogin.verify) {
+		db.collection("login")
+			.doc(email)
+			.get()
+			.then(doc => {
+				if (doc.exists) {
+					console.log("doc.data()", doc.data());
+					if (doc.data()?.email === email) {
 						if (!unmounted) {
-							setToken(userLogin);
-							setCountMsg(true);
+							setToken(doc.data());
+							navigate("/map");
 						}
-						setLoading(false);
-					} else {
 					}
-				} else {
 				}
+			})
+			.catch(error => {
+				console.log("Errosrr getting document:", error);
 			});
-		});
+		// const fetch = db.collection("login").onSnapshot(querySnapshot => {
+		// 	const data = querySnapshot.docs.map(doc => ({
+		// 		...doc.data(),
+		// 		id: doc.id,
+		// 	}));
+		// 	data.map(userLogin => {
+		// 		if (
+		// 			user.email.toLowerCase() === userLogin.email ||
+		// 			user.password.toLowerCase() === userLogin.password
+		// 		) {
+		// 			if (userLogin.verify) {
+		// 				if (!unmounted) {
+		// 					setToken(userLogin);
+		// 					setCountMsg(true);
+		// 				}
+		// 				setLoading(false);
+		// 			} else {
+		// 			}
+		// 		} else {
+		// 		}
+		// 	});
+		// });
 
 		return () => {
 			unmounted = true;
@@ -69,13 +81,14 @@ const Login = () => {
 		setCountMsg(false);
 		console.log("after", countMsg);
 	}, [countMsg]);
+	console.log(email);
 
 	return (
 		<View>
 			<View style={styles.linkView}>
 				{loading && <ActivityIndicator size='large' color='#00ff00' />}
 				<TextInput
-					onChangeText={e => setEmail(e)}
+					onChangeText={e => setEmail(e.toLowerCase())}
 					style={styles.textInput}
 					placeholder='Email'
 					placeholderTextColor='black'

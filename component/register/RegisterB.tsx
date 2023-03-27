@@ -4,15 +4,7 @@ import { View, TextInput, Text, StyleSheet, Button } from "react-native";
 
 import { useNavigate } from "react-router";
 import { auth, db } from "../fireBase/FireBase";
-//Imports
-
-// import {userImage} from "../../App"
-// type userImage={
-//     Image:{
-//         img:string,
-//         setImg: React.Dispatch<React.SetStateAction<string>>
-//     }
-// }
+import uuid from "react-native-uuid";
 type infosUser = {
 	infos: {
 		age: string | undefined;
@@ -41,7 +33,7 @@ const RegisterB = (props: infosUser) => {
 		// 		console.log("credential", credential);
 
 		// 		if (credential && credential.user) {
-		const ref = db.collection("login").doc(email);
+		const ref = db.collection("login").doc();
 
 		const exists = (await ref.get()).exists;
 
@@ -56,7 +48,9 @@ const RegisterB = (props: infosUser) => {
 				password,
 				userName,
 				verify,
+				id: uuid.v4(),
 			});
+			navigate("/login");
 		} else {
 			console.log("user Exists");
 		}
@@ -92,19 +86,20 @@ const RegisterB = (props: infosUser) => {
 
 		// if (userName.length >= 3 && email.includes("@") && password.length >= 6) {
 	}
+	console.log("u", email);
 
 	return (
 		<View>
 			<View style={styles.linkContainer}>
 				<TextInput
 					style={styles.linkView}
-					onChangeText={e => setUsername(e)}
+					onChangeText={e => setUsername(e.toLowerCase())}
 					placeholder='Username'
 					placeholderTextColor='black'
 				/>
 
 				<TextInput
-					onChangeText={e => setEmail(e)}
+					onChangeText={e => setEmail(e.toLowerCase())}
 					style={styles.linkView}
 					placeholder='Email'
 					placeholderTextColor='black'

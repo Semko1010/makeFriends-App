@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Button, Text } from "react-native";
+import { View, Button, Text, Image } from "react-native";
 // import {userImage} from "../../App"
 import * as ImagePicker from "expo-image-picker";
 import { Link } from "react-router-native";
@@ -49,6 +49,12 @@ const RegisterA = (props: userImage) => {
 
 	return (
 		<View>
+			<Image
+				style={{ width: 100, height: 100 }}
+				source={{
+					uri: `data:image/png;base64,${props.Image.img}`,
+				}}
+			/>
 			<Button onPress={pickImage} title='pickImage'></Button>
 
 			<Button onPress={pickCamera} title='pickCamera'></Button>

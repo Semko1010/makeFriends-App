@@ -14,14 +14,21 @@ interface Props {
 	img: string;
 	latitude: number;
 	longitude: number;
-	username: string;
+	userName: string;
 	age: number;
 	hobby: string;
 	desc: string;
-	userObjId: string;
+
+	user: {};
+	id: string;
+	email: string;
 	userInfosModal: {
 		userInfosModal: boolean;
 		setUserInfosModal: React.Dispatch<React.SetStateAction<boolean>>;
+	};
+	viewFix: {
+		viewFix: boolean;
+		setViewFix: React.Dispatch<React.SetStateAction<boolean>>;
 	};
 }
 
@@ -35,12 +42,16 @@ const Markers = (props: Props) => {
 		);
 	};
 
+	// useEffect(() => {
+	// 	props.viewFix.setViewFix(false);
+	// 	console.log("props.viewFix.viewFix", props.viewFix.viewFix);
+	// }, []);
 	return (
 		<>
 			{/* @ts-ignore  */}
 
 			<Marker
-				tracksViewChanges={true}
+				tracksViewChanges={props.viewFix.viewFix}
 				onPress={eachInfoOfUser}
 				coordinate={{
 					latitude: props.latitude,

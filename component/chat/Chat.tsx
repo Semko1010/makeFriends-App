@@ -112,7 +112,6 @@ const Chat = (props: chatMessage) => {
 										.onSnapshot(querySnapshot => {
 											const login = querySnapshot.docs.map(doc => ({
 												...doc.data(),
-												id: doc.id,
 											}));
 											test = [];
 
@@ -188,7 +187,7 @@ const Chat = (props: chatMessage) => {
 
 									<View style={styles.infoContainer}>
 										<Text style={styles.name}>{item.logins.userName}</Text>
-										<Text style={styles.lastMessage}>
+										<Text numberOfLines={1} style={styles.lastMessage}>
 											{item.chats.length === 0
 												? ""
 												: item.chats[item.chats.length - 1].text}
@@ -220,14 +219,82 @@ const Chat = (props: chatMessage) => {
 									) : (
 										<View style={styles.offline}></View>
 									)}
+
+									<Text style={styles.time}>
+										{item.chats.length === 0
+											? ""
+											: `${
+													Math.floor(
+														((item.chats[item.chats.length - 1].createdAt /
+															1000 /
+															60 /
+															60) %
+															24) +
+															1,
+													) > 0 &&
+													Math.floor(
+														((item.chats[item.chats.length - 1].createdAt /
+															1000 /
+															60 /
+															60) %
+															24) +
+															1,
+													) < 10
+														? `0${Math.floor(
+																((item.chats[item.chats.length - 1].createdAt /
+																	1000 /
+																	60 /
+																	60) %
+																	24) +
+																	1,
+														  )}`
+														: Math.floor(
+																((item.chats[item.chats.length - 1].createdAt /
+																	1000 /
+																	60 /
+																	60) %
+																	24) +
+																	1,
+														  )
+											  }:${
+													Math.floor(
+														(item.chats[item.chats.length - 1].createdAt /
+															1000 /
+															60) %
+															60,
+													) > 0 &&
+													Math.floor(
+														(item.chats[item.chats.length - 1].createdAt /
+															1000 /
+															60) %
+															60,
+													) < 10
+														? `0${Math.floor(
+																(item.chats[item.chats.length - 1].createdAt /
+																	1000 /
+																	60) %
+																	60,
+														  )}`
+														: Math.floor(
+																(item.chats[item.chats.length - 1].createdAt /
+																	1000 /
+																	60) %
+																	60,
+														  )
+											  }`}
+									</Text>
 								</TouchableOpacity>
 							);
 						})}
 				</View>
 			</ScrollView>
-			<Link to='/map'>
-				<Text>Map</Text>
-			</Link>
+			<View style={styles.footer}>
+				<TouchableOpacity
+					style={styles.chatBtn}
+					onPress={() => navigate("/map")}>
+					<Text style={{ color: "white" }}>Map</Text>
+				</TouchableOpacity>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -244,18 +311,16 @@ const styles = StyleSheet.create({
 	userContainer: {
 		marginTop: 25,
 		width: "100%",
-
-		justifyContent: "space-around",
+		justifyContent: "space-evenly",
 		alignItems: "center",
 		flexDirection: "row",
 	},
-	imgContainer: {
-		width: "30%",
-	},
+	imgContainer: {},
 	infoContainer: {
-		width: "70%",
+		width: "50%",
 	},
 	headline: {
+		paddingTop: 30,
 		paddingLeft: 25,
 		paddingRight: 25,
 
@@ -263,7 +328,7 @@ const styles = StyleSheet.create({
 	},
 	online: {
 		position: "absolute",
-		right: 0,
+		left: 0,
 		backgroundColor: "green",
 		width: 20,
 		height: 20,
@@ -271,7 +336,7 @@ const styles = StyleSheet.create({
 	},
 	offline: {
 		position: "absolute",
-		right: 0,
+		left: 0,
 		backgroundColor: "red",
 		width: 20,
 		height: 20,
@@ -298,6 +363,12 @@ const styles = StyleSheet.create({
 	lastMessage: {
 		marginTop: 5,
 		color: "rgb(135,133,131)",
+		width: "60%",
+	},
+	time: {
+		color: "rgb(135,133,131)",
+		position: "absolute",
+		right: 0,
 	},
 	notificationMessageContainer: {},
 	notificationMessage: {
@@ -328,7 +399,7 @@ const styles = StyleSheet.create({
 		alignItems: "baseline",
 	},
 	chatBtn: {
-		backgroundColor: "#00bfff",
+		backgroundColor: "rgb(230,173,91)",
 
 		marginRight: 25,
 		paddingBottom: 15,
@@ -337,6 +408,13 @@ const styles = StyleSheet.create({
 		paddingLeft: 30,
 		borderWidth: 1,
 		borderRadius: 10,
+	},
+	footer: {
+		width: Dimensions.get("window").width,
+		height: "10%",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgb(49,41,36)",
 	},
 });
 

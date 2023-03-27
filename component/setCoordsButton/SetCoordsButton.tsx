@@ -19,6 +19,10 @@ type coordinates = {
 		longitude: number;
 		latitude: number;
 	};
+	viewFix: {
+		viewFix: boolean;
+		setViewFix: React.Dispatch<React.SetStateAction<boolean>>;
+	};
 };
 
 interface user {
@@ -58,24 +62,27 @@ const SetCoordsButton = (props: coordinates) => {
 			}
 		});
 	}, [userInfos, db]);
+	console.log(token.email);
 
-	async function setLocationUser() {
+	function setLocationUser() {
+		props.viewFix.setViewFix(true);
 		if (db) {
 			db.collection("location").add({
 				userLocationinfos,
 			});
 			setGpsButton(false);
 		}
+		db.collection("login").doc(token.email).update({
+			online: true,
+		});
 	}
 	async function deleteLocationUser() {
+		props.viewFix.setViewFix(true);
 		let gpsId;
-		const searchUser = await userInfos.find(e => {
+		userInfos.find(e => {
 			if (e.userLocationinfos.id === token.id) {
 				gpsId = e.id;
 			}
-			const onlineSet = db.collection("login").doc(token.id).update({
-				online: false,
-			});
 		});
 
 		const deleteGpsPosition = await db
@@ -83,13 +90,17 @@ const SetCoordsButton = (props: coordinates) => {
 			.doc(gpsId)
 			.delete();
 		setGpsButton(true);
+		const offlineSet = await db.collection("login").doc(token.email).update({
+			online: false,
+		});
 	}
 
 	AppState.addEventListener("change", state => {
 		if (state === "active") {
 			// do this
 		} else if (state === "background") {
-			// deleteLocationUser();
+			console.log("delete");
+			deleteLocationUser();
 		} else if (state === "inactive") {
 			// do that other thing
 		}

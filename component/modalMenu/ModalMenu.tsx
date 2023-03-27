@@ -89,9 +89,9 @@ const ModalMenu = (props: ModalFC) => {
 										style={{ width: 20, height: 20, marginRight: 20 }}
 										source={require("../../assets/img/map.png")}
 									/>
-									{/* <Link to='/map'>
+									<Link to='/map'>
 										<Text style={{ fontSize: 20, color: "white" }}>Map</Text>
-									</Link> */}
+									</Link>
 								</View>
 								<View style={styles.buttons}>
 									<Image

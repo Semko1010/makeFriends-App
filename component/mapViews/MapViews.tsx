@@ -1,5 +1,5 @@
 //Modules
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
 	ImageBackground,
 	StyleSheet,
@@ -43,6 +43,7 @@ interface InterFaceInfos {
 type coordinates = {
 	longitude: number;
 	latitude: number;
+	setGps: {};
 };
 interface IMessage {
 	_id: string | number;
@@ -103,12 +104,11 @@ const MapViews = (props: chatMessage) => {
 	const [userInfosModal, setUserInfosModal] = useState<boolean>(false);
 	const [Gps, setGps] = useState<boolean>(false);
 	const { countMsg, setCountMsg } = useContext(lastMsg);
-	const [viewFix, setViewFix] = useState<boolean>();
+	const [viewFix, setViewFix] = useState<boolean>(false);
 	const userToken = token.token;
 	const userLocationinfos = {
 		latitude: location?.latitude,
 		longitude: location?.longitude,
-		userName: token.username,
 		age: token.age,
 		hobby: token.hobby,
 		img: token.img,
@@ -119,6 +119,7 @@ const MapViews = (props: chatMessage) => {
 		let unmounted = false;
 
 		db.collection("location").onSnapshot(querySnapshot => {
+			setViewFix(true);
 			const data = querySnapshot.docs.map(doc => ({
 				...doc.data(),
 				id: doc.id,
@@ -126,21 +127,20 @@ const MapViews = (props: chatMessage) => {
 
 			if (!unmounted) {
 				setUserInfos(data);
-			}
 
-			const myTimeout = setTimeout(myGreeting, 1000);
-			function myGreeting() {
-				setViewFix(false);
+				setTimeout(() => {
+					setViewFix(false);
+				}, 1000);
 			}
 		});
 
 		return () => {
 			unmounted = true;
+			setViewFix(false);
 		};
 	}, [db]);
 
 	useEffect(() => {
-		setCountMsg(false);
 		let unmounted = false;
 		(async () => {
 			let { status } = await Location.requestForegroundPermissionsAsync();
@@ -161,16 +161,19 @@ const MapViews = (props: chatMessage) => {
 			unmounted = true;
 		};
 	}, [db]);
-
+	useEffect(() => {
+		if (!viewFix) {
+			setViewFix(false);
+		}
+	}, [userInfos]);
 	return (
 		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
 			{location && (
 				<SafeAreaView style={styles.container}>
-					<LinearGradient
+					<View
 						// Button Linear Gradient
 
-						colors={["#ADA996", "#F2F2F2", "#DBDBDB", "#EAEAEA"]}
 						style={styles.menu}>
 						<TouchableOpacity onPress={() => setModalVisible(true)}>
 							<Image
@@ -180,16 +183,18 @@ const MapViews = (props: chatMessage) => {
 						</TouchableOpacity>
 						<View style={styles.groupChatText}>
 							<Image
-								style={{ width: 50, height: 50 }}
+								style={{ width: 50, height: 50, borderRadius: 50 }}
 								source={{
-									uri: `data:image/png;base64,${info.img}`,
+									uri: `data:image/png;base64,${token.img}`,
 								}}
 							/>
-							<Text style={{ textAlign: "center" }}>Ausgewählt</Text>
 						</View>
 
-						<SetCoordsButton location={location} setGps={{ Gps, setGps }} />
-					</LinearGradient>
+						<SetCoordsButton
+							location={location}
+							viewFix={{ viewFix, setViewFix }}
+						/>
+					</View>
 					{/* @ts-ignore  */}
 					<MapView
 						style={styles.map}
@@ -214,24 +219,27 @@ const MapViews = (props: chatMessage) => {
 								desc={e.userLocationinfos.desc}
 								id={e.userLocationinfos.id}
 								userInfosModal={{ userInfosModal, setUserInfosModal }}
+								viewFix={{ viewFix, setViewFix }}
+								user={""}
+								email={""}
 							/>
 						))}
 					</MapView>
 
 					{/* INFO VIEW*/}
 
-					<LinearGradient
+					<View
 						// Button Linear Gradient
-						colors={["#ECE9E6", "#FFFFFF", "#DBDBDB", "#EAEAEA"]}
+
 						style={styles.infos}>
 						<TouchableOpacity
 							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
-							<Text style={{ color: "white" }}>G</Text>
+							<Text style={{ color: "white" }}>Global Chat</Text>
 						</TouchableOpacity>
 
 						{/* <Text style={styles}>{lastMessage.text}</Text> */}
-					</LinearGradient>
+					</View>
 				</SafeAreaView>
 			)}
 
@@ -267,19 +275,33 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	infos: {
+		height: "10%",
 		borderTopWidth: 1,
-		backgroundColor: "white",
+		backgroundColor: "rgb(49,41,36)",
 		flexDirection: "row",
-		justifyContent: "space-between",
+		justifyContent: "center",
 		alignItems: "center",
 	},
 	infosText: {
 		flexDirection: "column",
 		marginLeft: 25,
 	},
-	chatBtn: {
-		backgroundColor: "#00bfff",
+	menu: {
+		paddingTop: 25,
+		height: "15%",
+		backgroundColor: "rgb(49,41,36)",
+		width: Dimensions.get("window").width,
 
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		borderBottomWidth: 1,
+		borderBottomColor: "gray",
+	},
+	chatBtn: {
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgb(230,173,91)",
 		marginRight: 25,
 		paddingBottom: 15,
 		paddingTop: 15,
@@ -338,15 +360,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 	},
 
-	menu: {
-		width: Dimensions.get("window").width,
-		height: 100,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		borderBottomWidth: 1,
-		borderBottomColor: "gray",
-	},
 	buttonOpen: {
 		backgroundColor: "#F194Fa",
 	},
