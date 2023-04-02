@@ -15,6 +15,7 @@ import Axios from "axios";
 import { Token } from "../../App";
 import { useNavigate } from "react-router-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { db } from "../fireBase/FireBase";
 
 const ChangeInfos = () => {
 	const navigate = useNavigate();
@@ -31,20 +32,24 @@ const ChangeInfos = () => {
 		desc,
 	};
 
-	// async function changeUserInfos() {
-	// 	const URL =
-	// 		"https://friendserver.onrender.com/api/friend/users/changeUserInfos";
-	// 	if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
-	// 		const postInfos = await Axios.post(URL, user, {
-	// 			headers: { userToken },
-	// 		});
-	// 		if (postInfos.data.infosUpdate) {
-	// 			navigate("/userSettings");
-	// 		}
-	// 	} else {
-	// 		setError(true);
-	// 	}
-	// }
+	async function changeUserInfos() {
+		if (userName.length >= 5 && hobby.length >= 5 && desc.length >= 5) {
+			db.collection("login")
+				.doc(token.email)
+				.update({
+					userName: userName,
+					hobby: hobby,
+					desc: desc,
+				})
+
+				.catch(error => {
+					console.log("Errosrr getting document:", error);
+				});
+			navigate("/userSettings");
+		} else {
+			setError(true);
+		}
+	}
 	return (
 		<ImageBackground
 			style={styles.container}

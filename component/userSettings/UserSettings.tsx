@@ -18,6 +18,7 @@ import { Token, allInfosUser } from "../../App";
 import ModalMenu from "../modalMenu/ModalMenu";
 import ButtonChangeInfos from "./ChangeInfos";
 import { LinearGradient } from "expo-linear-gradient";
+import { db } from "../fireBase/FireBase";
 interface user {
 	img: string;
 	latitude: number;
@@ -31,23 +32,32 @@ interface user {
 const UserSettings = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const { token, setToken } = useContext(Token);
-	const [userData, setUserData] = useState<user | undefined>();
+	const [userData, setUserData] = useState<any>();
 	const [modalVisible, setModalVisible] = useState<boolean>(false);
 	const userToken = token.token;
 	const userObjId = token.id;
 
-	// useEffect(() => {
-	// 	(async () => {
-	// 		// const URL = "http://10.0.2.2:2020/api/friend/users/loggedUserInfo"
-	// 		const URL =
-	// 			"https://friendserver.onrender.com/api/friend/users/loggedUserInfo";
-	// 		const fetchLoggedUser = await Axios.get(URL, {
-	// 			headers: { userToken, userObjId },
-	// 		});
-	// 		const setUsr = await setUserData(fetchLoggedUser.data);
-	// 		setLoading(false);
-	// 	})();
-	// }, []);
+	useEffect(() => {
+		let unmounted = false;
+		db.collection("login")
+			.doc(token.email)
+			.get()
+			.then(doc => {
+				if (doc.exists) {
+					if (!unmounted) {
+						setUserData(doc.data());
+						setLoading(false);
+					}
+				}
+			})
+			.catch(error => {
+				console.log("Errosrr getting document:", error);
+			});
+
+		return () => {
+			unmounted = true;
+		};
+	}, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -64,7 +74,12 @@ const UserSettings = () => {
 						/>
 					</TouchableOpacity>
 				</View>
-				<ModalMenu modalValue={{ modalVisible, setModalVisible }} />
+				<ModalMenu
+					modalValue={{ modalVisible, setModalVisible }}
+					socket={{
+						close: undefined,
+					}}
+				/>
 
 				{loading && <ActivityIndicator size='large' color='#00ff00' />}
 				<View style={styles.infoView}>
@@ -78,7 +93,7 @@ const UserSettings = () => {
 							source={require("../../assets/img/emails.png")}
 						/>
 						<Text>
-							Email:{userData?.userName}
+							Email: {userData?.email}
 							{loading && <ActivityIndicator size='small' color='#00ff00' />}
 						</Text>
 					</View>

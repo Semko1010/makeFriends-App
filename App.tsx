@@ -13,8 +13,6 @@ import UsersSettings from "./component/userSettings/UserSettings";
 import ChangeInfos from "./component/userSettings/ChangeInfos";
 import Chat from "./component/chat/Chat";
 
-import uuid from "react-native-uuid";
-import { db } from "./component/fireBase/FireBase";
 import PrivateChat from "./component/chat/PrivateChat";
 interface user {
 	img: string;

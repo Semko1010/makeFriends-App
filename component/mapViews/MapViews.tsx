@@ -161,11 +161,7 @@ const MapViews = (props: chatMessage) => {
 			unmounted = true;
 		};
 	}, [db]);
-	useEffect(() => {
-		if (!viewFix) {
-			setViewFix(false);
-		}
-	}, [userInfos]);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			{loading && <ActivityIndicator size='large' color='#00ff00' />}
@@ -198,6 +194,7 @@ const MapViews = (props: chatMessage) => {
 					{/* @ts-ignore  */}
 					<MapView
 						style={styles.map}
+						userInterfaceStyle={"light"}
 						initialRegion={{
 							latitude: location.latitude,
 							longitude: location.longitude,
@@ -278,15 +275,14 @@ const styles = StyleSheet.create({
 		height: "10%",
 		borderTopWidth: 1,
 		backgroundColor: "rgb(49,41,36)",
-		flexDirection: "row",
 		justifyContent: "center",
-		alignItems: "center",
 	},
 	infosText: {
 		flexDirection: "column",
 		marginLeft: 25,
 	},
 	menu: {
+		paddingBottom: 10,
 		paddingTop: 25,
 		height: "15%",
 		backgroundColor: "rgb(49,41,36)",
@@ -299,16 +295,18 @@ const styles = StyleSheet.create({
 		borderBottomColor: "gray",
 	},
 	chatBtn: {
+		textAlign: "center",
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "rgb(230,173,91)",
-		marginRight: 25,
-		paddingBottom: 15,
+		width: 150,
 		paddingTop: 15,
+		paddingBottom: 15,
 		paddingRight: 30,
 		paddingLeft: 30,
 		borderWidth: 1,
 		borderRadius: 10,
+		marginLeft: 15,
 	},
 	userImg: {
 		width: 110,

@@ -78,7 +78,7 @@ const PrivateChat = (props: any) => {
 	const [lastMessage, setLastMessage] = useState("");
 	const [last, setLast] = useState("");
 	const [privateMsgStat, setPrivateMsgStat] = useState<boolean>(false);
-
+	const scrollViewRef = useRef();
 	async function privateMsg(user: any) {
 		const setUserName = await setLastMessage(user.name);
 		const setTrue = await setPrivateMsgStat(true);
@@ -86,6 +86,8 @@ const PrivateChat = (props: any) => {
 	}
 
 	const send = (messages: any) => {
+		let Test;
+
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
@@ -98,6 +100,15 @@ const PrivateChat = (props: any) => {
 			db.collection("privateMessages")
 				.doc(chatId)
 				.update({
+					unreadedMsg: firebase.firestore.FieldValue.arrayUnion({
+						_id,
+						createdAt,
+
+						text,
+						id: token.id,
+						user,
+						status: false,
+					}),
 					chats: firebase.firestore.FieldValue.arrayUnion({
 						_id,
 						createdAt,
@@ -118,6 +129,7 @@ const PrivateChat = (props: any) => {
 		if (db) {
 			db.collection("privateMessages")
 				.doc(chatId)
+
 				.onSnapshot(doc => {
 					if (doc.exists) {
 						if (!unmounted) {
@@ -125,29 +137,6 @@ const PrivateChat = (props: any) => {
 						}
 					}
 				});
-
-			// db.collection("privateMessages")
-			// 	.doc(chatId)
-			// 	.get()
-			// 	.then(doc => {
-			// 		if (doc.exists) {
-			// 			if (!unmounted) {
-			// 				setMessages(doc.data()?.chats);
-			// 			}
-
-			// 			if (
-			// 				doc.data()?.chats[doc.data()?.chats.length - 1].id === token.id
-			// 			) {
-			// 			} else {
-			// 				db.collection("privateMessages").doc(chatId).update({
-			// 					msgReaded: false,
-			// 				});
-			// 			}
-			// 		}
-			// 	})
-			// 	.catch(error => {
-			// 		console.log("Errosrr getting document:", error);
-			// 	});
 		}
 		return () => {
 			unmounted = true;
@@ -164,6 +153,8 @@ const PrivateChat = (props: any) => {
 					if (doc.data()?.chats[doc.data()?.chats.length - 1].id === token.id) {
 					} else {
 						db.collection("privateMessages").doc(chatId).update({
+							unreadedMsg: [],
+
 							msgReaded: false,
 						});
 					}
@@ -173,11 +164,40 @@ const PrivateChat = (props: any) => {
 				console.log("Errosrr getting document:", error);
 			});
 	}, [messages]);
-
+	useEffect(() => {
+		let time = new Date();
+		let b = time.getDate();
+		let c = time.getMonth() + 1;
+		let d = time.getFullYear();
+		let day = "";
+		switch (time.getDay()) {
+			case 0:
+				day = "Sonntag";
+				break;
+			case 1:
+				day = "Montag";
+				break;
+			case 2:
+				day = "Dienstag";
+				break;
+			case 3:
+				day = "Mittwoch";
+				break;
+			case 4:
+				day = "Donnerstag";
+				break;
+			case 5:
+				day = "Freitag";
+				break;
+			case 6:
+				day = "Samstag";
+				break;
+		}
+	}, []);
 	async function back() {
 		navigate("/chat");
 	}
-	const customtInputToolbar = props => {
+	const customtInputToolbar = (props: any) => {
 		return (
 			<View style={{ flex: 1, width: 250 }}>
 				<InputToolbar
@@ -194,10 +214,9 @@ const PrivateChat = (props: any) => {
 			</View>
 		);
 	};
-	const renderMessage = props => {
-		return <View {...props} style={{ height: props }}></View>;
-	};
+
 	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
+
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<Modal animationType='slide' transparent={true} visible={true}>
@@ -229,76 +248,175 @@ const PrivateChat = (props: any) => {
 						<Text style={styles.header}>{info.userName}</Text>
 					</View>
 
-					<GiftedChat
-						wrapInSafeArea={false}
-						messages={messages}
-						onSend={messages => send(messages)}
-						renderAvatar={() => null}
-						showAvatarForEveryMessage={false}
-						renderUsernameOnMessage={false}
-						renderInputToolbar={props => customtInputToolbar(props)}
-						text={privateMsgStat ? `@${lastMessage} ` : undefined}
-						user={{
-							name: token.userName,
-							_id: token.email,
-							avatar: ``,
-						}}
-						onPressAvatar={user => privateMsg(user)}
-						renderBubble={props => {
-							return (
-								<Bubble
-									{...props}
-									timeTextStyle={{
-										right: {
-											fontSize: 8,
-										},
-										left: {
-											fontSize: 8,
-										},
-									}}
-									UsernameTextStyle={{
-										right: {
-											fontSize: 8,
-											color: "red",
-										},
-										left: {
-											fontSize: 8,
-											color: "red",
-										},
-									}}
-									textStyle={{
-										right: {
-											color: "rgb(252,247,233)",
-											fontSize: 12,
-										},
-										left: {
-											color: "rgb(250,250,250)",
-											fontSize: 12,
-										},
-									}}
-									wrapperStyle={{
-										left: {
-											backgroundColor: "rgb(49,41,36)",
-										},
-										right: {
-											backgroundColor: "rgb(230,173,91)",
-										},
-									}}
-								/>
-							);
-						}}
-					/>
+					<View
+						// ref={scrollViewRef}
+						// onContentSizeChange={() =>
+						// 	scrollViewRef.current?.scrollToEnd({ animated: true })
+						// }
+						style={styles.giftedChat}>
+						{/* <View
+							style={{
+								paddingBottom: 70,
+								paddingTop: 100,
+							}}>
+							{messages.map((msg: any, index: number) => {
+								let lastMsg = messages[messages.length - 1];
+
+								let date = new Date(lastMsg.createdAt).toUTCString();
+
+								let msgTime = new Date(date).getDay();
+								console.log(msgTime);
+
+								return (
+									<View
+										key={index}
+										style={{
+											alignItems: `${
+												msg.id === token.id ? "flex-end" : "flex-start"
+											}`,
+										}}>
+										<Text
+											style={{
+												color: "white",
+												marginLeft: "auto",
+												marginRight: "auto",
+											}}>
+											{msgTime === new Date().getDay()
+												? null
+												: new Date(msg.createdAt).toUTCString()}
+										</Text>
+										<View
+											style={{
+												backgroundColor: `${
+													msg.id === token.id
+														? "rgb(63,0,224)"
+														: "rgb(36,37,47)"
+												}`,
+												width: "auto",
+												paddingLeft: 10,
+												paddingRight: 25,
+												paddingBottom: 10,
+												paddingTop: 10,
+												marginTop: 5,
+												borderRadius: 10,
+											}}>
+											<Text
+												style={{
+													color: "white",
+													overflow: "hidden",
+												}}>
+												{msg.text}
+											</Text>
+											<Text>
+												{msg.length === 0
+													? ""
+													: `${
+															Math.floor(
+																((msg.createdAt / 1000 / 60 / 60) % 24) + 1,
+															) >= 0 &&
+															Math.floor(
+																((msg.createdAt / 1000 / 60 / 60) % 24) + 1,
+															) < 10
+																? `0${Math.floor(
+																		((msg.createdAt / 1000 / 60 / 60) % 24) + 1,
+																  )}`
+																: Math.floor(
+																		((msg.createdAt / 1000 / 60 / 60) % 24) + 1,
+																  )
+													  }:${
+															Math.floor((msg.createdAt / 1000 / 60) % 60) >=
+																0 &&
+															Math.floor((msg.createdAt / 1000 / 60) % 60) < 10
+																? `0${Math.floor(
+																		(msg.createdAt / 1000 / 60) % 60,
+																  )}`
+																: Math.floor((msg.createdAt / 1000 / 60) % 60)
+													  }`}
+											</Text>
+										</View>
+									</View>
+								);
+							})}
+						</View> */}
+						<GiftedChat
+							wrapInSafeArea={false}
+							messages={messages}
+							onSend={messages => send(messages)}
+							renderAvatar={() => null}
+							showAvatarForEveryMessage={false}
+							renderUsernameOnMessage={false}
+							renderInputToolbar={props => customtInputToolbar(props)}
+							text={privateMsgStat ? `@${lastMessage} ` : undefined}
+							user={{
+								name: token.userName,
+								_id: token.email,
+								avatar: ``,
+							}}
+							onPressAvatar={user => privateMsg(user)}
+							renderBubble={props => {
+								return (
+									<Bubble
+										{...props}
+										timeTextStyle={{
+											right: {
+												fontSize: 8,
+											},
+											left: {
+												fontSize: 8,
+											},
+										}}
+										messagesContainerStyle={{
+											backgroundColor: "red",
+											paddingTop: 100,
+										}}
+										UsernameTextStyle={{
+											right: {
+												fontSize: 8,
+												color: "red",
+											},
+											left: {
+												fontSize: 8,
+												color: "red",
+											},
+										}}
+										textStyle={{
+											right: {
+												color: "rgb(252,247,233)",
+												fontSize: 12,
+											},
+											left: {
+												color: "rgb(250,250,250)",
+												fontSize: 12,
+											},
+										}}
+										wrapperStyle={{
+											left: {
+												backgroundColor: "rgb(36,37,47)",
+											},
+											right: {
+												backgroundColor: "rgb(63,0,224)",
+											},
+										}}
+									/>
+								);
+							}}
+						/>
+					</View>
+					{/* <View style={styles.inputView}>
+						<TextInput
+							style={styles.textInput}
+							placeholderTextColor='white'
+							placeholder='Nachricht eingeben'></TextInput>
+					</View> */}
 				</View>
 			</Modal>
 		</SafeAreaView>
 	);
 };
 const styles = StyleSheet.create({
-	safeArea: {
-		backgroundColor: "rgb(27, 27, 27)",
-	},
+	safeArea: {},
 	container: {
-		backgroundColor: "rgb(27, 27, 27)",
+		backgroundColor: "rgb(4, 5, 8)",
 		height: "100%",
 	},
 	headline: {
@@ -309,6 +427,13 @@ const styles = StyleSheet.create({
 		paddingBottom: 15,
 		paddingLeft: 25,
 		paddingRight: 25,
+		backgroundColor: "rgba(4,5,8,0.8)",
+		position: "absolute",
+		zIndex: 9999,
+		width: "100%",
+	},
+	giftedChat: {
+		flex: 1,
 	},
 	header: {
 		marginLeft: 15,
@@ -318,8 +443,20 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		borderWidth: 1,
-		width: "70%",
-		height: "5%",
+		width: "65%",
+		height: "70%",
+		paddingLeft: 10,
+		backgroundColor: "rgb(36,37,47)",
+		borderRadius: 40,
+	},
+	inputView: {
+		justifyContent: "center",
+		width: "100%",
+		height: "10%",
+		position: "absolute",
+		zIndex: 9999,
+		bottom: 0,
+		backgroundColor: "rgba(4,5,8,0.8)",
 	},
 	chatMsg: {
 		textAlign: "center",

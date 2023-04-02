@@ -17,6 +17,7 @@ import PrivateChat from "./PrivateChat";
 import { userInfo, Token, allInfosUser, lastMsg } from "../../App";
 import { db } from "../fireBase/FireBase";
 
+import { LinearGradient } from "expo-linear-gradient";
 type chattMsg = {
 	message: string;
 };
@@ -103,6 +104,7 @@ const Chat = (props: chatMessage) => {
 								if (u.id == token.id) {
 								} else {
 									arr.push({
+										unreadedMsg: chat.unreadedMsg,
 										chats: chat.chats,
 										users: u,
 										msgReaded: chat.msgReaded,
@@ -119,6 +121,7 @@ const Chat = (props: chatMessage) => {
 												login.map(l => {
 													if (i.users.id === l.id) {
 														test.push({
+															unreadedMsg: i.unreadedMsg,
 															chats: i.chats,
 															msgReaded: i.msgReaded,
 															users: i.users,
@@ -204,13 +207,11 @@ const Chat = (props: chatMessage) => {
 										) : !item.msgReaded ? (
 											""
 										) : (
-											<Image
-												style={{
-													width: 30,
-													height: 30,
-												}}
-												source={require("../../assets/img/msg.png")}
-											/>
+											<View style={styles.unreaded}>
+												<Text style={styles.unreadedMsg}>
+													{item.unreadedMsg.length}
+												</Text>
+											</View>
 										)}
 									</Text>
 
@@ -231,7 +232,7 @@ const Chat = (props: chatMessage) => {
 															60) %
 															24) +
 															1,
-													) > 0 &&
+													) >= 0 &&
 													Math.floor(
 														((item.chats[item.chats.length - 1].createdAt /
 															1000 /
@@ -262,7 +263,7 @@ const Chat = (props: chatMessage) => {
 															1000 /
 															60) %
 															60,
-													) > 0 &&
+													) >= 0 &&
 													Math.floor(
 														(item.chats[item.chats.length - 1].createdAt /
 															1000 /
@@ -289,11 +290,23 @@ const Chat = (props: chatMessage) => {
 				</View>
 			</ScrollView>
 			<View style={styles.footer}>
-				<TouchableOpacity
-					style={styles.chatBtn}
-					onPress={() => navigate("/map")}>
-					<Text style={{ color: "white" }}>Map</Text>
+				<TouchableOpacity onPress={() => navigate("/map")}>
+					<Image
+						style={{ width: 40, height: 40 }}
+						source={require("../../assets/img/homes.png")}
+					/>
 				</TouchableOpacity>
+				<LinearGradient style={styles.gradient} colors={["#AF509F", "#5A00CF"]}>
+					<Image
+						style={{ width: 20, height: 20 }}
+						source={require("../../assets/img/pluss.png")}
+					/>
+				</LinearGradient>
+
+				<Image
+					style={{ width: 40, height: 40 }}
+					source={require("../../assets/img/profile.png")}
+				/>
 			</View>
 		</SafeAreaView>
 	);
@@ -306,7 +319,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		alignItems: "center",
 		justifyContent: "space-evenly",
-		backgroundColor: "rgb(27,27,27)",
+		backgroundColor: "rgb(4,5,8)",
 	},
 	userContainer: {
 		marginTop: 25,
@@ -320,10 +333,11 @@ const styles = StyleSheet.create({
 		width: "50%",
 	},
 	headline: {
-		paddingTop: 30,
+		paddingTop: 0,
+		paddingBottom: 10,
 		paddingLeft: 25,
 		paddingRight: 25,
-
+		backgroundColor: "rgba(0,0,0,0.1)",
 		width: Dimensions.get("window").width,
 	},
 	online: {
@@ -350,7 +364,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		marginTop: 10,
-		backgroundColor: "rgb(23,19,16)",
+		backgroundColor: "rgb(36,37,47)",
 		borderRadius: 15,
 		height: 35,
 		paddingLeft: 10,
@@ -365,19 +379,34 @@ const styles = StyleSheet.create({
 		color: "rgb(135,133,131)",
 		width: "60%",
 	},
+	unreadedMsg: {
+		color: "white",
+		fontSize: 18,
+		fontWeight: "bold",
+	},
+	unreaded: {
+		justifyContent: "center",
+		alignItems: "center",
+		width: 25,
+		height: 25,
+		borderRadius: 25,
+
+		backgroundColor: "rgb(230,173,91)",
+		color: "rgb(135,133,131)",
+	},
 	time: {
 		color: "rgb(135,133,131)",
 		position: "absolute",
 		right: 0,
 	},
-	notificationMessageContainer: {},
+
 	notificationMessage: {
 		textAlign: "center",
 		color: "rgb(255,255,255)",
 		fontSize: 18,
 		fontWeight: "700",
 		position: "absolute",
-		right: 50,
+		right: 60,
 	},
 
 	chatMsg: {
@@ -400,7 +429,7 @@ const styles = StyleSheet.create({
 	},
 	chatBtn: {
 		backgroundColor: "rgb(230,173,91)",
-
+		width: 100,
 		marginRight: 25,
 		paddingBottom: 15,
 		paddingTop: 15,
@@ -412,9 +441,19 @@ const styles = StyleSheet.create({
 	footer: {
 		width: Dimensions.get("window").width,
 		height: "10%",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingLeft: 10,
+		paddingRight: 10,
+		flexDirection: "row",
+		backgroundColor: "rgba(0,0,0,0.1)",
+	},
+	gradient: {
+		width: 40,
+		height: 40,
+		borderRadius: 7,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgb(49,41,36)",
 	},
 });
 
