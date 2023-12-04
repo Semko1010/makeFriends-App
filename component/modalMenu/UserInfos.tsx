@@ -13,10 +13,10 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 } from "react-native";
-import { Link } from "react-router-native";
+import { Link, useNavigate } from "react-router-native";
 import { Token, userInfo } from "../../App";
 import { db } from "../fireBase/FireBase";
-
+import PrivateChat from "../chat/PrivateChat";
 type ModalFC = {
 	userInfosModal: {
 		userInfosModal: boolean;
@@ -28,10 +28,12 @@ type ModalFC = {
 };
 
 const UserInfos = (props: ModalFC) => {
+	const navigate = useNavigate();
 	const { token, setToken } = useContext(Token);
 	const { info, setInfo } = useContext(userInfo);
 	async function chatWithUser() {
 		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
+		console.log("info", info);
 
 		if (db) {
 			const res = await db.collection("privateMessages").doc(chatId);
@@ -66,7 +68,9 @@ const UserInfos = (props: ModalFC) => {
 					});
 			}
 		}
+		const nav = await navigate("/chat");
 	}
+
 	return (
 		<SafeAreaView>
 			<Modal
@@ -79,29 +83,31 @@ const UserInfos = (props: ModalFC) => {
 					);
 				}}>
 				<View style={styles.centeredView}>
-					<LinearGradient
-						style={styles.modalView}
-						colors={["#ADA996", "#F2F2F2", "#DBDBDB", "#EAEAEA"]}>
+					<View style={styles.modalView}>
 						<View>
 							<View style={styles.infosText}>
 								<Text>
 									<Text style={{ color: "black" }}>Name: {info.userName}</Text>
 								</Text>
-
-								<Text>Alter: {info.age}</Text>
-								<Text>Hobbys: {info.hobby}</Text>
-								<Text>Über mich: {info.desc}</Text>
+								<Text style={styles.infoText}>Name: {info.userName}</Text>
+								<Text style={styles.infoText}>Alter: {info.age}</Text>
+								<Text style={styles.infoText}>Hobbys: {info.hobby}</Text>
+								<Text style={styles.infoText}>Über mich: {info.desc}</Text>
 							</View>
-							<TouchableOpacity
-								style={styles.chatBtn}
-								onPress={() => chatWithUser()}>
-								<Text
-									style={{
-										color: "white",
-									}}>{`Chatten mit ${info.userName}`}</Text>
-							</TouchableOpacity>
 						</View>
 						<View style={styles.footerView}>
+							<TouchableOpacity
+								onPress={() => chatWithUser()}
+								style={styles.gradient}>
+								<LinearGradient
+									style={styles.gradient}
+									colors={["#AF509F", "#5A00CF"]}>
+									<Text
+										style={{
+											color: "white",
+										}}>{`Chatten mit ${info.userName}`}</Text>
+								</LinearGradient>
+							</TouchableOpacity>
 							<Pressable
 								style={[styles.button, styles.buttonClose]}
 								onPress={() =>
@@ -109,10 +115,19 @@ const UserInfos = (props: ModalFC) => {
 										!props.userInfosModal.userInfosModal,
 									)
 								}>
-								<Text style={styles.textStyle}>Zurück</Text>
+								<LinearGradient
+									style={styles.gradient}
+									colors={["#AF509F", "#5A00CF"]}>
+									<Text
+										style={{
+											color: "white",
+										}}>
+										Zurück
+									</Text>
+								</LinearGradient>
 							</Pressable>
 						</View>
-					</LinearGradient>
+					</View>
 				</View>
 			</Modal>
 		</SafeAreaView>
@@ -137,7 +152,7 @@ const styles = StyleSheet.create({
 	},
 	footerView: {
 		borderTopWidth: 1,
-
+		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -150,9 +165,19 @@ const styles = StyleSheet.create({
 	},
 
 	modalView: {
+		borderTopWidth: 5,
+		borderRightWidth: 1,
+		borderLeftWidth: 1,
+		borderBottomWidth: 1,
+		borderBottomColor: "rgba(255,255,255,0.1)",
+		borderTopColor: "rgba(255,255,255,0.2)",
+		borderRightColor: "rgba(255,255,255,0.1)",
+		borderLeftColor: "rgba(255,255,255,0.1)",
+		backgroundColor: "rgb(0,0,0)",
 		borderRadius: 20,
 		height: 300,
 		padding: 35,
+		justifyContent: "space-between",
 		alignItems: "center",
 		shadowColor: "#000",
 		shadowOffset: {
@@ -178,9 +203,7 @@ const styles = StyleSheet.create({
 	buttonOpen: {
 		backgroundColor: "#F194Fa",
 	},
-	buttonClose: {
-		backgroundColor: "#2196F3",
-	},
+
 	textStyle: {
 		color: "white",
 		fontWeight: "bold",
@@ -204,6 +227,21 @@ const styles = StyleSheet.create({
 		paddingLeft: 30,
 		borderWidth: 1,
 		borderRadius: 10,
+	},
+	gradient: {
+		borderRadius: 7,
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 10,
+	},
+	infoText: {
+		borderRadius: 5,
+		marginTop: 10,
+		padding: 5,
+		color: "white",
+		borderWidth: 1,
+		borderColor: "white",
+		width: 250,
 	},
 });
 export default UserInfos;

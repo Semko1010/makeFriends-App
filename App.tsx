@@ -30,6 +30,7 @@ type settName = {
 	info: user;
 	setInfo: React.Dispatch<React.SetStateAction<user>>;
 };
+
 interface tokenInfos {
 	userName: string | undefined;
 	age: number;

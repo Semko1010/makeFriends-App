@@ -15,12 +15,18 @@ import {
 	Text,
 	TextInput,
 	Dimensions,
+	TouchableOpacity,
 } from "react-native";
 
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token } from "../../App";
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import {
+	GiftedChat,
+	Bubble,
+	Send,
+	InputToolbar,
+} from "react-native-gifted-chat";
 
 type chattMsg = {
 	message: string;
@@ -76,7 +82,7 @@ const ChatModal = (props: ModalFC) => {
 		const setTrue = await setPrivateMsgStat(true);
 		const setFalse = await setPrivateMsgStat(false);
 	}
-	const send = messages => {
+	const send = (messages: any) => {
 		setMessages(previousMessages =>
 			GiftedChat.append(previousMessages, messages),
 		);
@@ -86,20 +92,13 @@ const ChatModal = (props: ModalFC) => {
 
 		const { _id, text, user } = messages[0];
 		if (db) {
-			// db.collection("privateMessages").doc(info.userObjId).collection(token.userObjId + info.userObjId).add({
-			// 	_id,
-			// 	createdAt,
-			// 	text,
-			// 	userObjId:token.userObjId,
-			// 	user,
-			// })
-
-			db.collection(info.userObjId).add({
+			db.collection("messages").doc().set({
 				_id,
 				createdAt,
 				text,
-				userObjId: token.userObjId,
+				id: token.id,
 				user,
+				status: false,
 			});
 		}
 	};
@@ -126,7 +125,40 @@ const ChatModal = (props: ModalFC) => {
 			unmounted = true;
 		};
 	}, [db, info]);
-
+	const customtInputToolbar = (props: any) => {
+		return (
+			<View style={{ flex: 1, width: 250 }}>
+				<InputToolbar
+					{...props}
+					containerStyle={{
+						borderTopColor: "rgb(36,37,47)",
+						backgroundColor: "rgb(36,37,47)",
+						height: 40,
+						borderRadius: 30,
+						marginLeft: 15,
+						marginBottom: 3,
+					}}
+				/>
+			</View>
+		);
+	};
+	const renderSend = (props: any) => {
+		return (
+			<Send {...props}>
+				<View style={{ justifyContent: "center", alignItems: "center" }}>
+					<Image
+						style={{
+							width: 20,
+							height: 20,
+							marginRight: 20,
+							marginBottom: 10,
+						}}
+						source={require("../../assets/img/sendMsg.png")}
+					/>
+				</View>
+			</Send>
+		);
+	};
 	messages.sort((a: any, b: any) => b.createdAt - a.createdAt);
 	return (
 		<Modal
@@ -137,33 +169,61 @@ const ChatModal = (props: ModalFC) => {
 				props.chatModalVisible.setChatModalVisible;
 			}}>
 			<View style={styles.container}>
+				<Text
+					style={{
+						color: "white",
+						position: "absolute",
+						top: 80,
+						left: 0,
+						zIndex: 9999,
+					}}>
+					{" "}
+					Du bist im Gruppenchat:
+				</Text>
 				<View
 					style={{
 						width: "100%",
 						height: "15%",
 						alignItems: "center",
-						backgroundColor: "white",
+						backgroundColor: "rgb(0,0,0)",
 						paddingTop: 30,
+						flexDirection: "row",
+						justifyContent: "space-between",
 					}}>
-					<Text> Du bist im Gruppenchat:</Text>
-					<Image
-						style={{ width: 50, height: 50 }}
-						source={{
-							uri: `data:image/png;base64,${token.img}`,
-						}}
-					/>
+					<TouchableOpacity
+						onPress={() => props.chatModalVisible.setChatModalVisible(false)}>
+						<Image
+							style={{
+								width: 30,
+								height: 30,
+
+								marginRight: 20,
+							}}
+							source={require("../../assets/img/arrow-left.png")}
+						/>
+					</TouchableOpacity>
+					<View>
+						<Image
+							style={{ width: 50, height: 50, borderRadius: 50 }}
+							source={{
+								uri: `data:image/png;base64,${token.img}`,
+							}}
+						/>
+					</View>
 				</View>
-				<View style={{ height: "80%", backgroundColor: "rgba(0, 0, 0,0.5)" }}>
+				<View style={{ flex: 1, backgroundColor: "rgb(0, 0, 0)" }}>
 					<GiftedChat
 						messages={messages}
 						onSend={messages => send(messages)}
-						// inverted={false}
+						renderInputToolbar={props => customtInputToolbar(props)}
+						renderSend={props => renderSend(props)}
+						alwaysShowSend
 						showAvatarForEveryMessage={true}
 						renderUsernameOnMessage={true}
 						text={privateMsgStat ? `@${lastMessage} ` : undefined}
 						user={{
 							name: token.userName,
-							_id: token.emails,
+							_id: token.id,
 							avatar: `data:image/png;base64,${token.img}`,
 						}}
 						onPressAvatar={user => privateMsg(user)}
@@ -213,13 +273,6 @@ const ChatModal = (props: ModalFC) => {
 						}}
 					/>
 				</View>
-
-				<View style={{ backgroundColor: "#1e90ff", height: "5%" }}>
-					<Button
-						title='Zurück'
-						onPress={() => props.chatModalVisible.setChatModalVisible(false)}
-					/>
-				</View>
 			</View>
 		</Modal>
 	);
@@ -229,6 +282,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		width: Dimensions.get("window").width,
 		height: "100%",
+		position: "relative",
 	},
 	headline: {
 		textAlign: "center",

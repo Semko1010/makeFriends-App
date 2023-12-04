@@ -23,7 +23,12 @@ import {
 //imports
 import { db } from "../fireBase/FireBase";
 import { userInfo, Token, lastMsg } from "../../App";
-import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import {
+	GiftedChat,
+	Bubble,
+	InputToolbar,
+	Send,
+} from "react-native-gifted-chat";
 import { Link, useNavigate } from "react-router-native";
 import uuid from "react-native-uuid";
 import firebase from "firebase";
@@ -103,7 +108,6 @@ const PrivateChat = (props: any) => {
 					unreadedMsg: firebase.firestore.FieldValue.arrayUnion({
 						_id,
 						createdAt,
-
 						text,
 						id: token.id,
 						user,
@@ -123,6 +127,8 @@ const PrivateChat = (props: any) => {
 	};
 
 	useEffect(() => {
+		console.log("info", info);
+
 		let unmounted = false;
 		const chatId = token.id > info.id ? token.id + info.id : info.id + token.id;
 
@@ -203,15 +209,36 @@ const PrivateChat = (props: any) => {
 				<InputToolbar
 					{...props}
 					containerStyle={{
-						backgroundColor: "rgb(47,39,34)",
-						height: 40,
+						borderTopColor: "rgb(36,37,47)",
+						backgroundColor: "rgb(36,37,47)",
+						height: 45,
 						borderRadius: 30,
 						marginLeft: 15,
 						marginBottom: 3,
-						borderTopColor: "rgb(47,39,34)",
 					}}
 				/>
 			</View>
+		);
+	};
+	const renderSend = (props: any) => {
+		return (
+			<Send {...props}>
+				<View
+					style={{
+						justifyContent: "center",
+						alignItems: "center",
+					}}>
+					<Image
+						style={{
+							width: 20,
+							height: 20,
+							marginRight: 30,
+							marginBottom: 10,
+						}}
+						source={require("../../assets/img/sendMsg.png")}
+					/>
+				</View>
+			</Send>
 		);
 	};
 
@@ -343,9 +370,11 @@ const PrivateChat = (props: any) => {
 							messages={messages}
 							onSend={messages => send(messages)}
 							renderAvatar={() => null}
-							showAvatarForEveryMessage={false}
+							showAvatarForEveryMessage={true}
 							renderUsernameOnMessage={false}
 							renderInputToolbar={props => customtInputToolbar(props)}
+							renderSend={props => renderSend(props)}
+							alwaysShowSend
 							text={privateMsgStat ? `@${lastMessage} ` : undefined}
 							user={{
 								name: token.userName,
@@ -428,9 +457,11 @@ const styles = StyleSheet.create({
 		paddingLeft: 25,
 		paddingRight: 25,
 		backgroundColor: "rgba(4,5,8,0.8)",
-		position: "absolute",
-		zIndex: 9999,
+		// position: "absolute",
+		// zIndex: 9999,
 		width: "100%",
+		borderBottomWidth: 1,
+		borderBottomColor: "rgba(255,255,255,0.1)",
 	},
 	giftedChat: {
 		flex: 1,

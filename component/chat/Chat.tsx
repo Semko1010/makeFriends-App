@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Link, useNavigate } from "react-router-native";
 import { io } from "socket.io-client";
-import PrivateChat from "./PrivateChat";
+import PrivateChat from "../chat/PrivateChat";
 import { userInfo, Token, allInfosUser, lastMsg } from "../../App";
 import { db } from "../fireBase/FireBase";
 
@@ -149,9 +149,10 @@ const Chat = (props: chatMessage) => {
 	}, [db, info]);
 
 	async function chatPrv(id: any) {
-		const setInf = await setInfo(id.users);
+		console.log("id.users", id.users);
 
-		const navToChat = await navigate("/privateChat");
+		const setInf = await setInfo(id.users);
+		const navToChat = await navigate("/PrivateChat");
 	}
 
 	return (

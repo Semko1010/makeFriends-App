@@ -184,6 +184,9 @@ const MapViews = (props: chatMessage) => {
 									uri: `data:image/png;base64,${token.img}`,
 								}}
 							/>
+							<Text style={{ color: "white", marginLeft: 10 }}>
+								{token.userName}
+							</Text>
 						</View>
 
 						<SetCoordsButton
@@ -228,13 +231,15 @@ const MapViews = (props: chatMessage) => {
 					<View
 						// Button Linear Gradient
 
-						style={styles.infos}>
+						style={styles.footer}>
 						<TouchableOpacity
-							style={styles.chatBtn}
 							onPress={() => props.chatModalVisible.setChatModalVisible(true)}>
-							<Text style={{ color: "white" }}>Global Chat</Text>
+							<LinearGradient
+								style={styles.gradient}
+								colors={["#AF509F", "#5A00CF"]}>
+								<Text style={{ color: "white" }}>G-Chat</Text>
+							</LinearGradient>
 						</TouchableOpacity>
-
 						{/* <Text style={styles}>{lastMessage.text}</Text> */}
 					</View>
 				</SafeAreaView>
@@ -271,11 +276,14 @@ const styles = StyleSheet.create({
 		width: Dimensions.get("window").width,
 		flex: 1,
 	},
-	infos: {
+	footer: {
 		height: "10%",
 		borderTopWidth: 1,
-		backgroundColor: "rgb(49,41,36)",
+		backgroundColor: "rgb(0,0,0)",
 		justifyContent: "center",
+		alignItems: "center",
+		borderTopColor: "white",
+		flexDirection: "row",
 	},
 	infosText: {
 		flexDirection: "column",
@@ -285,7 +293,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		paddingTop: 25,
 		height: "15%",
-		backgroundColor: "rgb(49,41,36)",
+		backgroundColor: "rgb(0,0,0)",
 		width: Dimensions.get("window").width,
 
 		flexDirection: "row",
@@ -381,6 +389,14 @@ const styles = StyleSheet.create({
 	},
 	groupChatText: {
 		alignItems: "center",
+		flexDirection: "row",
+		marginRight: 100,
+	},
+	gradient: {
+		borderRadius: 7,
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 10,
 	},
 });
 
